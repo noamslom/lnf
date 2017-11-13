@@ -1,44 +1,22 @@
-package il.co.noamsl.lostnfound.eitan.server;
+package il.co.noamsl.lostnfound.eitan;
+
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Root;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
 
-@Entity
-@Table(name = "RESTRICTIONS")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Restrictions.findByRecordid", query = "SELECT r FROM Restrictions r WHERE r.recordid = :recordid")
-})
+@Root(strict = false)
 public class Restrictions implements Serializable {
 
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "RECORDID")
+    @Element(required = false)
     private Integer recordid;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "NAME")
+    @Element(required = false)
     private Boolean name;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "EMAIL")
+    @Element(required = false)
     private Boolean email;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "PHONE_NUMBER")
+    @Element(required = false)
     private Boolean phoneNumber;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ADDRESS")
+    @Element(required = false)
     private Boolean address;
 
     public Restrictions() {
@@ -95,26 +73,15 @@ public class Restrictions implements Serializable {
     public void setAddress(Boolean address) {
         this.address = address;
     }
-    
-    public void update(Restrictions other) {
-        if (other.name != null) 
-            this.name = other.name;
-        if (other.address != null) 
-            this.address = other.address;
-        if (other.email != null) 
-            this.email = other.email;
-        if (other.phoneNumber != null) 
-            this.phoneNumber = other.phoneNumber;
-    }
-    
+
     public void setDefault() {
-        if (this.name == null) 
+        if (this.name == null)
             this.name = false;
-        if (this.address == null) 
+        if (this.address == null)
             this.address = false;
-        if (this.email == null) 
+        if (this.email == null)
             this.email = false;
-        if (this.phoneNumber == null) 
+        if (this.phoneNumber == null)
             this.phoneNumber = false;
     }
 }
