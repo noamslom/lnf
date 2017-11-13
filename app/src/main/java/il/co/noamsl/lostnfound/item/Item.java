@@ -8,7 +8,7 @@ public class Item {
     private final long ID;
     private String name;
     private String description;
-//    private NoamPlace place;
+    private NoamPlace place;
     private NoamRegisteredUser Owner;
     private NoamImage picture;
     private boolean relevant;
