@@ -1,4 +1,4 @@
-package il.co.noamsl.lostnfound.item;
+package il.co.noamsl.lostnfound.serverInterface.fake;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -6,12 +6,13 @@ import android.support.v4.content.ContextCompat;
 
 import il.co.noamsl.lostnfound.MainActivity;
 import il.co.noamsl.lostnfound.R;
+import il.co.noamsl.lostnfound.item.NoamImage;
 
 /**
  * Created by noams on 05/11/2017.
  */
 
-public class FakeImage implements NoamImage{
+public class FakeImage implements NoamImage {
     Drawable image;
     public FakeImage() {
         this.context = MainActivity.getContextRemoveThisMethod();

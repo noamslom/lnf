@@ -1,15 +1,9 @@
 package il.co.noamsl.lostnfound.serverInterface.fake;
 
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import il.co.noamsl.lostnfound.MainActivity;
-import il.co.noamsl.lostnfound.R;
-import il.co.noamsl.lostnfound.item.FakeImage;
 import il.co.noamsl.lostnfound.item.Item;
 
 /**
