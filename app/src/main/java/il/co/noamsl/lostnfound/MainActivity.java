@@ -25,11 +25,10 @@ public class MainActivity extends AppCompatActivity implements
         MyItemsFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener,
         ItemsFeedFragment.OnFragmentInteractionListener {
-    private static NoamServerExternal server = null;
     private static Context context_remove; //// FIXME: 05/11/2017
 
     public static NoamServerExternal getServer() {
-        return server;
+        return ServiceLocator.getExternalServer();
     }
 
     private MyItemsFragment myItemsFragment = null;
@@ -88,17 +87,12 @@ public class MainActivity extends AppCompatActivity implements
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        initServer();
 
         initFragment(savedInstanceState);
 
         context_remove = getApplicationContext();
 
 
-    }
-
-    private void initServer() {
-        server = FakeServerHelperFactory.newInstance();
     }
 
     private void initFragment(Bundle savedInstanceState) {

@@ -1,6 +1,6 @@
 package il.co.noamsl.lostnfound.serverInterface;
 
-import il.co.noamsl.lostnfound.item.Item;
+import il.co.noamsl.lostnfound.item.FakeItem;
 
 /**
  * Created by noams on 04/08/2017.
@@ -8,13 +8,13 @@ import il.co.noamsl.lostnfound.item.Item;
 
 public interface NoamServerExternal {
 
-    long getID();//?
+//    long getID();//?
 
     ItemsBulk getAllItemsItemsBulk();
 
     ItemsBulk getMyItemsItemsBulk();
 
-    Item getItemById(long itemId);
+    FakeItem getItemById(long itemId);
 
     void addItem(String text);
 }

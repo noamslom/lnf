@@ -2,7 +2,6 @@ package il.co.noamsl.lostnfound.subScreens.itemsFeed;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,7 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import il.co.noamsl.lostnfound.R;
-import il.co.noamsl.lostnfound.item.Item;
+import il.co.noamsl.lostnfound.item.FakeItem;
 import il.co.noamsl.lostnfound.item.NoamImage;
 import il.co.noamsl.lostnfound.serverInterface.ItemReceiver;
 import il.co.noamsl.lostnfound.serverInterface.ItemsBulk;
@@ -52,7 +51,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
-    public void onItemArrived(Item item) {
+    public void onItemArrived(FakeItem item) {
         parentActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -183,7 +182,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         if (holder instanceof ViewHolder) {
-            Item itemInPosition = itemsBulk.get(position);
+            FakeItem itemInPosition = itemsBulk.get(position);
             ViewHolder myHolder = (ViewHolder) holder;
             myHolder.updateFields(itemInPosition.getMainImage(), "Title: " + itemInPosition.getTitle());
             myHolder.setItemId(itemInPosition.getId());

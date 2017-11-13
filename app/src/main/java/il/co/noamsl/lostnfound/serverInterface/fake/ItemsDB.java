@@ -4,35 +4,35 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import il.co.noamsl.lostnfound.item.Item;
+import il.co.noamsl.lostnfound.item.FakeItem;
 
 /**
  * Created by noams on 05/11/2017.
  */
 
 class ItemsDB {
-    private List<Item> items;
+    private List<FakeItem> items;
 
     public ItemsDB() {
-        items = Collections.synchronizedList(new ArrayList<Item>());
+        items = Collections.synchronizedList(new ArrayList<FakeItem>());
         for (int i = 0; i < 100; i++) {
-            Item item1 = new Item(i,"Wal"+i,"Great Wallet, brown",null,null,new FakeImage());
+            FakeItem item1 = new FakeItem(i,"Wal"+i,"Great Wallet, brown",null,null,new FakeImage());
             items.add(item1);
         }
     }
 
-    public Item getItem(int i) {
+    public FakeItem getItem(int i) {
         if (i >= items.size()) {
             return null;
         }
         return items.get(i);
     }
-    public void addItem(Item item){
+    public void addItem(FakeItem item){
         items.add(item);
     }
 
-    public Item getItemById(long itemId) {
-        for (Item item : items) {
+    public FakeItem getItemById(long itemId) {
+        for (FakeItem item : items) {
             if (item.getId() == itemId) {
                 return item;
             }
@@ -41,6 +41,6 @@ class ItemsDB {
     }
 
     public void addItem(String text) {
-        addItem(new Item(items.size(),text,null,null,null,new FakeImage()));
+        addItem(new FakeItem(items.size(),text,null,null,null,new FakeImage()));
     }
 }

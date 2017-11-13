@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import il.co.noamsl.lostnfound.MainActivity;
 import il.co.noamsl.lostnfound.R;
-import il.co.noamsl.lostnfound.item.Item;
 
 public class EditItemActivity extends AppCompatActivity {
     TextView etTitle;

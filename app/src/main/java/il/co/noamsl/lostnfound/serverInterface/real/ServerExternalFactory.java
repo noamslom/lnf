@@ -1,5 +1,6 @@
-package il.co.noamsl.lostnfound.serverInterface.fake;
+package il.co.noamsl.lostnfound.serverInterface.real;
 
+import il.co.noamsl.lostnfound.ServiceLocator;
 import il.co.noamsl.lostnfound.item.FakeItem;
 import il.co.noamsl.lostnfound.serverInterface.ItemsBulk;
 import il.co.noamsl.lostnfound.serverInterface.NoamServerExternal;
@@ -8,9 +9,8 @@ import il.co.noamsl.lostnfound.serverInterface.NoamServerExternal;
  * Created by noams on 05/11/2017.
  */
 
-public class FakeServerHelperFactory {
+public class ServerExternalFactory {
     public static NoamServerExternal newInstance(){
-        //TODO implement this
         return new NoamServerExternal() {
             @Override
             public ItemsBulk getAllItemsItemsBulk() {
@@ -19,17 +19,17 @@ public class FakeServerHelperFactory {
 
             @Override
             public ItemsBulk getMyItemsItemsBulk() {
-                return new ItemsBulk(FakeServerInternal.getGlobalFakeServer(),null);
+                return new ItemsBulk(ServiceLocator.getInternalServer(),null);
             }
 
             @Override
             public FakeItem getItemById(long itemId) {
-                return FakeServerInternal.getGlobalFakeServer().getItemById(itemId);
+                return ServiceLocator.getInternalServer().getItemById(itemId);
             }
 
             @Override
             public void addItem(String text) {
-                FakeServerInternal.getGlobalFakeServer().addItem(text);
+                ServiceLocator.getInternalServer().addItem(text);
             }
         };
     }

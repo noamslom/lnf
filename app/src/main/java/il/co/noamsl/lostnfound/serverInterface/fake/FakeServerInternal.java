@@ -1,6 +1,6 @@
 package il.co.noamsl.lostnfound.serverInterface.fake;
 
-import il.co.noamsl.lostnfound.item.Item;
+import il.co.noamsl.lostnfound.item.FakeItem;
 import il.co.noamsl.lostnfound.item.RequestAgent;
 import il.co.noamsl.lostnfound.serverInterface.ItemReceiver;
 import il.co.noamsl.lostnfound.serverInterface.NoamServerInternal;
@@ -31,7 +31,7 @@ public class FakeServerInternal implements NoamServerInternal {
     public synchronized void requestItems(final ItemReceiver itemsReceiver, final RequestAgent requestAgent) {
         // a potentially  time consuming task
         while (requestAgent.getRequestedLeft() > 0) {
-            Item nextItem = itemsDB.getItem(requestAgent.getNextRequestSerial());
+            FakeItem nextItem = itemsDB.getItem(requestAgent.getNextRequestSerial());
             if (nextItem == null)
                 break;
             itemsReceiver.onItemArrived(nextItem);
@@ -46,7 +46,7 @@ public class FakeServerInternal implements NoamServerInternal {
     }
 
     @Override
-    public Item getItemById(long itemId) {
+    public FakeItem getItemById(long itemId) {
         return itemsDB.getItemById(itemId);
     }
 

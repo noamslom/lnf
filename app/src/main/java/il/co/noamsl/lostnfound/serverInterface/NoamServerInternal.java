@@ -1,6 +1,6 @@
 package il.co.noamsl.lostnfound.serverInterface;
 
-import il.co.noamsl.lostnfound.item.Item;
+import il.co.noamsl.lostnfound.item.FakeItem;
 import il.co.noamsl.lostnfound.item.RequestAgent;
 
 /**
@@ -15,7 +15,7 @@ public interface NoamServerInternal {
      */
     void requestItems(final ItemReceiver itemsReceiver, RequestAgent requestAgent);
 
-    Item getItemById(long itemId);
+    FakeItem getItemById(long itemId);
 
 
     void addItem(String text);

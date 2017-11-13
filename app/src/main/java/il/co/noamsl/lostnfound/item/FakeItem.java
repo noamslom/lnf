@@ -4,7 +4,7 @@ package il.co.noamsl.lostnfound.item;
  * Created by noams on 04/08/2017.
  */
 
-public class Item {
+public class FakeItem {
     private final long ID;
     private String name;
     private String description;
@@ -13,7 +13,7 @@ public class Item {
     private NoamImage picture;
     private boolean relevant;
 
-    public Item(long ID, String name, String description, NoamPlace place, NoamRegisteredUser owner, NoamImage picture) {
+    public FakeItem(long ID, String name, String description, NoamPlace place, NoamRegisteredUser owner, NoamImage picture) {
         this.ID = ID;
         this.name = name;
         this.description = description;
