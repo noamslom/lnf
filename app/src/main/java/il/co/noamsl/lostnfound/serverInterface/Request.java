@@ -12,6 +12,11 @@ public class Request<T> {
     private final ItemReceiver<T> ITEM_RECEIVER;
     private final Integer MAX_ITEMS;
 
+
+    public Request(ItemReceiver<T> itemReceiver) {
+        this(itemReceiver, null);
+    }
+
     public ItemReceiver<T> getItemReceiver() {
         return ITEM_RECEIVER;
     }

@@ -1,26 +1,26 @@
 package il.co.noamsl.lostnfound;
 
-import il.co.noamsl.lostnfound.serverInterface.NoamRepositoryExternal;
-import il.co.noamsl.lostnfound.serverInterface.NoamServerInternal;
+import il.co.noamsl.lostnfound.serverInterface.RepositoryExternal;
+import il.co.noamsl.lostnfound.serverInterface.WebService;
 import il.co.noamsl.lostnfound.serverInterface.real.RepositoryExternalFactory;
-import il.co.noamsl.lostnfound.serverInterface.real.ServerInternal;
+import il.co.noamsl.lostnfound.serverInterface.real.WebServiceImpl;
 
 /**
  * Created by noams on 13/11/2017.
  */
 
 public class ServiceLocator {
-    private static NoamServerInternal serverInternal=null;
-    private static NoamRepositoryExternal serverExternal = null;
+    private static WebService serverInternal=null;
+    private static RepositoryExternal serverExternal = null;
 
-    public static NoamServerInternal getInternalServer(){
+    public static WebService getInternalServer(){
         if (serverInternal == null) {
-            serverInternal = new ServerInternal();
+            serverInternal = new WebServiceImpl();
         }
         return serverInternal;
     }
 
-    public static NoamRepositoryExternal getExternalServer() {
+    public static RepositoryExternal getExternalServer() {
         if(serverExternal==null){
             serverExternal = RepositoryExternalFactory.newInstance();
         }

@@ -1,8 +1,9 @@
 package il.co.noamsl.lostnfound.repository;
 
 import il.co.noamsl.lostnfound.item.FakeItem;
+import il.co.noamsl.lostnfound.item.LFItem;
+import il.co.noamsl.lostnfound.serverInterface.Request;
 import il.co.noamsl.lostnfound.serverInterface.RequestAgent;
-import il.co.noamsl.lostnfound.serverInterface.ItemReceiver;
 
 /**
  * Created by noams on 05/11/2017.
@@ -11,10 +12,10 @@ import il.co.noamsl.lostnfound.serverInterface.ItemReceiver;
 public interface Repository {
     /**
      * Assumed to be synchronized
-     * @param itemsReceiver
+     * @param request
      * @param requestAgent
      */
-    void requestItems(final ItemReceiver itemsReceiver, RequestAgent requestAgent);
+    void requestItems(final Request<LFItem> request, RequestAgent requestAgent);
 
     FakeItem getItemById(long itemId);
 

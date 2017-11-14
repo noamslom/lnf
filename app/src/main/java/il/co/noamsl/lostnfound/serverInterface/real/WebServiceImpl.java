@@ -11,7 +11,7 @@ import il.co.noamsl.lostnfound.eitan.ServerAPI;
 import il.co.noamsl.lostnfound.item.FakeItem;
 import il.co.noamsl.lostnfound.serverInterface.RequestAgent;
 import il.co.noamsl.lostnfound.serverInterface.ItemReceiver;
-import il.co.noamsl.lostnfound.serverInterface.NoamServerInternal;
+import il.co.noamsl.lostnfound.serverInterface.WebService;
 import il.co.noamsl.lostnfound.serverInterface.fake.FakeImage;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -25,7 +25,7 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
  * Created by noams on 13/11/2017.
  */
 
-public class ServerInternal implements NoamServerInternal {
+public class WebServiceImpl implements WebService {
 
     // '/' at the end is required
     private static final String BASE_URL = "http://10.0.2.2:8080/lf_server/webresources/";

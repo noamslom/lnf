@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.item.FakeItem;
+import il.co.noamsl.lostnfound.item.LFItem;
 import il.co.noamsl.lostnfound.item.NoamImage;
 import il.co.noamsl.lostnfound.serverInterface.ItemReceiver;
 import il.co.noamsl.lostnfound.serverInterface.ItemsBulk;
@@ -182,7 +183,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         if (holder instanceof ViewHolder) {
-            FakeItem itemInPosition = itemsBulk.get(position);
+            LFItem itemInPosition = itemsBulk.get(position);
             ViewHolder myHolder = (ViewHolder) holder;
             myHolder.updateFields(itemInPosition.getMainImage(), "Title: " + itemInPosition.getTitle());
             myHolder.setItemId(itemInPosition.getId());

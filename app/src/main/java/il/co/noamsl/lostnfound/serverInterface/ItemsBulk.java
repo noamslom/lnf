@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import il.co.noamsl.lostnfound.item.FakeItem;
+import il.co.noamsl.lostnfound.item.LFItem;
 import il.co.noamsl.lostnfound.repository.RepositoryImpl;
 import il.co.noamsl.lostnfound.subScreens.itemsFeed.Loadable;
 
@@ -15,19 +16,19 @@ import il.co.noamsl.lostnfound.subScreens.itemsFeed.Loadable;
  * Created by noams on 05/11/2017.
  */
 
-public class ItemsBulk implements Parcelable, ItemReceiver<FakeItem> {
+public class ItemsBulk implements Parcelable, ItemReceiver<LFItem> {
     private int mData; //// FIXME: 05/11/2017 delete this
     private volatile int itemCount = 0;
-    private List<FakeItem> savedItems;
+    private List<LFItem> savedItems;
     private static final int ITEMS_PER_REQUEST = 30;
     private RepositoryImpl repository;
     private RequestAgent requestAgent;
     private Loadable requester;
-    private ItemReceiver<FakeItem> itemReceiver;
+    private ItemReceiver<LFItem> itemReceiver;
 
     public ItemsBulk(RepositoryImpl repository, Loadable requester) {
         this.repository = repository;
-        this.savedItems = Collections.synchronizedList(new ArrayList<FakeItem>());
+        this.savedItems = Collections.synchronizedList(new ArrayList<LFItem>());
         requestAgent = new RequestAgent();
         this.requester=requester;
     }
@@ -65,7 +66,7 @@ public class ItemsBulk implements Parcelable, ItemReceiver<FakeItem> {
         return itemCount;
     }
 
-    public FakeItem get(int position) {
+    public LFItem get(int position) {
         if(position>=itemCount)
             return null;
         return savedItems.get(position);
@@ -76,8 +77,8 @@ public class ItemsBulk implements Parcelable, ItemReceiver<FakeItem> {
     }
 
     public void requestMoreItems() {
-        requestAgent.addRequested(ITEMS_PER_REQUEST);
-        repository.requestItems(this, null);//// FIXME: 13/11/2017 use request agent preferred
+//        requestAgent.addRequested(ITEMS_PER_REQUEST);
+        repository.requestItems(new Request<LFItem>(this),null);//// FIXME: 13/11/2017 use request agent preferred
 //        if(requester!=null){
 //            requester.setLoaded();
 //        }
@@ -85,7 +86,7 @@ public class ItemsBulk implements Parcelable, ItemReceiver<FakeItem> {
     }
 
     @Override
-    public void onItemArrived(FakeItem item) {
+    public void onItemArrived(LFItem item) {
         savedItems.add(item);
         itemCount++;
         if(itemReceiver!=null){
