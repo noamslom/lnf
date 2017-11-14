@@ -5,12 +5,14 @@ import org.simpleframework.xml.core.Persister;
 
 import java.util.List;
 
+import il.co.noamsl.lostnfound.dataTransfer.Request;
 import il.co.noamsl.lostnfound.eitan.LostTable;
 import il.co.noamsl.lostnfound.eitan.LostTableList;
 import il.co.noamsl.lostnfound.eitan.ServerAPI;
 import il.co.noamsl.lostnfound.item.FakeItem;
-import il.co.noamsl.lostnfound.serverInterface.RequestAgent;
-import il.co.noamsl.lostnfound.serverInterface.ItemReceiver;
+import il.co.noamsl.lostnfound.dataTransfer.RequestAgent;
+import il.co.noamsl.lostnfound.dataTransfer.ItemReceiver;
+import il.co.noamsl.lostnfound.item.LFItem;
 import il.co.noamsl.lostnfound.serverInterface.WebService;
 import il.co.noamsl.lostnfound.serverInterface.fake.FakeImage;
 import okhttp3.OkHttpClient;
@@ -44,7 +46,7 @@ public class WebServiceImpl implements WebService {
             .build().create(ServerAPI.class);
 
     @Override
-    public void requestItems(final ItemReceiver itemsReceiver, RequestAgent requestAgent) {
+    public void requestItems(final Request<LFItem> request, RequestAgent requestAgent) {
         if (requestAgent != null) {
             throw new UnsupportedOperationException("Not imp yet");
         }
@@ -62,8 +64,11 @@ public class WebServiceImpl implements WebService {
             @Override
             public void onFailure(Call<LostTableList> call, Throwable t) {
                 //// FIXME: 13/11/2017 mock
+                if(request.getDataPosition().getLast()!=null){ //// FIXME: 14/11/2017 server should take care of this
+                    return;
+                }
                 for (int i = 0; i < 1000; i++) {
-                    itemsReceiver.onItemArrived(new FakeItem(i,"wal"+i,"descrip"+i,null,null,new FakeImage()));
+                    request.getItemReceiver().onItemArrived(new FakeItem(i,"wal"+i,"descrip"+i,null,null,new FakeImage()));
                 }
             }
         });

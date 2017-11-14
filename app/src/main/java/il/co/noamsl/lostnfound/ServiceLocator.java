@@ -1,6 +1,6 @@
 package il.co.noamsl.lostnfound;
 
-import il.co.noamsl.lostnfound.serverInterface.RepositoryExternal;
+import il.co.noamsl.lostnfound.repository.RepositoryExternal;
 import il.co.noamsl.lostnfound.serverInterface.WebService;
 import il.co.noamsl.lostnfound.serverInterface.real.RepositoryExternalFactory;
 import il.co.noamsl.lostnfound.serverInterface.real.WebServiceImpl;

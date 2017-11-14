@@ -10,7 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import il.co.noamsl.lostnfound.serverInterface.RepositoryExternal;
+import il.co.noamsl.lostnfound.repository.RepositoryExternal;
 import il.co.noamsl.lostnfound.subScreens.itemsFeed.ItemsFeedFragment;
 import il.co.noamsl.lostnfound.subScreens.MainFeedFragment;
 import il.co.noamsl.lostnfound.subScreens.MyItemsFragment;

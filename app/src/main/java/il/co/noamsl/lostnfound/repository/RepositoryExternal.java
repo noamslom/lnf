@@ -1,5 +1,6 @@
-package il.co.noamsl.lostnfound.serverInterface;
+package il.co.noamsl.lostnfound.repository;
 
+import il.co.noamsl.lostnfound.subScreens.itemsFeed.itemsBulk.ItemsBulk;
 import il.co.noamsl.lostnfound.item.FakeItem;
 
 /**

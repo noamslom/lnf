@@ -1,4 +1,4 @@
-package il.co.noamsl.lostnfound.serverInterface;
+package il.co.noamsl.lostnfound.subScreens.itemsFeed.itemsBulk;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,9 +7,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import il.co.noamsl.lostnfound.item.FakeItem;
+import il.co.noamsl.lostnfound.dataTransfer.DataPosition;
+import il.co.noamsl.lostnfound.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.item.LFItem;
 import il.co.noamsl.lostnfound.repository.RepositoryImpl;
+import il.co.noamsl.lostnfound.dataTransfer.Request;
+import il.co.noamsl.lostnfound.dataTransfer.RequestAgent;
 import il.co.noamsl.lostnfound.subScreens.itemsFeed.Loadable;
 
 /**
@@ -18,7 +21,6 @@ import il.co.noamsl.lostnfound.subScreens.itemsFeed.Loadable;
 
 public class ItemsBulk implements Parcelable, ItemReceiver<LFItem> {
     private int mData; //// FIXME: 05/11/2017 delete this
-    private volatile int itemCount = 0;
     private List<LFItem> savedItems;
     private static final int ITEMS_PER_REQUEST = 30;
     private RepositoryImpl repository;
@@ -63,11 +65,11 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LFItem> {
 */
 
     public int getItemCount() {
-        return itemCount;
+        return savedItems.size();
     }
 
     public LFItem get(int position) {
-        if(position>=itemCount)
+        if(position>=savedItems.size())
             return null;
         return savedItems.get(position);
     }
@@ -77,8 +79,14 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LFItem> {
     }
 
     public void requestMoreItems() {
-//        requestAgent.addRequested(ITEMS_PER_REQUEST);
-        repository.requestItems(new Request<LFItem>(this),null);//// FIXME: 13/11/2017 use request agent preferred
+        DataPosition<LFItem> lastItemDataPosition;
+        if(savedItems.size()!=0){
+            lastItemDataPosition = new DataPosition<LFItem>(savedItems.get(savedItems.size()-1));
+        }
+        else{
+            lastItemDataPosition = new DataPosition<>(null);
+        }
+        repository.requestItems(new Request<LFItem>(this,lastItemDataPosition),null);//// FIXME: 13/11/2017 use request agent preferred
 //        if(requester!=null){
 //            requester.setLoaded();
 //        }
@@ -88,7 +96,6 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LFItem> {
     @Override
     public void onItemArrived(LFItem item) {
         savedItems.add(item);
-        itemCount++;
         if(itemReceiver!=null){
             itemReceiver.onItemArrived(item);
         }

@@ -16,8 +16,8 @@ import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.item.FakeItem;
 import il.co.noamsl.lostnfound.item.LFItem;
 import il.co.noamsl.lostnfound.item.NoamImage;
-import il.co.noamsl.lostnfound.serverInterface.ItemReceiver;
-import il.co.noamsl.lostnfound.serverInterface.ItemsBulk;
+import il.co.noamsl.lostnfound.dataTransfer.ItemReceiver;
+import il.co.noamsl.lostnfound.subScreens.itemsFeed.itemsBulk.ItemsBulk;
 import il.co.noamsl.lostnfound.subScreens.PublishedItemActivity;
 
 /**

@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import il.co.noamsl.lostnfound.R;
-import il.co.noamsl.lostnfound.serverInterface.ItemsBulk;
+import il.co.noamsl.lostnfound.subScreens.itemsFeed.itemsBulk.ItemsBulk;
 
 
 /**

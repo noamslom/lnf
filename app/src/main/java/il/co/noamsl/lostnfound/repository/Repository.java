@@ -2,8 +2,8 @@ package il.co.noamsl.lostnfound.repository;
 
 import il.co.noamsl.lostnfound.item.FakeItem;
 import il.co.noamsl.lostnfound.item.LFItem;
-import il.co.noamsl.lostnfound.serverInterface.Request;
-import il.co.noamsl.lostnfound.serverInterface.RequestAgent;
+import il.co.noamsl.lostnfound.dataTransfer.Request;
+import il.co.noamsl.lostnfound.dataTransfer.RequestAgent;
 
 /**
  * Created by noams on 05/11/2017.

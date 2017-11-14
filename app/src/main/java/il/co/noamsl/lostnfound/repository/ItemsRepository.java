@@ -3,9 +3,9 @@ package il.co.noamsl.lostnfound.repository;
 import il.co.noamsl.lostnfound.item.FakeItem;
 import il.co.noamsl.lostnfound.item.LFItem;
 import il.co.noamsl.lostnfound.repository.cache.LFItemsCache;
-import il.co.noamsl.lostnfound.serverInterface.Request;
-import il.co.noamsl.lostnfound.serverInterface.RequestAgent;
-import il.co.noamsl.lostnfound.serverInterface.ItemReceiver;
+import il.co.noamsl.lostnfound.dataTransfer.Request;
+import il.co.noamsl.lostnfound.dataTransfer.RequestAgent;
+import il.co.noamsl.lostnfound.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.serverInterface.WebService;
 
 /**
@@ -29,7 +29,8 @@ class ItemsRepository implements ItemReceiver<FakeItem> {
                 request.getItemReceiver().onItemArrived(itemsCache.getItem(item.getId()));
             }
         }  ;
-        webService.requestItems(itemReceiver,null);
+        webService.requestItems(new Request<LFItem>(itemReceiver,request.getDataPosition()),null);
+
     }
 
     @Override

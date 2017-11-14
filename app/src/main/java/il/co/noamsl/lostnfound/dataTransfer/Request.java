@@ -1,8 +1,6 @@
-package il.co.noamsl.lostnfound.serverInterface;
+package il.co.noamsl.lostnfound.dataTransfer;
 
 import junit.framework.Assert;
-
-import il.co.noamsl.lostnfound.serverInterface.ItemReceiver;
 
 /**
  * Created by noams on 05/11/2017.
@@ -11,10 +9,11 @@ import il.co.noamsl.lostnfound.serverInterface.ItemReceiver;
 public class Request<T> {
     private final ItemReceiver<T> ITEM_RECEIVER;
     private final Integer MAX_ITEMS;
+    private final DataPosition<T> dataPosition;
 
 
-    public Request(ItemReceiver<T> itemReceiver) {
-        this(itemReceiver, null);
+    public Request(ItemReceiver<T> itemReceiver,DataPosition<T> dataPosition) {
+        this(itemReceiver, null,dataPosition);
     }
 
     public ItemReceiver<T> getItemReceiver() {
@@ -30,9 +29,14 @@ public class Request<T> {
      * @param itemReceiver
      * @param maxItems - number of items to request. unlimited if null
      */
-    public Request(ItemReceiver<T> itemReceiver, Integer maxItems) {
+    public Request(ItemReceiver<T> itemReceiver, Integer maxItems,DataPosition<T> dataPosition) {
         Assert.assertEquals(maxItems,null);
         this.ITEM_RECEIVER = itemReceiver;
         this.MAX_ITEMS = maxItems;
+        this.dataPosition = dataPosition;
+    }
+
+    public DataPosition<T> getDataPosition() {
+        return dataPosition;
     }
 }

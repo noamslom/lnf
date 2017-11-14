@@ -2,7 +2,7 @@ package il.co.noamsl.lostnfound.subScreens.itemsFeed;
 
 import android.support.v4.app.Fragment;
 
-import il.co.noamsl.lostnfound.serverInterface.ItemsBulk;
+import il.co.noamsl.lostnfound.subScreens.itemsFeed.itemsBulk.ItemsBulk;
 
 /**
  * Created by noams on 05/11/2017.
