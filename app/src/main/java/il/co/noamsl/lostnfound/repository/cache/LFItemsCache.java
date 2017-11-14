@@ -11,6 +11,10 @@ import il.co.noamsl.lostnfound.item.LFItem;
 public class LFItemsCache {
     private HashMap<Long, LFItem> items;
 
+    public LFItemsCache() {
+        items = new HashMap<>();
+    }
+
     public void add(LFItem item) {
         items.put(item.getId(), item);
     }

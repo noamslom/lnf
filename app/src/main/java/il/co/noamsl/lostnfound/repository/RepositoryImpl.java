@@ -14,12 +14,12 @@ public class RepositoryImpl implements Repository{
     private ItemsRepository itemsRepository;
     private LoggedInUserRepository loggedInUserRepository;
     private SettingsRepository settingsRepository;
-    private WebServiceImpl serverExternal;
+    private WebServiceImpl webService;
     private static RepositoryImpl globalRepository;
 
     public RepositoryImpl() {
-        serverExternal = new WebServiceImpl();
-        itemsRepository = new ItemsRepository();
+        webService = new WebServiceImpl();
+        itemsRepository = new ItemsRepository(webService);
         loggedInUserRepository = new LoggedInUserRepository();
         settingsRepository = new SettingsRepository();
     }
@@ -38,11 +38,11 @@ public class RepositoryImpl implements Repository{
 
     @Override
     public FakeItem getItemById(long itemId) {
-        return serverExternal.getItemById(itemId);
+        return webService.getItemById(itemId);
     }
 
     @Override
     public void addItem(String text) {
-        serverExternal.addItem(text);
+        webService.addItem(text);
     }
 }
