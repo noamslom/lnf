@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import il.co.noamsl.lostnfound.MainActivity;
 import il.co.noamsl.lostnfound.R;
-import il.co.noamsl.lostnfound.item.FakeItem;
+import il.co.noamsl.lostnfound.item.LfItemImpl;
 
 public class PublishedItemActivity extends AppCompatActivity {
 
@@ -30,7 +30,7 @@ public class PublishedItemActivity extends AppCompatActivity {
     }
 
     private void updateFields() {
-        FakeItem displayedItem = MainActivity.getServer().getItemById(itemId);
+        LfItemImpl displayedItem = MainActivity.getServer().getItemById(itemId);
         tvTitle.setText(displayedItem.getTitle());
     }
 }

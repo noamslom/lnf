@@ -2,24 +2,24 @@ package il.co.noamsl.lostnfound.repository.cache;
 
 import java.util.HashMap;
 
-import il.co.noamsl.lostnfound.item.LFItem;
+import il.co.noamsl.lostnfound.item.LfItem;
 
 /**
  * Created by noams on 14/11/2017.
  */
 
 public class LFItemsCache {
-    private HashMap<Long, LFItem> items;
+    private HashMap<Long, LfItem> items;
 
     public LFItemsCache() {
         items = new HashMap<>();
     }
 
-    public void add(LFItem item) {
+    public void add(LfItem item) {
         items.put(item.getId(), item);
     }
 
-    public LFItem getItem(long id) {
+    public LfItem getItem(long id) {
         return items.get(id);
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 import il.co.noamsl.lostnfound.dataTransfer.DataPosition;
 import il.co.noamsl.lostnfound.dataTransfer.ItemReceiver;
-import il.co.noamsl.lostnfound.item.LFItem;
+import il.co.noamsl.lostnfound.item.LfItem;
 import il.co.noamsl.lostnfound.repository.RepositoryImpl;
 import il.co.noamsl.lostnfound.dataTransfer.Request;
 import il.co.noamsl.lostnfound.dataTransfer.RequestAgent;
@@ -19,18 +19,18 @@ import il.co.noamsl.lostnfound.subScreens.itemsFeed.Loadable;
  * Created by noams on 05/11/2017.
  */
 
-public class ItemsBulk implements Parcelable, ItemReceiver<LFItem> {
+public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
     private int mData; //// FIXME: 05/11/2017 delete this
-    private List<LFItem> savedItems;
+    private List<LfItem> savedItems;
     private static final int ITEMS_PER_REQUEST = 30;
     private RepositoryImpl repository;
     private RequestAgent requestAgent;
     private Loadable requester;
-    private ItemReceiver<LFItem> itemReceiver;
+    private ItemReceiver<LfItem> itemReceiver;
 
     public ItemsBulk(RepositoryImpl repository, Loadable requester) {
         this.repository = repository;
-        this.savedItems = Collections.synchronizedList(new ArrayList<LFItem>());
+        this.savedItems = Collections.synchronizedList(new ArrayList<LfItem>());
         requestAgent = new RequestAgent();
         this.requester=requester;
     }
@@ -59,7 +59,7 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LFItem> {
     }
 
 /*
-    public FakeItem get(int position) {
+    public LfItemImpl get(int position) {
         throw new UnsupportedOperationException("Not imp yet");
     }
 */
@@ -68,7 +68,7 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LFItem> {
         return savedItems.size();
     }
 
-    public LFItem get(int position) {
+    public LfItem get(int position) {
         if(position>=savedItems.size())
             return null;
         return savedItems.get(position);
@@ -79,14 +79,14 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LFItem> {
     }
 
     public void requestMoreItems() {
-        DataPosition<LFItem> lastItemDataPosition;
+        DataPosition<LfItem> lastItemDataPosition;
         if(savedItems.size()!=0){
-            lastItemDataPosition = new DataPosition<LFItem>(savedItems.get(savedItems.size()-1));
+            lastItemDataPosition = new DataPosition<LfItem>(savedItems.get(savedItems.size()-1));
         }
         else{
             lastItemDataPosition = new DataPosition<>(null);
         }
-        repository.requestItems(new Request<LFItem>(this,lastItemDataPosition),null);//// FIXME: 13/11/2017 use request agent preferred
+        repository.requestItems(new Request<LfItem>(this,lastItemDataPosition),null);//// FIXME: 13/11/2017 use request agent preferred
 //        if(requester!=null){
 //            requester.setLoaded();
 //        }
@@ -94,7 +94,7 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LFItem> {
     }
 
     @Override
-    public void onItemArrived(LFItem item) {
+    public void onItemArrived(LfItem item) {
         savedItems.add(item);
         if(itemReceiver!=null){
             itemReceiver.onItemArrived(item);

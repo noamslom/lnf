@@ -13,8 +13,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import il.co.noamsl.lostnfound.R;
-import il.co.noamsl.lostnfound.item.FakeItem;
-import il.co.noamsl.lostnfound.item.LFItem;
+import il.co.noamsl.lostnfound.item.LfItemImpl;
+import il.co.noamsl.lostnfound.item.LfItem;
 import il.co.noamsl.lostnfound.item.NoamImage;
 import il.co.noamsl.lostnfound.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.subScreens.itemsFeed.itemsBulk.ItemsBulk;
@@ -25,7 +25,7 @@ import il.co.noamsl.lostnfound.subScreens.PublishedItemActivity;
  */
 
 public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-        implements Loadable, ItemReceiver<FakeItem> {
+        implements Loadable, ItemReceiver<LfItemImpl> {
     private ItemsBulk itemsBulk;
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
@@ -52,7 +52,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
-    public void onItemArrived(FakeItem item) {
+    public void onItemArrived(LfItemImpl item) {
         parentActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -183,7 +183,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         if (holder instanceof ViewHolder) {
-            LFItem itemInPosition = itemsBulk.get(position);
+            LfItem itemInPosition = itemsBulk.get(position);
             ViewHolder myHolder = (ViewHolder) holder;
             myHolder.updateFields(itemInPosition.getMainImage(), "Title: " + itemInPosition.getTitle());
             myHolder.setItemId(itemInPosition.getId());

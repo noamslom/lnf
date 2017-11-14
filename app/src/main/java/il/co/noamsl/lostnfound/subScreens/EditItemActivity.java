@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import il.co.noamsl.lostnfound.MainActivity;
 import il.co.noamsl.lostnfound.R;
+import il.co.noamsl.lostnfound.item.LfItemImpl;
+import il.co.noamsl.lostnfound.serverInterface.fake.FakeImage;
 
 public class EditItemActivity extends AppCompatActivity {
     TextView etTitle;
@@ -22,7 +24,7 @@ public class EditItemActivity extends AppCompatActivity {
 
 
     public void itemSubmitted(View v) {
-        MainActivity.getServer().addItem(etTitle.getText()+"");
+        MainActivity.getServer().addItem(new LfItemImpl(-1, etTitle.getText()+"",null,null,null,new FakeImage(),true));
         this.onBackPressed();
     }
 }

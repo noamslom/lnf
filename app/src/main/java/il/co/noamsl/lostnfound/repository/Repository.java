@@ -1,7 +1,7 @@
 package il.co.noamsl.lostnfound.repository;
 
-import il.co.noamsl.lostnfound.item.FakeItem;
-import il.co.noamsl.lostnfound.item.LFItem;
+import il.co.noamsl.lostnfound.item.LfItemImpl;
+import il.co.noamsl.lostnfound.item.LfItem;
 import il.co.noamsl.lostnfound.dataTransfer.Request;
 import il.co.noamsl.lostnfound.dataTransfer.RequestAgent;
 
@@ -15,10 +15,10 @@ public interface Repository {
      * @param request
      * @param requestAgent
      */
-    void requestItems(final Request<LFItem> request, RequestAgent requestAgent);
+    void requestItems(final Request<LfItem> request, RequestAgent requestAgent);
 
-    FakeItem getItemById(long itemId);
+    LfItemImpl getItemById(long itemId);
 
 
-    void addItem(String text);
+    void addItem(LfItem lfItem);
 }

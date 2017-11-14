@@ -1,7 +1,8 @@
 package il.co.noamsl.lostnfound.repository;
 
+import il.co.noamsl.lostnfound.item.LfItem;
+import il.co.noamsl.lostnfound.item.LfItemImpl;
 import il.co.noamsl.lostnfound.subScreens.itemsFeed.itemsBulk.ItemsBulk;
-import il.co.noamsl.lostnfound.item.FakeItem;
 
 /**
  * Created by noams on 04/08/2017.
@@ -15,7 +16,7 @@ public interface RepositoryExternal {
 
     ItemsBulk getMyItemsItemsBulk();
 
-    FakeItem getItemById(long itemId);
+    LfItemImpl getItemById(long itemId);
 
-    void addItem(String text);
+    void addItem(LfItem lfItem);
 }

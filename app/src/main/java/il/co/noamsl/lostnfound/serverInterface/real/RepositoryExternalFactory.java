@@ -1,6 +1,7 @@
 package il.co.noamsl.lostnfound.serverInterface.real;
 
-import il.co.noamsl.lostnfound.item.FakeItem;
+import il.co.noamsl.lostnfound.item.LfItemImpl;
+import il.co.noamsl.lostnfound.item.LfItem;
 import il.co.noamsl.lostnfound.repository.RepositoryImpl;
 import il.co.noamsl.lostnfound.subScreens.itemsFeed.itemsBulk.ItemsBulk;
 import il.co.noamsl.lostnfound.repository.RepositoryExternal;
@@ -23,13 +24,13 @@ public class RepositoryExternalFactory {
             }
 
             @Override
-            public FakeItem getItemById(long itemId) {
+            public LfItemImpl getItemById(long itemId) {
                 return RepositoryImpl.getGlobal().getItemById(itemId);
             }
 
             @Override
-            public void addItem(String text) {
-                RepositoryImpl.getGlobal().addItem(text);
+            public void addItem(LfItem lfitem) {
+                RepositoryImpl.getGlobal().addItem(lfitem);
             }
         };
     }

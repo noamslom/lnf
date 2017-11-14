@@ -1,7 +1,7 @@
 package il.co.noamsl.lostnfound.repository;
 
-import il.co.noamsl.lostnfound.item.FakeItem;
-import il.co.noamsl.lostnfound.item.LFItem;
+import il.co.noamsl.lostnfound.item.LfItemImpl;
+import il.co.noamsl.lostnfound.item.LfItem;
 import il.co.noamsl.lostnfound.dataTransfer.Request;
 import il.co.noamsl.lostnfound.dataTransfer.RequestAgent;
 import il.co.noamsl.lostnfound.serverInterface.real.WebServiceImpl;
@@ -32,17 +32,17 @@ public class RepositoryImpl implements Repository{
     }
 
     @Override
-    public void requestItems(Request<LFItem> request, RequestAgent requestAgent) {
+    public void requestItems(Request<LfItem> request, RequestAgent requestAgent) {
         itemsRepository.requestItems(request, requestAgent);
     }
 
     @Override
-    public FakeItem getItemById(long itemId) {
+    public LfItemImpl getItemById(long itemId) {
         return webService.getItemById(itemId);
     }
 
     @Override
-    public void addItem(String text) {
-        webService.addItem(text);
+    public void addItem(LfItem lfItem) {
+        webService.addItem(lfItem);
     }
 }
