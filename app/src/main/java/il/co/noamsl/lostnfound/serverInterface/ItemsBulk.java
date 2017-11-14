@@ -8,25 +8,25 @@ import java.util.Collections;
 import java.util.List;
 
 import il.co.noamsl.lostnfound.item.FakeItem;
-import il.co.noamsl.lostnfound.item.RequestAgent;
+import il.co.noamsl.lostnfound.repository.RepositoryImpl;
 import il.co.noamsl.lostnfound.subScreens.itemsFeed.Loadable;
 
 /**
  * Created by noams on 05/11/2017.
  */
 
-public class ItemsBulk implements Parcelable, ItemReceiver {
+public class ItemsBulk implements Parcelable, ItemReceiver<FakeItem> {
     private int mData; //// FIXME: 05/11/2017 delete this
     private volatile int itemCount = 0;
     private List<FakeItem> savedItems;
     private static final int ITEMS_PER_REQUEST = 30;
-    private NoamServerInternal server;
+    private RepositoryImpl repository;
     private RequestAgent requestAgent;
     private Loadable requester;
-    private ItemReceiver itemReceiver;
+    private ItemReceiver<FakeItem> itemReceiver;
 
-    public ItemsBulk(NoamServerInternal server,Loadable requester) {
-        this.server = server;
+    public ItemsBulk(RepositoryImpl repository, Loadable requester) {
+        this.repository = repository;
         this.savedItems = Collections.synchronizedList(new ArrayList<FakeItem>());
         requestAgent = new RequestAgent();
         this.requester=requester;
@@ -77,7 +77,7 @@ public class ItemsBulk implements Parcelable, ItemReceiver {
 
     public void requestMoreItems() {
         requestAgent.addRequested(ITEMS_PER_REQUEST);
-        server.requestItems(this, null);//// FIXME: 13/11/2017 use request agent preferred
+        repository.requestItems(this, null);//// FIXME: 13/11/2017 use request agent preferred
 //        if(requester!=null){
 //            requester.setLoaded();
 //        }

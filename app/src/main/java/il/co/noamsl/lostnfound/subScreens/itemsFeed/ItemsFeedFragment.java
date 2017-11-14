@@ -27,6 +27,7 @@ public class ItemsFeedFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private OnFragmentInteractionListener mListener;
+
     private ItemsBulk itemsBulk;
     public ItemsFeedFragment() {
         // Required empty public constructor

@@ -24,7 +24,7 @@ import il.co.noamsl.lostnfound.subScreens.PublishedItemActivity;
  */
 
 public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-        implements Loadable, ItemReceiver {
+        implements Loadable, ItemReceiver<FakeItem> {
     private ItemsBulk itemsBulk;
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;

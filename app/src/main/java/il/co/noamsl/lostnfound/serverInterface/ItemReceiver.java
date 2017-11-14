@@ -6,6 +6,6 @@ import il.co.noamsl.lostnfound.item.FakeItem;
  * Created by noams on 05/11/2017.
  */
 
-public interface ItemReceiver {
-    void onItemArrived(FakeItem item);
+public interface ItemReceiver<T> {
+    void onItemArrived(T item);
 }

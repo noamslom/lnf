@@ -9,7 +9,7 @@ import il.co.noamsl.lostnfound.eitan.LostTable;
 import il.co.noamsl.lostnfound.eitan.LostTableList;
 import il.co.noamsl.lostnfound.eitan.ServerAPI;
 import il.co.noamsl.lostnfound.item.FakeItem;
-import il.co.noamsl.lostnfound.item.RequestAgent;
+import il.co.noamsl.lostnfound.serverInterface.RequestAgent;
 import il.co.noamsl.lostnfound.serverInterface.ItemReceiver;
 import il.co.noamsl.lostnfound.serverInterface.NoamServerInternal;
 import il.co.noamsl.lostnfound.serverInterface.fake.FakeImage;

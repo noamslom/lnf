@@ -2,6 +2,7 @@ package il.co.noamsl.lostnfound.serverInterface.real;
 
 import il.co.noamsl.lostnfound.ServiceLocator;
 import il.co.noamsl.lostnfound.item.FakeItem;
+import il.co.noamsl.lostnfound.repository.RepositoryImpl;
 import il.co.noamsl.lostnfound.serverInterface.ItemsBulk;
 import il.co.noamsl.lostnfound.serverInterface.NoamRepositoryExternal;
 
@@ -19,17 +20,17 @@ public class RepositoryExternalFactory {
 
             @Override
             public ItemsBulk getMyItemsItemsBulk() {
-                return new ItemsBulk(ServiceLocator.getInternalServer(),null);
+                return new ItemsBulk(RepositoryImpl.getGlobal(),null);
             }
 
             @Override
             public FakeItem getItemById(long itemId) {
-                return ServiceLocator.getInternalServer().getItemById(itemId);
+                return RepositoryImpl.getGlobal().getItemById(itemId);
             }
 
             @Override
             public void addItem(String text) {
-                ServiceLocator.getInternalServer().addItem(text);
+                RepositoryImpl.getGlobal().addItem(text);
             }
         };
     }

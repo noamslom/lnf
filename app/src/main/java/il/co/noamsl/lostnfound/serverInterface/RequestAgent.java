@@ -1,4 +1,4 @@
-package il.co.noamsl.lostnfound.item;
+package il.co.noamsl.lostnfound.serverInterface;
 
 /**
  * Created by noams on 05/11/2017.
