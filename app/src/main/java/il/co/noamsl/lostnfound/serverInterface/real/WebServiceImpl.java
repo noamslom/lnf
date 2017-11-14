@@ -67,7 +67,7 @@ public class WebServiceImpl implements WebService {
                 if(request.getDataPosition().getLast()!=null){ //// FIXME: 14/11/2017 server should take care of this
                     return;
                 }
-                for (int i = 0; i < 1000; i++) {
+                for (int i = 0; i < 100; i++) {
                     request.getItemReceiver().onItemArrived(new LfItemImpl(i,"wal"+i,"descrip"+i,null,null,new FakeImage(),new Random().nextBoolean()));
                 }
 

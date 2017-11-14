@@ -26,6 +26,16 @@ public class FoundTable implements Serializable {
     @Element(required = false)
     private Integer recordid;
 
+    public FoundTable(String name, String description, String location, Integer owner, String picture, Integer recordid, Boolean relevant) {
+        this.name = name;
+        this.description = description;
+        this.location = location;
+        this.owner = owner;
+        this.picture = picture;
+        this.recordid = recordid;
+        this.relevant = relevant;
+    }
+
     @Element(required = false)
     private volatile Boolean relevant;
 

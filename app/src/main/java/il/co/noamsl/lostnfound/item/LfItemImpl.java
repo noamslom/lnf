@@ -54,7 +54,7 @@ public class LfItemImpl implements LfItem {
     @Override
     public FoundTable toFoundTable() {
         //// FIXME: 14/11/2017 change picture from string and dont put null
-        return new FoundTable();
+        return new FoundTable(name,description,location, owner,null,id,relevant);
 
     }
 }
