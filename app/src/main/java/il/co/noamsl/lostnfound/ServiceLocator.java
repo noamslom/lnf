@@ -1,8 +1,8 @@
 package il.co.noamsl.lostnfound;
 
-import il.co.noamsl.lostnfound.serverInterface.NoamServerExternal;
+import il.co.noamsl.lostnfound.serverInterface.NoamRepositoryExternal;
 import il.co.noamsl.lostnfound.serverInterface.NoamServerInternal;
-import il.co.noamsl.lostnfound.serverInterface.real.ServerExternalFactory;
+import il.co.noamsl.lostnfound.serverInterface.real.RepositoryExternalFactory;
 import il.co.noamsl.lostnfound.serverInterface.real.ServerInternal;
 
 /**
@@ -11,7 +11,7 @@ import il.co.noamsl.lostnfound.serverInterface.real.ServerInternal;
 
 public class ServiceLocator {
     private static NoamServerInternal serverInternal=null;
-    private static NoamServerExternal serverExternal = null;
+    private static NoamRepositoryExternal serverExternal = null;
 
     public static NoamServerInternal getInternalServer(){
         if (serverInternal == null) {
@@ -20,9 +20,9 @@ public class ServiceLocator {
         return serverInternal;
     }
 
-    public static NoamServerExternal getExternalServer() {
+    public static NoamRepositoryExternal getExternalServer() {
         if(serverExternal==null){
-            serverExternal = ServerExternalFactory.newInstance();
+            serverExternal = RepositoryExternalFactory.newInstance();
         }
         return serverExternal;
     }

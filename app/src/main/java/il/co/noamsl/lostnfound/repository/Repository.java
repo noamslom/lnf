@@ -5,4 +5,9 @@ package il.co.noamsl.lostnfound.repository;
  */
 
 public class Repository {
+    ItemsRepository itemsRepository;
+    LoggedInUserRepository loggedInUserRepository;
+    SettingsRepository settingsRepository;
+
+
 }

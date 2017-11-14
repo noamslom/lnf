@@ -6,7 +6,7 @@ import il.co.noamsl.lostnfound.item.FakeItem;
  * Created by noams on 04/08/2017.
  */
 
-public interface NoamServerExternal {
+public interface NoamRepositoryExternal {
 
 //    long getID();//?
 

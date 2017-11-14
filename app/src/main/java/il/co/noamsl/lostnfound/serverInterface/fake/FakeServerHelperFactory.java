@@ -2,16 +2,16 @@ package il.co.noamsl.lostnfound.serverInterface.fake;
 
 import il.co.noamsl.lostnfound.item.FakeItem;
 import il.co.noamsl.lostnfound.serverInterface.ItemsBulk;
-import il.co.noamsl.lostnfound.serverInterface.NoamServerExternal;
+import il.co.noamsl.lostnfound.serverInterface.NoamRepositoryExternal;
 
 /**
  * Created by noams on 05/11/2017.
  */
 
 public class FakeServerHelperFactory {
-    public static NoamServerExternal newInstance(){
+    public static NoamRepositoryExternal newInstance(){
         //TODO implement this
-        return new NoamServerExternal() {
+        return new NoamRepositoryExternal() {
             @Override
             public ItemsBulk getAllItemsItemsBulk() {
                return getMyItemsItemsBulk();

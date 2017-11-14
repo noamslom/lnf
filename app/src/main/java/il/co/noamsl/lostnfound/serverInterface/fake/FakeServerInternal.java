@@ -12,11 +12,11 @@ import il.co.noamsl.lostnfound.serverInterface.NoamServerInternal;
 public class FakeServerInternal implements NoamServerInternal {
     private final long PULL_DELAY = 100; //ms
     private static NoamServerInternal server = null;
-    private final ItemsDB itemsDB;
+    private final FakeItemsDB fakeItemsDB;
 
     public FakeServerInternal() {
 
-        itemsDB = new ItemsDB();
+        fakeItemsDB = new FakeItemsDB();
     }
 
     public static NoamServerInternal getGlobalFakeServer() {
@@ -31,7 +31,7 @@ public class FakeServerInternal implements NoamServerInternal {
     public synchronized void requestItems(final ItemReceiver itemsReceiver, final RequestAgent requestAgent) {
         // a potentially  time consuming task
         while (requestAgent.getRequestedLeft() > 0) {
-            FakeItem nextItem = itemsDB.getItem(requestAgent.getNextRequestSerial());
+            FakeItem nextItem = fakeItemsDB.getItem(requestAgent.getNextRequestSerial());
             if (nextItem == null)
                 break;
             itemsReceiver.onItemArrived(nextItem);
@@ -47,11 +47,11 @@ public class FakeServerInternal implements NoamServerInternal {
 
     @Override
     public FakeItem getItemById(long itemId) {
-        return itemsDB.getItemById(itemId);
+        return fakeItemsDB.getItemById(itemId);
     }
 
     @Override
     public void addItem(String text) {
-        itemsDB.addItem(text);
+        fakeItemsDB.addItem(text);
     }
 }

@@ -10,10 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import javax.xml.*;
-
-import il.co.noamsl.lostnfound.serverInterface.NoamServerExternal;
-import il.co.noamsl.lostnfound.serverInterface.fake.FakeServerHelperFactory;
+import il.co.noamsl.lostnfound.serverInterface.NoamRepositoryExternal;
 import il.co.noamsl.lostnfound.subScreens.itemsFeed.ItemsFeedFragment;
 import il.co.noamsl.lostnfound.subScreens.MainFeedFragment;
 import il.co.noamsl.lostnfound.subScreens.MyItemsFragment;
@@ -27,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements
         ItemsFeedFragment.OnFragmentInteractionListener {
     private static Context context_remove; //// FIXME: 05/11/2017
 
-    public static NoamServerExternal getServer() {
+    public static NoamRepositoryExternal getServer() {
         return ServiceLocator.getExternalServer();
     }
 

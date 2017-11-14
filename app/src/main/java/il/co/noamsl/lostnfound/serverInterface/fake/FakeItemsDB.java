@@ -10,10 +10,10 @@ import il.co.noamsl.lostnfound.item.FakeItem;
  * Created by noams on 05/11/2017.
  */
 
-class ItemsDB {
+class FakeItemsDB {
     private List<FakeItem> items;
 
-    public ItemsDB() {
+    public FakeItemsDB() {
         items = Collections.synchronizedList(new ArrayList<FakeItem>());
         for (int i = 0; i < 100; i++) {
             FakeItem item1 = new FakeItem(i,"Wal"+i,"Great Wallet, brown",null,null,new FakeImage());
