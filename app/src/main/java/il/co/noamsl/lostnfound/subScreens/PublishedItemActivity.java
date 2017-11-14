@@ -31,6 +31,6 @@ public class PublishedItemActivity extends AppCompatActivity {
 
     private void updateFields() {
         LfItemImpl displayedItem = MainActivity.getServer().getItemById(itemId);
-        tvTitle.setText(displayedItem.getTitle());
+        tvTitle.setText(displayedItem.getName());
     }
 }

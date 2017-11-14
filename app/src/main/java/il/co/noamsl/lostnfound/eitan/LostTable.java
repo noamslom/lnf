@@ -7,8 +7,10 @@ import org.simpleframework.xml.Root;
 import java.io.Serializable;
 import java.util.List;
 
+import il.co.noamsl.lostnfound.item.WSLfItem;
+
 @Root(strict = false)
-public class LostTable implements Serializable {
+public class LostTable implements Serializable,WSLfItem {
 
     @Element(required = false)
     private String name;
@@ -24,6 +26,16 @@ public class LostTable implements Serializable {
     private Integer recordid;
     @Element(required = false)
     private volatile Boolean relevant;
+
+    public LostTable(String name, String description, String location, Integer owner, String picture, Integer recordid, Boolean relevant) {
+        this.name = name;
+        this.description = description;
+        this.location = location;
+        this.owner = owner;
+        this.picture = picture;
+        this.recordid = recordid;
+        this.relevant = relevant;
+    }
 
     public LostTable() {
     }

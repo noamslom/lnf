@@ -119,11 +119,11 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         this.itemsBulk.setItemReceiver(this);
         initLoadingMechanism(recyclerView);
         initOnLoadMoreListener();
-        fillFirsItems();
+        fillFirstItems();
         this.parentActivity = parent;
     }
 
-    private void fillFirsItems() {
+    private void fillFirstItems() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -185,7 +185,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (holder instanceof ViewHolder) {
             LfItem itemInPosition = itemsBulk.get(position);
             ViewHolder myHolder = (ViewHolder) holder;
-            myHolder.updateFields(itemInPosition.getMainImage(), "Title: " + itemInPosition.getTitle());
+            myHolder.updateFields(itemInPosition.getMainImage(), "Title: " + itemInPosition.getName());
             myHolder.setItemId(itemInPosition.getId());
 
         } else if (holder instanceof LoadingViewHolder) {

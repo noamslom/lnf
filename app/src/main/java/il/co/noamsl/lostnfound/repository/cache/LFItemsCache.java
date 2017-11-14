@@ -9,7 +9,7 @@ import il.co.noamsl.lostnfound.item.LfItem;
  */
 
 public class LFItemsCache {
-    private HashMap<Long, LfItem> items;
+    private HashMap<Integer, LfItem> items;
 
     public LFItemsCache() {
         items = new HashMap<>();

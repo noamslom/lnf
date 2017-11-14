@@ -68,7 +68,7 @@ public class WebServiceImpl implements WebService {
                     return;
                 }
                 for (int i = 0; i < 100; i++) {
-                    request.getItemReceiver().onItemArrived(new LfItemImpl(i,"wal"+i,"descrip"+i,null,null,new FakeImage(),new Random().nextBoolean()));
+                    request.getItemReceiver().onItemArrived(new LfItemImpl(i,"wal"+i,"descrip"+i,null,null,new FakeImage(),new Random().nextBoolean(),true));
                 }
 
             }

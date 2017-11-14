@@ -24,7 +24,7 @@ public class EditItemActivity extends AppCompatActivity {
 
 
     public void itemSubmitted(View v) {
-        MainActivity.getServer().addItem(new LfItemImpl(-1, etTitle.getText()+"",null,null,null,new FakeImage(),true));
+        MainActivity.getServer().addItem(new LfItemImpl(-1, etTitle.getText()+"",null,null,null,new FakeImage(),true,true));
         this.onBackPressed();
     }
 }

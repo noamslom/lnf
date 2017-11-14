@@ -5,8 +5,10 @@ import org.simpleframework.xml.Root;
 
 import java.io.Serializable;
 
+import il.co.noamsl.lostnfound.item.WSLfItem;
+
 @Root(strict = false)
-public class FoundTable implements Serializable {
+public class FoundTable implements Serializable,WSLfItem {
 
     @Element(required = false)
     private String name;
@@ -51,62 +53,77 @@ public class FoundTable implements Serializable {
         this.owner = owner;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
 
+    @Override
     public void setDescription(String description) {
         this.description = description;
     }
 
+    @Override
     public Integer getOwner() {
         return owner;
     }
 
+    @Override
     public void setOwner(Integer owner) {
         this.owner = owner;
     }
 
+    @Override
     public String getPicture() {
         return picture;
     }
 
+    @Override
     public void setPicture(String picture) {
         this.picture = picture;
     }
 
+    @Override
     public Integer getRecordid() {
         return recordid;
     }
 
+    @Override
     public void setRecordid(Integer recordid) {
         this.recordid = recordid;
     }
 
+    @Override
     public String getLocation() {
         return location;
     }
 
+    @Override
     public void setLocation(String location) {
         this.location = location;
     }
 
+    @Override
     public Boolean getRelevant() {
         return relevant;
     }
 
+    @Override
     public void setRelevant(Boolean relevant) {
         this.relevant = relevant;
     }
 
+    @Override
     public String toString() {
         String s = "Found";
         if (this.name != null) s += ", name " + this.name;
