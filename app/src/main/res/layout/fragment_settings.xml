@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="il.co.noamsl.lostnfound.subScreens.SettingsFragment">
+    tools:context="il.co.noamsl.lostnfound.screens.SettingsFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

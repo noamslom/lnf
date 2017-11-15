@@ -1,13 +1,12 @@
 package il.co.noamsl.lostnfound.repository;
 
-import il.co.noamsl.lostnfound.dataTransfer.ItemQuery;
-import il.co.noamsl.lostnfound.item.LfItemImpl;
-import il.co.noamsl.lostnfound.item.LfItem;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemQuery;
+import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.repository.cache.LFItemsCache;
-import il.co.noamsl.lostnfound.dataTransfer.Request;
-import il.co.noamsl.lostnfound.dataTransfer.RequestAgent;
-import il.co.noamsl.lostnfound.dataTransfer.ItemReceiver;
-import il.co.noamsl.lostnfound.serverInterface.WebService;
+import il.co.noamsl.lostnfound.webService.dataTransfer.Request;
+import il.co.noamsl.lostnfound.webService.dataTransfer.RequestAgent;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
+import il.co.noamsl.lostnfound.webService.WebService;
 
 /**
  * Created by noams on 13/11/2017.

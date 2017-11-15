@@ -2,7 +2,7 @@ package il.co.noamsl.lostnfound.repository.cache;
 
 import java.util.HashMap;
 
-import il.co.noamsl.lostnfound.item.LfItem;
+import il.co.noamsl.lostnfound.repository.item.LfItem;
 
 /**
  * Created by noams on 14/11/2017.

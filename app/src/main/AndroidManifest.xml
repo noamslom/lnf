@@ -19,8 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".subScreens.EditItemActivity" />
-        <activity android:name=".subScreens.PublishedItemActivity" />
+        <activity android:name=".screens.EditItemActivity" />
+        <activity android:name=".screens.PublishedItemActivity" />
     </application>
 
 </manifest>

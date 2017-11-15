@@ -1,22 +1,40 @@
 package il.co.noamsl.lostnfound.repository;
 
-import il.co.noamsl.lostnfound.item.LfItemImpl;
-import il.co.noamsl.lostnfound.item.LfItem;
-import il.co.noamsl.lostnfound.dataTransfer.Request;
-import il.co.noamsl.lostnfound.dataTransfer.RequestAgent;
+import il.co.noamsl.lostnfound.repository.item.LfItem;
+import il.co.noamsl.lostnfound.webService.dataTransfer.Request;
+import il.co.noamsl.lostnfound.webService.dataTransfer.RequestAgent;
+import il.co.noamsl.lostnfound.webService.WebService;
 
 /**
- * Created by noams on 05/11/2017.
+ * Created by noams on 13/11/2017.
  */
 
-public interface Repository {
-    /**
-     * Assumed to be synchronized
-     * @param request
-     * @param requestAgent
-     */
-    void requestItems(final Request<LfItem> request, RequestAgent requestAgent);
+public class Repository {
+    private ItemsRepository itemsRepository;
+    private LoggedInUserRepository loggedInUserRepository;
+    private SettingsRepository settingsRepository;
+    private WebService webService;
+    private static Repository globalRepository;
 
+    public Repository() {
+        webService = new WebService();
+        itemsRepository = new ItemsRepository(webService);
+        loggedInUserRepository = new LoggedInUserRepository();
+        settingsRepository = new SettingsRepository();
+    }
 
-    void addItem(LfItem lfItem);
+    public static Repository getGlobal() {
+        if (globalRepository == null) {
+            globalRepository = new Repository();
+        }
+        return globalRepository;
+    }
+
+    public void requestItems(Request<LfItem> request, RequestAgent requestAgent) {
+        itemsRepository.requestItems(request, requestAgent);
+    }
+
+    public void addItem(LfItem lfItem) {
+        webService.addItem(lfItem);
+    }
 }

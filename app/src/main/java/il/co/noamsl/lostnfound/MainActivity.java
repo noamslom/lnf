@@ -11,15 +11,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
-import il.co.noamsl.lostnfound.eitan.Users;
-import il.co.noamsl.lostnfound.item.LfItemImpl;
+import il.co.noamsl.lostnfound.webService.eitan.Users;
+import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.repository.RepositoryExternal;
-import il.co.noamsl.lostnfound.serverInterface.WebService;
-import il.co.noamsl.lostnfound.serverInterface.WebServiceImpl;
-import il.co.noamsl.lostnfound.subScreens.itemsFeed.ItemsFeedFragment;
-import il.co.noamsl.lostnfound.subScreens.MainFeedFragment;
-import il.co.noamsl.lostnfound.subScreens.MyItemsFragment;
-import il.co.noamsl.lostnfound.subScreens.SettingsFragment;
+import il.co.noamsl.lostnfound.webService.WebService;
+import il.co.noamsl.lostnfound.screens.itemsFeed.ItemsFeedFragment;
+import il.co.noamsl.lostnfound.screens.MainFeedFragment;
+import il.co.noamsl.lostnfound.screens.MyItemsFragment;
+import il.co.noamsl.lostnfound.screens.SettingsFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -106,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements
 
     //// FIXME: 15/11/2017 remove
     private static void doBullshit() {
-        WebServiceImpl.API.user_create(new Users("Noam","a@b.com","050-1234567","Modi",3)).enqueue(new Callback<Integer>() {
+        WebService.API.user_create(new Users("Noam","a@b.com","050-1234567","Modi",3)).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 Log.d("serverd","User create s"+response.body());
@@ -117,8 +116,8 @@ public class MainActivity extends AppCompatActivity implements
                 Log.d("serverd", "User create f" + t);
             }
         });
-        WebService ws = new WebServiceImpl();
-        ws.updateItem(new LfItemImpl(4,"wal","new one","new loc",3,"pic",true,false));
+        WebService ws = new WebService();
+        ws.updateItem(new LfItem(4,"wal","new one","new loc",3,"pic",true,false));
 
     }
 

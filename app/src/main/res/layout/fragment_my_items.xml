@@ -4,7 +4,7 @@
     android:id="@+id/fl_feed_containter"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="il.co.noamsl.lostnfound.subScreens.MyItemsFragment">
+    tools:context="il.co.noamsl.lostnfound.screens.MyItemsFragment">
 
     <!-- TODO: Update blank fragment layout -->
 

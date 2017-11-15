@@ -1,8 +1,7 @@
 package il.co.noamsl.lostnfound.repository;
 
-import il.co.noamsl.lostnfound.item.LfItem;
-import il.co.noamsl.lostnfound.item.LfItemImpl;
-import il.co.noamsl.lostnfound.subScreens.itemsFeed.itemsBulk.ItemsBulk;
+import il.co.noamsl.lostnfound.repository.item.LfItem;
+import il.co.noamsl.lostnfound.screens.itemsFeed.itemsBulk.ItemsBulk;
 
 /**
  * Created by noams on 04/08/2017.
