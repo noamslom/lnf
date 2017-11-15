@@ -1,4 +1,6 @@
-package il.co.noamsl.lostnfound.serverInterface.real;
+package il.co.noamsl.lostnfound.serverInterface;
+
+import android.util.Log;
 
 import org.simpleframework.xml.convert.AnnotationStrategy;
 import org.simpleframework.xml.core.Persister;
@@ -34,7 +36,8 @@ public class WebServiceImpl implements WebService {
 
     // order at which converters are added matters!
     // Scalar converter should be added first.
-    private static final ServerAPI API = new Retrofit.Builder()
+    //// FIXME: 15/11/2017 change to private
+    public static final ServerAPI API = new Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(new OkHttpClient())
             .addConverterFactory(ScalarsConverterFactory.create())
@@ -55,8 +58,10 @@ public class WebServiceImpl implements WebService {
             public void onResponse(Call<LostTableList> call, Response<LostTableList> response) {
                 if (response.isSuccessful()) {
                     List<LostTable> lst = response.body().getLostTables();
+                    if(lst==null)
+                        return;
                     for (LostTable l : lst) {
-                        System.out.println(l.toString());
+                        Log.d("serverd",l.toString());
                     }
                 }
             }
@@ -64,13 +69,15 @@ public class WebServiceImpl implements WebService {
             @Override
             public void onFailure(Call<LostTableList> call, Throwable t) {
                 //// FIXME: 13/11/2017 mock
+
                 if(request.getDataPosition().getLast()!=null){ //// FIXME: 14/11/2017 server should take care of this
                     return;
                 }
                 for (int i = 0; i < 100; i++) {
-                    request.getItemReceiver().onItemArrived(new LfItemImpl(i,"wal"+i,"descrip"+i,null,null,new FakeImage(),new Random().nextBoolean(),true));
-                }
 
+                    request.getItemReceiver().onItemArrived(
+                            new LfItemImpl(i, "wal" + i, "descrip" + i, null, null, null, new Random().nextBoolean(), true));
+                }
             }
         });
 
@@ -85,10 +92,24 @@ public class WebServiceImpl implements WebService {
     @Override
     public void addItem(LfItem lfItem) {
         if(lfItem.isAFound()) {
-            API.found_create(lfItem.toFoundTable());
+            Call<Integer> integerCall = API.found_create(lfItem.toFoundTable());
+            Log.d("serverd", "found created call: "+integerCall+" Item "+lfItem);
+
         }
         else if(lfItem.isALost()){
-            //// TODO: 14/11/2017
+            Log.d("serverd", "lost create");
+
+            API.lost_create(lfItem.toLostTable()).enqueue(new Callback<Integer>() {
+                @Override
+                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                    Log.d("serverd","message"+response.message()+"body"+response.raw());
+                }
+
+                @Override
+                public void onFailure(Call<Integer> call, Throwable t) {
+                    Log.d("serverd","create failed",t);
+                }
+            });
         }
         else{
             throw new RuntimeException("LfItem must be a lost or a found");

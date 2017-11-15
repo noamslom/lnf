@@ -2,6 +2,7 @@ package il.co.noamsl.lostnfound.subScreens.itemsFeed.itemsBulk;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,19 +21,22 @@ import il.co.noamsl.lostnfound.subScreens.itemsFeed.Loadable;
  */
 
 public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
+    private int tempItemsCount=0;
     private int mData; //// FIXME: 05/11/2017 delete this
-    private List<LfItem> savedItems;
+    private List<LfItem> savedItems; //sync
     private static final int ITEMS_PER_REQUEST = 30;
     private RepositoryImpl repository;
     private RequestAgent requestAgent;
     private Loadable requester;
     private ItemReceiver<LfItem> itemReceiver;
+    private int itemsCount;
 
     public ItemsBulk(RepositoryImpl repository, Loadable requester) {
         this.repository = repository;
         this.savedItems = Collections.synchronizedList(new ArrayList<LfItem>());
         requestAgent = new RequestAgent();
         this.requester=requester;
+        this.itemsCount=0;
     }
 
     public int describeContents() {
@@ -65,11 +69,11 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
 */
 
     public int getItemCount() {
-        return savedItems.size();
+        return itemsCount;
     }
 
     public LfItem get(int position) {
-        if(position>=savedItems.size())
+        if(position>=itemsCount)
             return null;
         return savedItems.get(position);
     }
@@ -96,6 +100,8 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
     @Override
     public void onItemArrived(LfItem item) {
         savedItems.add(item);
+        Log.d("noamd", "itum bulk added" + itemsCount);
+        itemsCount++;
         if(itemReceiver!=null){
             itemReceiver.onItemArrived(item);
         }
@@ -104,5 +110,15 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
 
     public void setItemReceiver(ItemReceiver itemReceiver) {
         this.itemReceiver = itemReceiver;
+    }
+
+    public void temporarilyEmptyList() {
+        if(itemsCount==0)
+            return;
+        tempItemsCount = itemsCount;
+    }
+
+    public void restoreList() {
+        itemsCount= tempItemsCount;
     }
 }

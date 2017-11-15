@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import il.co.noamsl.lostnfound.MainActivity;
 import il.co.noamsl.lostnfound.R;
@@ -42,7 +41,7 @@ public class MainFeedFragment extends Fragment {
         if (savedInstanceState != null) {
             return;
         }
-        itemFeed = new ItemFeed(this,R.id.main_feed_fl_feed_containter, MainActivity.getServer().getAllItemsItemsBulk());
+        itemFeed = new ItemFeed(this,R.id.main_feed_fl_feed_containter, MainActivity.getExternalRepository().getAllItemsItemsBulk());
 
     }
 

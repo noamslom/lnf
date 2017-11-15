@@ -9,17 +9,17 @@ import il.co.noamsl.lostnfound.item.LfItem;
  */
 
 public class LFItemsCache {
-    private HashMap<Integer, LfItem> items;
+    private HashMap<String, LfItem> items;
 
     public LFItemsCache() {
         items = new HashMap<>();
     }
 
     public void add(LfItem item) {
-        items.put(item.getId(), item);
+        items.put(item.getId()+"", item);
     }
 
-    public LfItem getItem(long id) {
+    public LfItem getItem(String id) {
         return items.get(id);
     }
 }

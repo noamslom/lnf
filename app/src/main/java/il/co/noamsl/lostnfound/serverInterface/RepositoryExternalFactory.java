@@ -1,4 +1,4 @@
-package il.co.noamsl.lostnfound.serverInterface.real;
+package il.co.noamsl.lostnfound.serverInterface;
 
 import il.co.noamsl.lostnfound.item.LfItemImpl;
 import il.co.noamsl.lostnfound.item.LfItem;

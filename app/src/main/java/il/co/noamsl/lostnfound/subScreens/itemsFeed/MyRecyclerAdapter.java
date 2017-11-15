@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.item.LfItemImpl;
 import il.co.noamsl.lostnfound.item.LfItem;
@@ -31,9 +33,10 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private final int VIEW_TYPE_LOADING = 1;
     private OnLoadMoreListener onLoadMoreListener;
     private int lastVisibleItem, totalItemCount;
-    private boolean isLoading;
+    private boolean isLoading; //careful! should be set only using setter otherwise causing lack of persistence
     private final int VISIBLE_THRESHOLD = 20;
     private final Activity parentActivity;
+    private RecyclerView recyclerView;
 
     private void initOnLoadMoreListener( ) {
         this.onLoadMoreListener = new OnLoadMoreListener() {
@@ -52,13 +55,29 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView = recyclerView;
+    }
+
+    @Override
     public void onItemArrived(LfItemImpl item) {
+        myNotifyChange();
+    }
+
+    private void setIsLoading(boolean isLoading) {
+        this.isLoading = isLoading;
+//        myNotifyChange();
+    }
+
+    private void myNotifyChange() {
         parentActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 notifyDataSetChanged(); //// FIXME: 05/11/2017 not efficient
             }
         });
+
     }
 
     // Provide a reference to the views for each data item
@@ -148,7 +167,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     if (onLoadMoreListener != null) {
                         onLoadMoreListener.onLoadMore();
                     }
-                    isLoading = true;
+                    setIsLoading(true);
                 }
             }
         });
@@ -199,11 +218,15 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return itemsBulk.getItemCount(); //fixme
+        Log.d("noamd", "getItemCount: "+itemsBulk.getItemCount());
+//// FIXME: 15/11/2017 careful
+        //fixme danger(with threads no persistence)
+        return isLoading? itemsBulk.getItemCount()+1: itemsBulk.getItemCount();
+//        return itemsBulk.getItemCount()+1;
     }
 
     public void setLoaded() {
-        isLoading = false;
+        setIsLoading(false);
     }
 
 }

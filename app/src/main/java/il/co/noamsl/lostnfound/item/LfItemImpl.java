@@ -10,7 +10,7 @@ import il.co.noamsl.lostnfound.serverInterface.fake.FakeImage;
 
 public class LfItemImpl implements LfItem {
     private WSLfItem wsLfItem;
-
+    private NoamImage fakeImage;
     public String getName() {
         return wsLfItem.getName();
     }
@@ -45,7 +45,10 @@ public class LfItemImpl implements LfItem {
 
     @Override
     public NoamImage getMainImage() {
-        return new FakeImage(); //// FIXME: 14/11/2017  server need to fix
+        if (fakeImage == null) {
+            fakeImage = new FakeImage();
+        }
+        return fakeImage; //// FIXME: 14/11/2017  server need to fix
     }
 
     @Override
@@ -88,9 +91,9 @@ public class LfItemImpl implements LfItem {
         return wsLfItem.toString();
     }
 
-    public LfItemImpl(int id, String name, String description, String location, Integer owner, NoamImage picture, boolean relevant, boolean isAFound) {
+    public LfItemImpl(int id, String name, String description, String location, Integer owner, String picture, boolean relevant, boolean isAFound) {
         if (isAFound) {
-            wsLfItem = new FoundTable(name, description, location, owner, null,id,relevant) ;
+            wsLfItem = new FoundTable(name, description, location, owner, picture,id,relevant) ;
             // FIXME: 14/11/2017 change from null , picture shouldnt be string in server
         }
         else {

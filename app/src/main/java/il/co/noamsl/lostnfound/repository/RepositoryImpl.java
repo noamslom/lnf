@@ -4,7 +4,7 @@ import il.co.noamsl.lostnfound.item.LfItemImpl;
 import il.co.noamsl.lostnfound.item.LfItem;
 import il.co.noamsl.lostnfound.dataTransfer.Request;
 import il.co.noamsl.lostnfound.dataTransfer.RequestAgent;
-import il.co.noamsl.lostnfound.serverInterface.real.WebServiceImpl;
+import il.co.noamsl.lostnfound.serverInterface.WebServiceImpl;
 
 /**
  * Created by noams on 13/11/2017.

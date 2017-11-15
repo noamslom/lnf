@@ -26,7 +26,7 @@ class ItemsRepository implements ItemReceiver<LfItemImpl> {
             @Override
             public void onItemArrived(LfItem item) {
                 itemsCache.add(item);
-                request.getItemReceiver().onItemArrived(itemsCache.getItem(item.getId()));
+                request.getItemReceiver().onItemArrived(itemsCache.getItem(item.getId()+""));
             }
         }  ;
         webService.requestItems(new Request<LfItem>(itemReceiver,request.getDataPosition()),null);

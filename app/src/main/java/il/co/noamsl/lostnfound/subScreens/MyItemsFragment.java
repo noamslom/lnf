@@ -33,7 +33,7 @@ public class MyItemsFragment extends Fragment {
         if (savedInstanceState != null) {
             return;
         }
-        itemFeed = new ItemFeed(this,R.id.fl_feed_containter, MainActivity.getServer().getMyItemsItemsBulk());
+        itemFeed = new ItemFeed(this,R.id.fl_feed_containter, MainActivity.getExternalRepository().getMyItemsItemsBulk());
 
     }
 
