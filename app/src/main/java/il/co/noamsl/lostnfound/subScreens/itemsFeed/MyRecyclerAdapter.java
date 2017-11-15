@@ -62,6 +62,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onItemArrived(LfItemImpl item) {
+        if(item==null){
+            MyRecyclerAdapter.this.setIsLoading(false);
+        }
         myNotifyChange();
     }
 
@@ -146,6 +149,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         new Thread(new Runnable() {
             @Override
             public void run() {
+                MyRecyclerAdapter.this.setIsLoading(true);
                 itemsBulk.requestMoreItems();
 
             }
@@ -165,9 +169,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
                 if (!isLoading && totalItemCount <= (lastVisibleItem + VISIBLE_THRESHOLD)) {
                     if (onLoadMoreListener != null) {
+                        setIsLoading(true);
                         onLoadMoreListener.onLoadMore();
                     }
-                    setIsLoading(true);
                 }
             }
         });

@@ -12,7 +12,7 @@ import il.co.noamsl.lostnfound.serverInterface.WebService;
  * Created by noams on 13/11/2017.
  */
 
-class ItemsRepository implements ItemReceiver<LfItemImpl> {
+class ItemsRepository {
     private LFItemsCache itemsCache;
     private WebService webService;
 
@@ -25,16 +25,17 @@ class ItemsRepository implements ItemReceiver<LfItemImpl> {
         ItemReceiver<LfItem> itemReceiver = new ItemReceiver<LfItem>() {
             @Override
             public void onItemArrived(LfItem item) {
-                itemsCache.add(item);
-                request.getItemReceiver().onItemArrived(itemsCache.getItem(item.getId()+""));
+                if (item != null) {
+                    itemsCache.add(item);
+                    request.getItemReceiver().onItemArrived(itemsCache.getItem(item.getId()+""));
+                }
+                else {
+                    request.getItemReceiver().onItemArrived(null);
+                }
             }
         }  ;
         webService.requestItems(new Request<LfItem>(itemReceiver,request.getDataPosition()),null);
 
     }
 
-    @Override
-    public void onItemArrived(LfItemImpl item) {
-
-    }
 }

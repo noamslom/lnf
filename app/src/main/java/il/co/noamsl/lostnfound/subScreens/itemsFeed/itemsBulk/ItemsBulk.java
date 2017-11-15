@@ -99,6 +99,12 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
 
     @Override
     public void onItemArrived(LfItem item) {
+        if (item == null) {
+            if(itemReceiver!=null){
+                itemReceiver.onItemArrived(item);
+            }
+            return;
+        }
         savedItems.add(item);
         Log.d("noamd", "itum bulk added" + itemsCount);
         itemsCount++;

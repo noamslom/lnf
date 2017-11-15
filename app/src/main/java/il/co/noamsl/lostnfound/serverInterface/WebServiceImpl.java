@@ -78,6 +78,7 @@ public class WebServiceImpl implements WebService {
                     request.getItemReceiver().onItemArrived(
                             new LfItemImpl(i, "wal" + i, "descrip" + i, null, null, null, new Random().nextBoolean(), true));
                 }
+                request.getItemReceiver().onItemArrived(null);
             }
         });
 
