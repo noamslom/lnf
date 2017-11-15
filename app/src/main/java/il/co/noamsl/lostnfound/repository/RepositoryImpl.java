@@ -37,11 +37,6 @@ public class RepositoryImpl implements Repository{
     }
 
     @Override
-    public LfItemImpl getItemById(long itemId) {
-        return webService.getItemById(itemId);
-    }
-
-    @Override
     public void addItem(LfItem lfItem) {
         webService.addItem(lfItem);
     }

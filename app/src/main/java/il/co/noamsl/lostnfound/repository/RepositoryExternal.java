@@ -15,8 +15,6 @@ public interface RepositoryExternal {
     ItemsBulk getAllItemsItemsBulk();
 
     ItemsBulk getMyItemsItemsBulk();
-
-    LfItemImpl getItemById(long itemId);
-
+    
     void addItem(LfItem lfItem);
 }

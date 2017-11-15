@@ -24,11 +24,6 @@ public class RepositoryExternalFactory {
             }
 
             @Override
-            public LfItemImpl getItemById(long itemId) {
-                return RepositoryImpl.getGlobal().getItemById(itemId);
-            }
-
-            @Override
             public void addItem(LfItem lfitem) {
                 RepositoryImpl.getGlobal().addItem(lfitem);
             }

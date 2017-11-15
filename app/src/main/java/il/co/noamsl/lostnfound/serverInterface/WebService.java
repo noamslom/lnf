@@ -1,5 +1,6 @@
 package il.co.noamsl.lostnfound.serverInterface;
 
+import il.co.noamsl.lostnfound.dataTransfer.ItemQuery;
 import il.co.noamsl.lostnfound.dataTransfer.Request;
 import il.co.noamsl.lostnfound.dataTransfer.RequestAgent;
 import il.co.noamsl.lostnfound.item.LfItemImpl;
@@ -10,14 +11,11 @@ import il.co.noamsl.lostnfound.item.LfItem;
  */
 
 public interface WebService {
-    /**
-     * Assumed to be synchronized
-     * @param requestAgent
-     */
-    void requestItems(final Request<LfItem> request, RequestAgent requestAgent);
 
-    LfItemImpl getItemById(long itemId);
 
+    void requestItems(Request<LfItem> request, RequestAgent requestAgent, ItemQuery query);
 
     void addItem(LfItem lfItem);
+
+    void updateItem(LfItem lfItem);
 }

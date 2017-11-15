@@ -30,7 +30,8 @@ public class PublishedItemActivity extends AppCompatActivity {
     }
 
     private void updateFields() {
-        LfItemImpl displayedItem = MainActivity.getExternalRepository().getItemById(itemId);
-        tvTitle.setText(displayedItem.getName());
+//        LfItemImpl displayedItem = MainActivity.getExternalRepository().getItemById(itemId);
+//        tvTitle.setText(displayedItem.getName());
+        //// TODO: 15/11/2017
     }
 }

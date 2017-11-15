@@ -11,6 +11,11 @@ import il.co.noamsl.lostnfound.serverInterface.fake.FakeImage;
 public class LfItemImpl implements LfItem {
     private WSLfItem wsLfItem;
     private NoamImage fakeImage;
+
+    public LfItemImpl(LostTable l) {
+        wsLfItem=l;
+    }
+
     public String getName() {
         return wsLfItem.getName();
     }

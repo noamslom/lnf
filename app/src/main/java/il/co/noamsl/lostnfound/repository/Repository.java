@@ -17,8 +17,6 @@ public interface Repository {
      */
     void requestItems(final Request<LfItem> request, RequestAgent requestAgent);
 
-    LfItemImpl getItemById(long itemId);
-
 
     void addItem(LfItem lfItem);
 }

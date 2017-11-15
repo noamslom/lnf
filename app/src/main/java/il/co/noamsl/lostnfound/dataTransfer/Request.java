@@ -11,7 +11,6 @@ public class Request<T> {
     private final Integer MAX_ITEMS;
     private final DataPosition<T> dataPosition;
 
-
     public Request(ItemReceiver<T> itemReceiver,DataPosition<T> dataPosition) {
         this(itemReceiver, null,dataPosition);
     }

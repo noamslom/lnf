@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import il.co.noamsl.lostnfound.eitan.Users;
+import il.co.noamsl.lostnfound.item.LfItemImpl;
 import il.co.noamsl.lostnfound.repository.RepositoryExternal;
 import il.co.noamsl.lostnfound.serverInterface.WebService;
 import il.co.noamsl.lostnfound.serverInterface.WebServiceImpl;
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         //// FIXME: 15/11/2017 remove this
         doBullshit();
 
@@ -115,6 +117,9 @@ public class MainActivity extends AppCompatActivity implements
                 Log.d("serverd", "User create f" + t);
             }
         });
+        WebService ws = new WebServiceImpl();
+        ws.updateItem(new LfItemImpl(4,"wal","new one","new loc",3,"pic",true,false));
+
     }
 
     private void initFragment(Bundle savedInstanceState) {

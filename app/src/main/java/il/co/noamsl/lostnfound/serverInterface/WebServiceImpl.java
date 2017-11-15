@@ -8,6 +8,7 @@ import org.simpleframework.xml.core.Persister;
 import java.util.List;
 import java.util.Random;
 
+import il.co.noamsl.lostnfound.dataTransfer.ItemQuery;
 import il.co.noamsl.lostnfound.dataTransfer.Request;
 import il.co.noamsl.lostnfound.eitan.LostTable;
 import il.co.noamsl.lostnfound.eitan.LostTableList;
@@ -49,45 +50,58 @@ public class WebServiceImpl implements WebService {
             .build().create(ServerAPI.class);
 
     @Override
-    public void requestItems(final Request<LfItem> request, RequestAgent requestAgent) {
+    public void requestItems(final Request<LfItem> request, RequestAgent requestAgent, ItemQuery query) {
         if (requestAgent != null) {
             throw new UnsupportedOperationException("Not imp yet");
         }
-        API.lost_queryItems("wallet", null, null).enqueue(new Callback<LostTableList>() {
-            @Override
-            public void onResponse(Call<LostTableList> call, Response<LostTableList> response) {
-                if (response.isSuccessful()) {
-                    List<LostTable> lst = response.body().getLostTables();
-                    if(lst==null)
-                        return;
-                    for (LostTable l : lst) {
-                        Log.d("serverd",l.toString());
+        if(request.getDataPosition().getLast()!=null){ //// FIXME: 14/11/2017 server should take care of this
+            return;
+        }
+
+        if (query.isAFound()) {
+            //TODO
+        }
+        else{
+            API.lost_queryItems("wal", null, null).enqueue(new Callback<LostTableList>() {
+                @Override
+                public void onResponse(Call<LostTableList> call, Response<LostTableList> response) {
+                    Log.d("serverd", "responded"+ response.toString());
+                    if (response.isSuccessful()) {
+                        if(request.getDataPosition().getLast()!=null){ //// FIXME: 14/11/2017 server should take care of this
+                            return;
+                        }
+
+                        List<LostTable> lst = response.body().getLostTables();
+
+                        if(lst==null)
+                            return;
+                        for (LostTable l : lst) {
+                            Log.d("serverd",l.toString());
+                            request.getItemReceiver().onItemArrived(new LfItemImpl(l));
+                        }
+                        request.getItemReceiver().onItemArrived(null);
+
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<LostTableList> call, Throwable t) {
-                //// FIXME: 13/11/2017 mock
+                @Override
+                public void onFailure(Call<LostTableList> call, Throwable t) {
+                    //// FIXME: 13/11/2017 mock
 
-                if(request.getDataPosition().getLast()!=null){ //// FIXME: 14/11/2017 server should take care of this
-                    return;
+                    if(request.getDataPosition().getLast()!=null){ //// FIXME: 14/11/2017 server should take care of this
+                        return;
+                    }
+                    for (int i = 0; i < 100; i++) {
+
+                        request.getItemReceiver().onItemArrived(
+                                new LfItemImpl(i, "wal" + i, "descrip" + i, null, null, null, new Random().nextBoolean(), true));
+                    }
+                    request.getItemReceiver().onItemArrived(null);
                 }
-                for (int i = 0; i < 100; i++) {
+            });
 
-                    request.getItemReceiver().onItemArrived(
-                            new LfItemImpl(i, "wal" + i, "descrip" + i, null, null, null, new Random().nextBoolean(), true));
-                }
-                request.getItemReceiver().onItemArrived(null);
-            }
-        });
+        }
 
-
-    }
-
-    @Override
-    public LfItemImpl getItemById(long itemId) {
-        return null;
     }
 
     @Override
@@ -116,4 +130,38 @@ public class WebServiceImpl implements WebService {
             throw new RuntimeException("LfItem must be a lost or a found");
         }
     }
+
+    @Override
+    public void updateItem(LfItem lfItem){
+        if(lfItem.isALost()) {
+            API.lost_edit(lfItem.toLostTable()).enqueue(new Callback<Integer>() {
+                @Override
+                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                    Log.d("serverd", "onResponse" + response.raw() + "");
+                    Log.d("serverd", "onResponse" + response.body() + "");
+                }
+
+                @Override
+                public void onFailure(Call<Integer> call, Throwable t) {
+
+                }
+            });
+        }
+        if(lfItem.isAFound()){
+            API.found_edit(lfItem.toFoundTable()).enqueue(new Callback<Integer>() {
+                @Override
+                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                    Log.d("serverd", "onResponse" + response.raw() + "");
+                    Log.d("serverd", "onResponse" + response.body() + "");
+
+                }
+
+                @Override
+                public void onFailure(Call<Integer> call, Throwable t) {
+
+                }
+            });
+        }
+    }
+
 }
