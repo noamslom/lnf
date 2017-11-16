@@ -3,6 +3,7 @@ package il.co.noamsl.lostnfound.screens.itemsFeed;
 import android.support.v4.app.Fragment;
 
 import il.co.noamsl.lostnfound.screens.itemsFeed.itemsBulk.ItemsBulk;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 
 /**
  * Created by noams on 05/11/2017.
@@ -25,5 +26,8 @@ public class ItemFeed {
                 .add(container, itemsFeedFragment).commit();
     }
 
+    public void filter(ItemsQuery itemsQuery) {
+        itemsFeedFragment.filter(itemsQuery);
+    }
 }
 

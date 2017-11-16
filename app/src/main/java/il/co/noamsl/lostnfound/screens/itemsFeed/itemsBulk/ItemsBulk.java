@@ -12,6 +12,7 @@ import il.co.noamsl.lostnfound.webService.dataTransfer.DataPosition;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.repository.Repository;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 import il.co.noamsl.lostnfound.webService.dataTransfer.Request;
 import il.co.noamsl.lostnfound.webService.dataTransfer.RequestAgent;
 import il.co.noamsl.lostnfound.screens.itemsFeed.Loadable;
@@ -29,7 +30,8 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
     private RequestAgent requestAgent;
     private Loadable requester;
     private ItemReceiver<LfItem> itemReceiver;
-    private int itemsCount;
+//    private int itemsCount;
+    private ItemsQuery currentFilter;
 
     public ItemsBulk(Repository repository, Loadable requester) {
         this.repository = repository;
@@ -126,5 +128,9 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
 
     public void restoreList() {
         itemsCount= tempItemsCount;
+    }
+
+    public void filter(ItemsQuery filter) {
+        currentFilter = filter;
     }
 }

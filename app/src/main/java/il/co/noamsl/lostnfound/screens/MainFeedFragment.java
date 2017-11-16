@@ -11,10 +11,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
+import android.widget.ToggleButton;
 
 import il.co.noamsl.lostnfound.MainActivity;
 import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.screens.itemsFeed.ItemFeed;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 
 
 /**
@@ -25,8 +28,13 @@ import il.co.noamsl.lostnfound.screens.itemsFeed.ItemFeed;
  */
 public class MainFeedFragment extends Fragment {
     private static final String TAG = "MainFeedFragment";
+    private static final boolean FOUND_TOGGLE_VALUE = false;
     private OnFragmentInteractionListener mListener;
     private ItemFeed itemFeed ;
+    private SearchView svFilter;
+    private ToggleButton tgbLostOrFound;
+
+
     private FloatingActionButton fabNewItem;
     public MainFeedFragment() {
         // Required empty public constructor
@@ -70,12 +78,10 @@ public class MainFeedFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate: savedInstanceState = " + savedInstanceState);
-
         if (savedInstanceState != null) {
             return;
         }
         itemFeed = new ItemFeed(this,R.id.main_feed_fl_feed_containter, MainActivity.getExternalRepository().getAllItemsItemsBulk());
-
     }
 
     @Override
@@ -90,6 +96,31 @@ public class MainFeedFragment extends Fragment {
             }
         });
 
+        svFilter = (SearchView) getActivity().findViewById(R.id.main_feed_sv_filter);
+        svFilter.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d(TAG, "onQueryTextChange: newText = " + newText);
+                filter();
+                return false;
+            }
+        });
+        tgbLostOrFound = (ToggleButton) getActivity().findViewById(R.id.toggleButton);
+
+
+    }
+
+    private void filter() {
+        itemFeed.filter(new ItemsQuery(svFilter.getQuery()+"", svFilter.getQuery()+"",null,isToggleButtonAFound()));
+    }
+
+    private boolean isToggleButtonAFound() {
+        return tgbLostOrFound.isChecked() == FOUND_TOGGLE_VALUE;
     }
 
     @Override

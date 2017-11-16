@@ -9,7 +9,7 @@ import org.simpleframework.xml.core.Persister;
 import java.util.List;
 import java.util.Random;
 
-import il.co.noamsl.lostnfound.webService.dataTransfer.ItemQuery;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 import il.co.noamsl.lostnfound.webService.dataTransfer.Request;
 import il.co.noamsl.lostnfound.webService.eitan.LostTable;
 import il.co.noamsl.lostnfound.webService.eitan.LostTableList;
@@ -48,7 +48,7 @@ public class WebService {
             .build().create(ServerAPI.class);
 
 
-    public void requestItems(final Request<LfItem> request, RequestAgent requestAgent, ItemQuery query) {
+    public void requestItems(final Request<LfItem> request, RequestAgent requestAgent, ItemsQuery query) {
         if (requestAgent != null) {
             throw new UnsupportedOperationException("Not imp yet");
         }
@@ -64,7 +64,7 @@ public class WebService {
                     for (int i = 0; i < 10; i++) {
 
                         request.getItemReceiver().onItemArrived(
-                                new LfItem(i, "wal" + i, "descrip" + i, null, null, null, new Random().nextBoolean(), true));
+                                new LfItem(i, "wallet tekjke" + i, "descrip" + i, null, null, null, new Random().nextBoolean(), true));
                     }
                     request.getItemReceiver().onItemArrived(null);
                 }

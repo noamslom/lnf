@@ -20,6 +20,7 @@ import il.co.noamsl.lostnfound.repository.item.NoamImage;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.screens.itemsFeed.itemsBulk.ItemsBulk;
 import il.co.noamsl.lostnfound.screens.PublishedItemActivity;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 
 /**
  * Created by noams on 03/11/2017.
@@ -103,16 +104,21 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return isLoading;
     }
 
+    public void filter(ItemsQuery filter) {
+        itemsBulk.filter(filter);
+        fillFirstItems();
+    }
+
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ItemViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public ImageView itemImage;
         public TextView itemTitle;
         private Long itemId = null;
 
-        public ViewHolder(final View itemView, final Activity parent) {
+        public ItemViewHolder(final View itemView, final Activity parent) {
             super(itemView);
             itemImage = (ImageView) itemView.findViewById(R.id.item_image);
             itemTitle = (TextView) itemView.findViewById(R.id.item_title);
@@ -219,7 +225,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (viewType == VIEW_TYPE_ITEM) {
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_card_layout, parent, false); //careful
-            return new ViewHolder(v, parentActivity.getValue());
+            return new ItemViewHolder(v, parentActivity.getValue());
         } else if (viewType == VIEW_TYPE_LOADING) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loading, parent, false);
             return new LoadingViewHolder(view);
@@ -233,10 +239,10 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        if (holder instanceof ViewHolder) {
+        if (holder instanceof ItemViewHolder) {
             LfItem itemInPosition = itemsBulk.get(position);
-            ViewHolder myHolder = (ViewHolder) holder;
-            myHolder.updateFields(itemInPosition.getMainImage(), "Title: " + itemInPosition.getName());
+            ItemViewHolder myHolder = (ItemViewHolder) holder;
+            myHolder.updateFields(itemInPosition.getMainImage(), itemInPosition.getName());
             myHolder.setItemId(itemInPosition.getId());
 
         } else if (holder instanceof LoadingViewHolder) {

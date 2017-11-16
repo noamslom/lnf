@@ -12,8 +12,10 @@ import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
 
 public class EditItemActivity extends AppCompatActivity {
-    TextView etTitle;
-    ToggleButton tgbLostOrFound;
+    private TextView etTitle;
+    private ToggleButton tgbLostOrFound;
+    private static final boolean FOUND_TOGGLE_VALUE = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,13 +30,17 @@ public class EditItemActivity extends AppCompatActivity {
         String name = etTitle.getText() + "";
         String picture = "pic";
 
-        boolean checked = tgbLostOrFound.isChecked();
+        boolean isAFound = isToggleButtonAFound();
         boolean relevant = true;
         Integer owner = 3/*null*/;
 
         String location = "My House"/*null*/;
         String description = "Cool thing i swear" /*null*/;
-        MainActivity.getExternalRepository().addItem(new LfItem(3, name, description, location, owner, picture, relevant, checked));
+        MainActivity.getExternalRepository().addItem(new LfItem(3, name, description, location, owner, picture, relevant, isAFound));
         this.onBackPressed();
+    }
+
+    private boolean isToggleButtonAFound() {
+        return tgbLostOrFound.isChecked() == FOUND_TOGGLE_VALUE;
     }
 }

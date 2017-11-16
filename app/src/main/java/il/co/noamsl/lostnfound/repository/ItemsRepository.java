@@ -1,6 +1,6 @@
 package il.co.noamsl.lostnfound.repository;
 
-import il.co.noamsl.lostnfound.webService.dataTransfer.ItemQuery;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.repository.cache.LFItemsCache;
 import il.co.noamsl.lostnfound.webService.dataTransfer.Request;
@@ -34,7 +34,7 @@ class ItemsRepository {
                 }
             }
         }  ;
-        webService.requestItems(new Request<LfItem>(itemReceiver,request.getDataPosition()),null,new ItemQuery("wal",null,null,false));
+        webService.requestItems(new Request<LfItem>(itemReceiver,request.getDataPosition()),null,new ItemsQuery("wal",null,null,false));
 
     }
 

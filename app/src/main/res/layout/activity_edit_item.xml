@@ -30,8 +30,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="ToggleButton"
-            android:textOff="I Lost"
-            android:textOn="I Found" />
+            android:textOff="I Found"
+            android:textOn="I Lost" />
 
         <TableLayout
             android:layout_width="match_parent"

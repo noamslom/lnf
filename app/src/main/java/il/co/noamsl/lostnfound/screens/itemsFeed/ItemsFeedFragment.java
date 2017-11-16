@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 
 import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.screens.itemsFeed.itemsBulk.ItemsBulk;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 
 
 /**
@@ -29,7 +30,7 @@ public class ItemsFeedFragment extends Fragment {
 
     private static final String ARG_ITEMS_BULK = "itemsBulk";
     private RecyclerView mRecyclerView;
-    private LiveData<RecyclerView.Adapter> mAdapter; //fixme
+    private MyRecyclerAdapter mAdapter; //fixme
     private RecyclerView.LayoutManager mLayoutManager;
     private OnFragmentInteractionListener mListener;
 
@@ -84,12 +85,9 @@ public class ItemsFeedFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        MutableLiveData<RecyclerView.Adapter> adapter = new MutableLiveData<RecyclerView.Adapter>();
-        adapter.setValue(new MyRecyclerAdapter(itemsBulk,mRecyclerView,getActivity()));
-
         // specify an adapter (see also next example)
-        mAdapter = adapter;
-        mRecyclerView.setAdapter(mAdapter.getValue());
+        mAdapter = new MyRecyclerAdapter(itemsBulk,mRecyclerView,getActivity());
+        mRecyclerView.setAdapter(mAdapter);
 
     }
 
@@ -132,6 +130,10 @@ public class ItemsFeedFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public void filter(ItemsQuery filter) {
+        mAdapter.filter(filter);
     }
 
     /**
