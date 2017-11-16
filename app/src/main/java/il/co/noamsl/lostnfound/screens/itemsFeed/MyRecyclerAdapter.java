@@ -15,8 +15,10 @@ import android.widget.TextView;
 
 import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.Util;
+import il.co.noamsl.lostnfound.repository.external.itemsBulk.MyItemsItemsBulk;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.repository.item.NoamImage;
+import il.co.noamsl.lostnfound.screens.EditItemActivity;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.repository.external.itemsBulk.ItemsBulk;
 import il.co.noamsl.lostnfound.screens.PublishedItemActivity;
@@ -118,19 +120,27 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public ImageView itemImage;
         public TextView itemTitle;
         private Integer itemId = null;
-
-        public ItemViewHolder(final View itemView, final Activity parent) {
+        private boolean isMyItem;
+        public ItemViewHolder(final View itemView, final Activity parent, final boolean isMyItem) {
             super(itemView);
+            this.isMyItem = isMyItem;
+
             itemImage = (ImageView) itemView.findViewById(R.id.item_image);
             itemTitle = (TextView) itemView.findViewById(R.id.item_title);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = getAdapterPosition();
-
-                    Intent intent = new Intent(parent, PublishedItemActivity.class);
-                    intent.putExtra(PublishedItemActivity.ARG_ITEM_ID, itemId);
-                    parent.startActivity(intent);
+                    if(isMyItem){
+                        Intent intent = new Intent(parent, EditItemActivity.class);
+                        intent.putExtra(EditItemActivity.ARG_ITEM_ID, itemId);
+                        intent.putExtra(EditItemActivity.ARG_MODE, EditItemActivity.Mode.EDIT.ordinal());
+                        parent.startActivity(intent);
+                    }
+                    else{
+                        Intent intent = new Intent(parent, PublishedItemActivity.class);
+                        intent.putExtra(PublishedItemActivity.ARG_ITEM_ID, itemId);
+                        parent.startActivity(intent);
+                    }
 
 /*
                     Snackbar.make(v, "Click detected on item " + position,
@@ -226,7 +236,8 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (viewType == VIEW_TYPE_ITEM) {
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_card_layout, parent, false); //careful
-            return new ItemViewHolder(v, parentActivity.getValue());
+            //fixme not ideal to use instanceof here, not modular
+            return new ItemViewHolder(v, parentActivity.getValue(),itemsBulk instanceof MyItemsItemsBulk);
         } else if (viewType == VIEW_TYPE_LOADING) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loading, parent, false);
             return new LoadingViewHolder(view);

@@ -16,6 +16,8 @@ import il.co.noamsl.lostnfound.repository.Repository;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
 
 public class EditItemActivity extends AppCompatActivity {
+    public static final String ARG_ITEM_ID = "itemId";
+
     public enum Mode {EDIT, ADD}
     public static final String ARG_MODE ="MODE";
     private static final boolean FOUND_TOGGLE_VALUE = false;
@@ -33,12 +35,32 @@ public class EditItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_item);
         int modeInt = getIntent().getExtras().getInt(ARG_MODE,-1);
         MODE = Mode.values()[modeInt];
-
         etTitle = (EditText) findViewById(R.id.edit_item_et_title);
         etDescription = (TextView) findViewById(R.id.edit_item_et_description);
         etLocation = (TextView) findViewById(R.id.edit_item_et_adress);
         cbRelevant = (CheckBox) findViewById(R.id.edit_item_cb_relevant);
         tgbLostOrFound = (ToggleButton) findViewById(R.id.editItem_toggleButton_lostOrFound);
+
+        switch (MODE) {
+            case EDIT:
+                restoreFields();
+                break;
+            case ADD:
+                break;
+            default:
+                throw new IllegalStateException("mode must be edit or add");
+        }
+    }
+
+    private void restoreFields() {
+        Integer itemId = getIntent().getExtras().getInt(ARG_ITEM_ID,-1);
+        LfItem item = Repository.getGlobal().getItemById(itemId);
+        etTitle.setText(item.getName());
+        etDescription.setText(item.getDescription());
+        etLocation.setText(item.getLocation());
+        cbRelevant.setChecked(item.getRelevant());
+
+        tgbLostOrFound.setChecked(item.isAFound()? FOUND_TOGGLE_VALUE : !FOUND_TOGGLE_VALUE);
     }
 
 
