@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import il.co.noamsl.lostnfound.screens.itemsFeed.ItemFeed;
  * to handle interaction events.
  */
 public class MainFeedFragment extends Fragment {
+    private static final String TAG = "MainFeedFragment";
     private OnFragmentInteractionListener mListener;
     private ItemFeed itemFeed ;
     private FloatingActionButton fabNewItem;
@@ -35,9 +37,40 @@ public class MainFeedFragment extends Fragment {
         Intent intent = new Intent(getContext(),EditItemActivity.class);
         startActivity(intent);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: ");
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: ");
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: ");
+
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: savedInstanceState = " + savedInstanceState);
+
         if (savedInstanceState != null) {
             return;
         }

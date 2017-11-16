@@ -1,5 +1,6 @@
 package il.co.noamsl.lostnfound.webService;
 
+import android.os.Handler;
 import android.util.Log;
 
 import org.simpleframework.xml.convert.AnnotationStrategy;
@@ -51,29 +52,44 @@ public class WebService {
         if (requestAgent != null) {
             throw new UnsupportedOperationException("Not imp yet");
         }
-        if(request.getDataPosition().getLast()!=null){ //// FIXME: 14/11/2017 server should take care of this
-           request.getItemReceiver().onItemArrived(null);
+        if (request.getDataPosition().getLast() != null) { //// FIXME: 14/11/2017 server should take care of this
+            request.getItemReceiver().onItemArrived(null);
+            return;
+        }
+        //// FIXME: 16/11/2017 delete this, just for faster testings
+        {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    for (int i = 0; i < 10; i++) {
+
+                        request.getItemReceiver().onItemArrived(
+                                new LfItem(i, "wal" + i, "descrip" + i, null, null, null, new Random().nextBoolean(), true));
+                    }
+                    request.getItemReceiver().onItemArrived(null);
+                }
+            }, 1000);
+            if(true) return;
         }
 
         if (query.isAFound()) {
             //TODO
-        }
-        else{
+        } else {
             API.lost_queryItems("wal", null, null).enqueue(new Callback<LostTableList>() {
                 @Override
                 public void onResponse(Call<LostTableList> call, Response<LostTableList> response) {
-                    Log.d("serverd", "responded"+ response.toString());
+                    Log.d("serverd", "responded" + response.toString());
                     if (response.isSuccessful()) {
-                        if(request.getDataPosition().getLast()!=null){ //// FIXME: 14/11/2017 server should take care of this
+                        if (request.getDataPosition().getLast() != null) { //// FIXME: 14/11/2017 server should take care of this
                             return;
                         }
 
                         List<LostTable> lst = response.body().getLostTables();
 
-                        if(lst==null)
+                        if (lst == null)
                             return;
                         for (LostTable l : lst) {
-                            Log.d("serverd",l.toString());
+                            Log.d("serverd", l.toString());
                             request.getItemReceiver().onItemArrived(new LfItem(l));
                         }
                         request.getItemReceiver().onItemArrived(null);
@@ -85,10 +101,10 @@ public class WebService {
                 public void onFailure(Call<LostTableList> call, Throwable t) {
                     //// FIXME: 13/11/2017 mock
 
-                    if(request.getDataPosition().getLast()!=null){ //// FIXME: 14/11/2017 server should take care of this
+                    if (request.getDataPosition().getLast() != null) { //// FIXME: 14/11/2017 server should take care of this
                         return;
                     }
-                    for (int i = 0; i < 100; i++) {
+                    for (int i = 0; i < 10; i++) {
 
                         request.getItemReceiver().onItemArrived(
                                 new LfItem(i, "wal" + i, "descrip" + i, null, null, null, new Random().nextBoolean(), true));
@@ -102,33 +118,31 @@ public class WebService {
     }
 
     public void addItem(LfItem lfItem) {
-        if(lfItem.isAFound()) {
+        if (lfItem.isAFound()) {
             Call<Integer> integerCall = API.found_create(lfItem.toFoundTable());
-            Log.d("serverd", "found created call: "+integerCall+" Item "+lfItem);
+            Log.d("serverd", "found created call: " + integerCall + " Item " + lfItem);
 
-        }
-        else if(lfItem.isALost()){
+        } else if (lfItem.isALost()) {
             Log.d("serverd", "lost create");
 
             API.lost_create(lfItem.toLostTable()).enqueue(new Callback<Integer>() {
                 @Override
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
-                    Log.d("serverd","message"+response.message()+"body"+response.raw());
+                    Log.d("serverd", "message" + response.message() + "body" + response.raw());
                 }
 
                 @Override
                 public void onFailure(Call<Integer> call, Throwable t) {
-                    Log.d("serverd","create failed",t);
+                    Log.d("serverd", "create failed", t);
                 }
             });
-        }
-        else{
+        } else {
             throw new RuntimeException("LfItem must be a lost or a found");
         }
     }
 
-    public void updateItem(LfItem lfItem){
-        if(lfItem.isALost()) {
+    public void updateItem(LfItem lfItem) {
+        if (lfItem.isALost()) {
             API.lost_edit(lfItem.toLostTable()).enqueue(new Callback<Integer>() {
                 @Override
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -142,7 +156,7 @@ public class WebService {
                 }
             });
         }
-        if(lfItem.isAFound()){
+        if (lfItem.isAFound()) {
             API.found_edit(lfItem.toFoundTable()).enqueue(new Callback<Integer>() {
                 @Override
                 public void onResponse(Call<Integer> call, Response<Integer> response) {

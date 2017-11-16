@@ -50,4 +50,5 @@ dependencies {
 //    compile 'javax.xml.bind:jaxb-api:2.2.4'
     compile 'com.google.android.gms:play-services-auth:11.0.4'
     testCompile 'junit:junit:4.12'
+    compile "android.arch.lifecycle:extensions:1.0.0"
 }

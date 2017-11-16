@@ -1,5 +1,7 @@
 package il.co.noamsl.lostnfound.screens.itemsFeed;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +25,11 @@ import il.co.noamsl.lostnfound.screens.itemsFeed.itemsBulk.ItemsBulk;
  * to handle interaction events.
  */
 public class ItemsFeedFragment extends Fragment {
+    private static final String TAG = "ItemsFeedFragment";
+
     private static final String ARG_ITEMS_BULK = "itemsBulk";
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private LiveData<RecyclerView.Adapter> mAdapter; //fixme
     private RecyclerView.LayoutManager mLayoutManager;
     private OnFragmentInteractionListener mListener;
 
@@ -34,11 +39,41 @@ public class ItemsFeedFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: ");
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: ");
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: ");
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if(savedInstanceState!=null){//careful
+            Log.d(TAG, "onViewCreated: savedInstanceState = " + savedInstanceState);
             return;
         }
+
         mRecyclerView = (RecyclerView) getView().findViewById(R.id.rv_my_items);
 
         // use this setting to improve performance if you know that changes
@@ -49,9 +84,12 @@ public class ItemsFeedFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        MutableLiveData<RecyclerView.Adapter> adapter = new MutableLiveData<RecyclerView.Adapter>();
+        adapter.setValue(new MyRecyclerAdapter(itemsBulk,mRecyclerView,getActivity()));
+
         // specify an adapter (see also next example)
-        mAdapter = new MyRecyclerAdapter(itemsBulk,mRecyclerView,getActivity());
-        mRecyclerView.setAdapter(mAdapter);
+        mAdapter = adapter;
+        mRecyclerView.setAdapter(mAdapter.getValue());
 
     }
 
