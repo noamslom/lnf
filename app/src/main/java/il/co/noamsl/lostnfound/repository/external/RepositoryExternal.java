@@ -36,4 +36,12 @@ public class RepositoryExternal {
     public void updateItem(LfItem newItem) {
         Repository.getGlobal().updateItem(newItem);
     }
+
+    public void updateUser(User user) {
+        Repository.getGlobal().updateUser(user);
+    }
+
+    public User getLoggedInUser() {
+        return Repository.getGlobal().getLoggedInUser();
+    }
 }

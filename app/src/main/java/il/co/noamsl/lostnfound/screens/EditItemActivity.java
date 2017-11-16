@@ -80,8 +80,8 @@ public class EditItemActivity extends AppCompatActivity {
                 ServiceLocator.getExternalRepository().updateItem(newItem);
             break;
         }
-        this.onBackPressed();
         Toast.makeText(getApplicationContext(), "Submit Successful!", Toast.LENGTH_SHORT).show();
+        this.onBackPressed();
     }
 
     private Integer getOwner() {

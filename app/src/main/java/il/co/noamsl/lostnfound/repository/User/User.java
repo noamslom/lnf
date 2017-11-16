@@ -1,5 +1,7 @@
 package il.co.noamsl.lostnfound.repository.User;
 
+import java.io.Serializable;
+
 import il.co.noamsl.lostnfound.repository.cache.Cacheable;
 import il.co.noamsl.lostnfound.webService.eitan.Users;
 
@@ -7,7 +9,7 @@ import il.co.noamsl.lostnfound.webService.eitan.Users;
  * Created by noams on 16/11/2017.
  */
 
-public class User implements Cacheable {
+public class User implements Cacheable,Serializable {
     private Users wsUser;
 
     public User(Users wsUser) {

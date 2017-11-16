@@ -13,7 +13,7 @@ import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 public class LoggedInUserRepository {
     private static final String TAG = "LoggedInUserRepository";
     private final WebService webService;
-    private User loggedInUser;
+    private User loggedInUser = null;
 
     public LoggedInUserRepository(WebService webService) {
         this.webService = webService;
@@ -23,15 +23,31 @@ public class LoggedInUserRepository {
         return loggedInUser.getUserid();
     }
 
-    public void setLoggedInUser(final ItemReceiver<User> itemReceiver, int userId) {
-        webService.getUserById(new ItemReceiver<User>() {
+    public void setLoggedInUser(final ItemReceiver<User> itemReceiver, String credential) {
+        webService.getUserByCredential(new ItemReceiver<User>() {
             @Override
             public void onItemArrived(User user) {
-                loggedInUser = user;
-                Log.d(TAG, "onItemArrived: user = " + user);
+                if (user != null) {
+                    loggedInUser = user;
+                }
                 itemReceiver.onItemArrived(user);
             }
-        }, userId);
+        }, credential);
     }
 
+    public User getUser() {
+        return loggedInUser;
+    }
+
+    public void update(User user) {
+        webService.updateUser(new ItemReceiver<User>() {
+            @Override
+            public void onItemArrived(User user) {
+                if (user != null) {
+                    loggedInUser = user;
+                }
+            }
+        }, user);
+
+    }
 }

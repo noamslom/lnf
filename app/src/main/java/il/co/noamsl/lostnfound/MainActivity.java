@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -42,12 +43,16 @@ public class MainActivity extends AppCompatActivity implements
     private MyItemsFragment myItemsFragment = null;
     private MainFeedFragment mainFeedFragment = null;
     private SettingsFragment settingsFragment = null;
+    private BottomNavigationView navigation;
+    private boolean navigationListening = true;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            if(!navigationListening)
+                return true;
             switch (item.getItemId()) {
                 case R.id.navigation_feed:
                     setFragmentToMainFeed();
@@ -96,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements
         //// FIXME: 15/11/2017 remove this
         doBullshit();
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 
@@ -107,23 +112,55 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        updateNavigatorPosition();
+    }
+
+    private void updateNavigatorPosition() {
+        Fragment currentFragment = getCurrentFragment();
+        int id;
+
+        if (currentFragment instanceof MainFeedFragment) {
+            id = R.id.navigation_feed;
+        } else if (currentFragment instanceof MyItemsFragment) {
+            id = R.id.navigation_my_items;
+        } else if (currentFragment instanceof SettingsFragment) {
+            id = R.id.navigation_settings;
+        } else {
+            throw new IllegalStateException("fragment should be 1 of three main,my items,settings");
+        }
+        setNavigationListening(false);
+        navigation.setSelectedItemId(id);
+        setNavigationListening(true);
+
+
+    }
+
+    public Fragment getCurrentFragment() {
+        return getSupportFragmentManager().findFragmentById(R.id.frame_layout_fragment_container);
+    }
+
     //// FIXME: 15/11/2017 remove
     private static void doBullshit() {
+/*
         Repository.getGlobal().setLoggedInUserId(new ItemReceiver<User>() {
             @Override
             public void onItemArrived(User item) {
 
             }
         },777);
+*/
         try {
             Thread.sleep(300);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        WebService.API.user_create(new Users("Noam","a@b.com","050-1234567","Modi",3)).enqueue(new Callback<Integer>() {
+        WebService.API.user_create(new Users("Noam", "a@b.com", "050-1234567", "Modi", 3)).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
-                Log.d("serverd","User create s"+response.body());
+                Log.d("serverd", "User create s" + response.body());
             }
 
             @Override
@@ -138,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements
                 Log.d(TAG, "onItemArrived: item = " + item);
 
             }
-        },new LfItem(4,"wal","new one","new loc",3,"pic",true,false));
+        }, new LfItem(4, "wal", "new one", "new loc", 3, "pic", true, false));
 
     }
 
@@ -172,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements
         // Commit the transaction
         transaction.commit();
 
+
     }
 
 
@@ -182,5 +220,9 @@ public class MainActivity extends AppCompatActivity implements
 
     public static Context getContextRemoveThisMethod() {
         return context_remove;
+    }
+
+    public void setNavigationListening(boolean navigationListening) {
+        this.navigationListening = navigationListening;
     }
 }

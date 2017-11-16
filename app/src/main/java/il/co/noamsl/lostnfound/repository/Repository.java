@@ -60,11 +60,23 @@ public class Repository {
         return loggedInUserRepository.getLoggedInUserId();
     }
 
-    public void setLoggedInUserId(ItemReceiver<User> itemReceiver,int userId) {
-        loggedInUserRepository.setLoggedInUser(itemReceiver,userId);
+    public void setLoggedInUserId(ItemReceiver<User> itemReceiver,String credential) {
+        loggedInUserRepository.setLoggedInUser(itemReceiver,credential);
     }
 
     public void updateItem(LfItem newItem) {
         itemsRepository.updateItem(newItem);
+    }
+
+    public User getLoggedInUser() {
+        return loggedInUserRepository.getUser();
+    }
+
+    public void updateUser(User user) {
+        if(user.getUserid()==getLoggedInUserId()){
+            loggedInUserRepository.update(user);
+        } else {
+            throw new IllegalStateException("only able to change logged in user");
+        }
     }
 }

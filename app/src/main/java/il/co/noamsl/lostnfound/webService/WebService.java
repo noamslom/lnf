@@ -86,7 +86,7 @@ public class WebService {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    for (int i = 0; i < 10; i++) {
+                    for (int i = 0; i < 20; i++) {
 
                         request.getItemReceiver().onItemArrived(
                                 new LfItem(i, "wallet tekjke" + i, "descrip" + i, "here", 5, "pic", new Random().nextBoolean(), true));
@@ -209,4 +209,12 @@ public class WebService {
         itemReceiver.onItemArrived(new User(new Users("Noam", "noam@gmail.com", "050-3331234", "Modi", userId)));
     }
 
+    public void getUserByCredential(ItemReceiver<User> itemReceiver, String credential) {
+        itemReceiver.onItemArrived(new User(new Users("Noam", credential, "050-3331234", "Modi", 666)));
+    }
+
+    public void updateUser(ItemReceiver<User> itemReceiver, User user) {
+        //// TODO: 17/11/2017 imp
+        itemReceiver.onItemArrived(user);
+    }
 }
