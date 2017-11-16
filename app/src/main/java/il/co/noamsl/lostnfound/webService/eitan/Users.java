@@ -82,6 +82,10 @@ public class Users implements Serializable {
         return EMAIL_REGEX.matcher(this.email).matches();
     }
 
+    public static boolean validateEmail(String email) {
+        return EMAIL_REGEX.matcher(email).matches();
+    }
+
     public String toString() {
         String s = "User";
         if (this.name != null) s += ", name " + this.name;
