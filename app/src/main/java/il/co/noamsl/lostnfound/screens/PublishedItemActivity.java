@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.ServiceLocator;
-import il.co.noamsl.lostnfound.repository.RepositoryExternal;
+import il.co.noamsl.lostnfound.repository.external.RepositoryExternal;
 import il.co.noamsl.lostnfound.repository.User.User;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;

@@ -18,7 +18,7 @@ import il.co.noamsl.lostnfound.Util;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.repository.item.NoamImage;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
-import il.co.noamsl.lostnfound.screens.itemsFeed.itemsBulk.ItemsBulk;
+import il.co.noamsl.lostnfound.repository.external.itemsBulk.ItemsBulk;
 import il.co.noamsl.lostnfound.screens.PublishedItemActivity;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 

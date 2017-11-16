@@ -23,7 +23,9 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp">
+        android:layout_marginRight="8dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintVertical_bias="0.0">
 
         <ToggleButton
             android:id="@+id/editItem_toggleButton_lostOrFound"
@@ -54,6 +56,7 @@
                     android:ems="10"
                     android:hint="Name"
                     android:inputType="textPersonName" />
+
             </TableRow>
 
             <TableRow
@@ -67,7 +70,7 @@
                     android:text="Desc." />
 
                 <EditText
-                    android:id="@+id/editText_description"
+                    android:id="@+id/edit_item_et_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -87,7 +90,7 @@
                     android:text="Place" />
 
                 <EditText
-                    android:id="@+id/editText_adress"
+                    android:id="@+id/edit_item_et_adress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -97,6 +100,18 @@
             </TableRow>
 
         </TableLayout>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <CheckBox
+                android:id="@+id/edit_item_cb_relevant"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="relevant" />
+        </TableRow>
 
         <Button
             android:id="@+id/button_submit"

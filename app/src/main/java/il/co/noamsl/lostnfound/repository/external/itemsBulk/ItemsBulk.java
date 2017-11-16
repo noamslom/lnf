@@ -1,4 +1,4 @@
-package il.co.noamsl.lostnfound.screens.itemsFeed.itemsBulk;
+package il.co.noamsl.lostnfound.repository.external.itemsBulk;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -22,13 +22,13 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
     private int tempItemsCount=0;
     private int mData; //// FIXME: 05/11/2017 delete this
     private static final int ITEMS_PER_REQUEST = 30;
-    private Repository repository;
+    protected Repository repository;
     private RequestAgent requestAgent;
     private Loadable requester;
     private ItemReceiver<LfItem> itemReceiver;
 //    private int itemsCount;
-    private ItemsQuery currentFilter;
-    private ItemsBulkStorage storage;
+protected ItemsQuery currentFilter;
+    protected ItemsBulkStorage storage;
 
     public ItemsBulk(Repository repository, Loadable requester) {
         this.repository = repository;
@@ -91,7 +91,7 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
         else{
             lastItemDataPosition = new DataPosition<>(null);
         }
-        repository.requestItems(new Request<LfItem>(this,lastItemDataPosition),null);//// FIXME: 13/11/2017 use request agent preferred
+        repository.requestItems(new Request<LfItem>(this,lastItemDataPosition,currentFilter),null);//// FIXME: 13/11/2017 use request agent preferred
 //        if(requester!=null){
 //            requester.setLoaded();
 //        }

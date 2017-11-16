@@ -4,12 +4,17 @@ package il.co.noamsl.lostnfound.webService.dataTransfer;
  * Created by noams on 15/11/2017.
  */
 
-public class ItemsQuery {
+public class ItemsQuery implements Query{
     private final String name;
     private final String description;
     private final String location;
     private final Boolean isAFound;
 
+    public Integer getOwner() {
+        return owner;
+    }
+
+    private final Integer owner;
     public String getName() {
         return name;
     }
@@ -58,11 +63,15 @@ public class ItemsQuery {
     }
 
     public ItemsQuery(String name, String description, String location, Boolean isAFound) {
+        this(name, description, location, isAFound, null);
+    }
 
+    public ItemsQuery(String name, String description, String location, Boolean isAFound, Integer owner) {
         this.name = name;
         this.description = description;
         this.location = location;
         this.isAFound = isAFound;
+        this.owner = owner;
     }
 
     public Boolean isAFound() {

@@ -43,6 +43,7 @@ public class MainFeedFragment extends Fragment {
     public void newItem(){
 //        Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getContext(),EditItemActivity.class);
+        intent.putExtra(EditItemActivity.ARG_MODE, EditItemActivity.Mode.ADD.ordinal());
         startActivity(intent);
     }
 

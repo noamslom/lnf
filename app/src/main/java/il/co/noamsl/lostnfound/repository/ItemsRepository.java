@@ -34,11 +34,21 @@ class ItemsRepository {
                 }
             }
         }  ;
-        webService.requestItems(new Request<LfItem>(itemReceiver,request.getDataPosition()),null,new ItemsQuery("wal",null,null,false));
+        webService.requestItems(new Request<LfItem>(itemReceiver,request.getDataPosition(),request.getQuery()),null);
 
     }
 
     public LfItem getItemById(int id) {
         return itemsCache.get(id+"");
+    }
+
+    public void updateItem(final LfItem newItem) {
+        webService.updateItem(new ItemReceiver<Integer>(){
+            @Override
+            public void onItemArrived(Integer answerCode) {
+                //fixme check answer code
+                itemsCache.updateItem(newItem);
+            }
+        },newItem);
     }
 }

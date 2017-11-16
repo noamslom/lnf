@@ -1,8 +1,10 @@
-package il.co.noamsl.lostnfound.repository;
+package il.co.noamsl.lostnfound.repository.external;
 
+import il.co.noamsl.lostnfound.repository.Repository;
 import il.co.noamsl.lostnfound.repository.User.User;
+import il.co.noamsl.lostnfound.repository.external.itemsBulk.MyItemsItemsBulk;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
-import il.co.noamsl.lostnfound.screens.itemsFeed.itemsBulk.ItemsBulk;
+import il.co.noamsl.lostnfound.repository.external.itemsBulk.ItemsBulk;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 
 /**
@@ -12,11 +14,11 @@ import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 public class RepositoryExternal {
 
     public ItemsBulk getAllItemsItemsBulk() {
-        return getMyItemsItemsBulk();
+        return new ItemsBulk(Repository.getGlobal(),null);
     }
 
     public ItemsBulk getMyItemsItemsBulk() {
-        return new ItemsBulk(Repository.getGlobal(),null);
+        return new MyItemsItemsBulk(Repository.getGlobal());
     }
 
     public void addItem(LfItem lfitem) {
@@ -29,5 +31,9 @@ public class RepositoryExternal {
 
     public void getUserById(ItemReceiver<User> itemReceiver, int owner) {
         Repository.getGlobal().getUserById(itemReceiver,owner);
+    }
+
+    public void updateItem(LfItem newItem) {
+        Repository.getGlobal().updateItem(newItem);
     }
 }

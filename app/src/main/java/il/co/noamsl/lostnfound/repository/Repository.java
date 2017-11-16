@@ -23,7 +23,7 @@ public class Repository {
     public Repository() {
         webService = new WebService();
         itemsRepository = new ItemsRepository(webService);
-        loggedInUserRepository = new LoggedInUserRepository();
+        loggedInUserRepository = new LoggedInUserRepository(webService);
         settingsRepository = new SettingsRepository();
         userRepository = new UsersRepository(webService);
     }
@@ -53,5 +53,18 @@ public class Repository {
 
     public void getUserById(ItemReceiver<User> itemReceiver,int owner) {
         userRepository.getUserById(itemReceiver,owner);
+    }
+
+
+    public int getLoggedInUserId() {
+        return loggedInUserRepository.getLoggedInUserId();
+    }
+
+    public void setLoggedInUserId(ItemReceiver<User> itemReceiver,int userId) {
+        loggedInUserRepository.setLoggedInUser(itemReceiver,userId);
+    }
+
+    public void updateItem(LfItem newItem) {
+        itemsRepository.updateItem(newItem);
     }
 }

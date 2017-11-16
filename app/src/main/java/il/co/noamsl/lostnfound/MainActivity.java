@@ -11,9 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
+import il.co.noamsl.lostnfound.repository.Repository;
+import il.co.noamsl.lostnfound.repository.User.User;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.webService.eitan.Users;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
-import il.co.noamsl.lostnfound.repository.RepositoryExternal;
+import il.co.noamsl.lostnfound.repository.external.RepositoryExternal;
 import il.co.noamsl.lostnfound.webService.WebService;
 import il.co.noamsl.lostnfound.screens.itemsFeed.ItemsFeedFragment;
 import il.co.noamsl.lostnfound.screens.MainFeedFragment;
@@ -29,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements
         MyItemsFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener,
         ItemsFeedFragment.OnFragmentInteractionListener {
+    private static final String TAG = "MainActivity";
     private static Context context_remove; //// FIXME: 05/11/2017
 
     public static RepositoryExternal getExternalRepository() {
@@ -105,6 +109,17 @@ public class MainActivity extends AppCompatActivity implements
 
     //// FIXME: 15/11/2017 remove
     private static void doBullshit() {
+        Repository.getGlobal().setLoggedInUserId(new ItemReceiver<User>() {
+            @Override
+            public void onItemArrived(User item) {
+
+            }
+        },777);
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         WebService.API.user_create(new Users("Noam","a@b.com","050-1234567","Modi",3)).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -117,7 +132,13 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
         WebService ws = new WebService();
-        ws.updateItem(new LfItem(4,"wal","new one","new loc",3,"pic",true,false));
+        ws.updateItem(new ItemReceiver<Integer>() {
+            @Override
+            public void onItemArrived(Integer item) {
+                Log.d(TAG, "onItemArrived: item = " + item);
+
+            }
+        },new LfItem(4,"wal","new one","new loc",3,"pic",true,false));
 
     }
 

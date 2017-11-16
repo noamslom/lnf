@@ -1,7 +1,5 @@
 package il.co.noamsl.lostnfound.screens.itemsFeed;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import il.co.noamsl.lostnfound.R;
-import il.co.noamsl.lostnfound.screens.itemsFeed.itemsBulk.ItemsBulk;
+import il.co.noamsl.lostnfound.repository.external.itemsBulk.ItemsBulk;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 
 

@@ -1,7 +1,6 @@
 package il.co.noamsl.lostnfound;
 
-import il.co.noamsl.lostnfound.repository.RepositoryExternal;
-import il.co.noamsl.lostnfound.webService.WebService;
+import il.co.noamsl.lostnfound.repository.external.RepositoryExternal;
 
 /**
  * Created by noams on 13/11/2017.

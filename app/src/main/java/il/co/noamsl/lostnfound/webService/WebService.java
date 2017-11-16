@@ -51,7 +51,9 @@ public class WebService {
             .build().create(ServerAPI.class);
 
 
-    public void requestItems(final Request<LfItem> request, RequestAgent requestAgent, ItemsQuery query) {
+    public void requestItems(final Request<LfItem> request, RequestAgent requestAgent) {
+        Log.d(TAG, "requestItems: ");
+
         if (requestAgent != null) {
             throw new UnsupportedOperationException("Not imp yet");
         }
@@ -59,6 +61,26 @@ public class WebService {
             request.getItemReceiver().onItemArrived(null);
             return;
         }
+        ItemsQuery query = (ItemsQuery) request.getQuery();
+
+        if(query.getOwner()!=null){
+            requestItemsOfUser(request);
+        }
+        else{
+            requestItemsByFilter(request);
+        }
+
+    }
+
+    private void requestItemsOfUser(Request<LfItem> request) {
+        //// TODO: 16/11/2017 implement for real
+        request.getItemReceiver().onItemArrived(new LfItem(107, "wallet tekjke" + 107, "descrip" + 107, "here", 777, "pic", new Random().nextBoolean(), true));
+        request.getItemReceiver().onItemArrived(null);
+        Log.d(TAG, "requestItemsOfUser: ");
+
+    }
+
+    private void requestItemsByFilter(final Request<LfItem> request) {
         //// FIXME: 16/11/2017 delete this, just for faster testings
         {
             new Handler().postDelayed(new Runnable() {
@@ -148,27 +170,13 @@ public class WebService {
         }
     }
 
-    public void updateItem(LfItem lfItem) {
-        if (lfItem.isALost()) {
-            API.lost_edit(lfItem.toLostTable()).enqueue(new Callback<Integer>() {
+    public void updateItem(ItemReceiver<Integer> itemReceiver, LfItem newItem) {
+        itemReceiver.onItemArrived(0);
+/*
+        if (newItem.isALost()) {
+            API.lost_edit(newItem.toLostTable()).enqueue(new Callback<Integer>() {
                 @Override
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
-                    Log.d("serverd", "onResponse" + response.raw() + "");
-                    Log.d("serverd", "onResponse" + response.body() + "");
-                }
-
-                @Override
-                public void onFailure(Call<Integer> call, Throwable t) {
-
-                }
-            });
-        }
-        if (lfItem.isAFound()) {
-            API.found_edit(lfItem.toFoundTable()).enqueue(new Callback<Integer>() {
-                @Override
-                public void onResponse(Call<Integer> call, Response<Integer> response) {
-                    Log.d("serverd", "onResponse" + response.raw() + "");
-                    Log.d("serverd", "onResponse" + response.body() + "");
 
                 }
 
@@ -178,10 +186,27 @@ public class WebService {
                 }
             });
         }
+        if (newItem.isAFound()) {
+            API.found_edit(newItem.toFoundTable()).enqueue(new Callback<Integer>() {
+                @Override
+                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                    Log.d("serverd", "onResponse" + response.raw() + "");
+                    Log.d("serverd", "onResponse" + response.body() + "");
+
+                }
+
+                @Override
+                public void onFailure(Call<Integer> call, Throwable t) {
+
+                }
+            });
+        }
+*/
     }
 
-    public void getUserById(ItemReceiver<User> itemReceiver, int owner) {
+    public void getUserById(ItemReceiver<User> itemReceiver, int userId) {
         //// FIXME: 16/11/2017
-        itemReceiver.onItemArrived(new User(new Users("Noam", "noam@gmail.com", "050-3331234", "Modi", null)));
+        itemReceiver.onItemArrived(new User(new Users("Noam", "noam@gmail.com", "050-3331234", "Modi", userId)));
     }
+
 }

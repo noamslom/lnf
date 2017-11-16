@@ -1,4 +1,4 @@
-package il.co.noamsl.lostnfound.screens.itemsFeed.itemsBulk;
+package il.co.noamsl.lostnfound.repository.external.itemsBulk;
 
 import android.util.Log;
 
@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
-import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 
 /**
