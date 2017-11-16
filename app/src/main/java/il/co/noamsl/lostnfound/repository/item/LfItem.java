@@ -1,5 +1,6 @@
 package il.co.noamsl.lostnfound.repository.item;
 
+import il.co.noamsl.lostnfound.repository.cache.Cacheable;
 import il.co.noamsl.lostnfound.webService.eitan.FoundTable;
 import il.co.noamsl.lostnfound.webService.eitan.LostTable;
 import il.co.noamsl.lostnfound.repository.item.fake.FakeImage;
@@ -8,7 +9,7 @@ import il.co.noamsl.lostnfound.repository.item.fake.FakeImage;
  * Created by noams on 04/08/2017.
  */
 
-public class LfItem {
+public class LfItem implements Cacheable {
     private WSLfItem wsLfItem;
     private NoamImage fakeImage;
 
@@ -117,5 +118,10 @@ public class LfItem {
 
     public LostTable toLostTable(){
         return (LostTable) wsLfItem;
+    }
+
+    @Override
+    public String getCacheId() {
+        return String.valueOf(getId());
     }
 }

@@ -9,6 +9,8 @@ import org.simpleframework.xml.core.Persister;
 import java.util.List;
 import java.util.Random;
 
+import il.co.noamsl.lostnfound.repository.User.User;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 import il.co.noamsl.lostnfound.webService.dataTransfer.Request;
 import il.co.noamsl.lostnfound.webService.eitan.LostTable;
@@ -16,6 +18,7 @@ import il.co.noamsl.lostnfound.webService.eitan.LostTableList;
 import il.co.noamsl.lostnfound.webService.eitan.ServerAPI;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.webService.dataTransfer.RequestAgent;
+import il.co.noamsl.lostnfound.webService.eitan.Users;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,7 +32,7 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
  */
 
 public class WebService {
-
+    private static final String TAG = "WebService";
     // '/' at the end is required
     private static final String BASE_URL = "http://10.0.2.2:8080/lf_server/webresources/";
 
@@ -64,7 +67,9 @@ public class WebService {
                     for (int i = 0; i < 10; i++) {
 
                         request.getItemReceiver().onItemArrived(
-                                new LfItem(i, "wallet tekjke" + i, "descrip" + i, null, null, null, new Random().nextBoolean(), true));
+                                new LfItem(i, "wallet tekjke" + i, "descrip" + i, "here", 5, "pic", new Random().nextBoolean(), true));
+                        Log.d(TAG, "run: received item"+i);
+
                     }
                     request.getItemReceiver().onItemArrived(null);
                 }
@@ -72,6 +77,7 @@ public class WebService {
             if(true) return;
         }
 
+/*
         if (query.isAFound()) {
             //TODO
         } else {
@@ -115,6 +121,7 @@ public class WebService {
 
         }
 
+*/
     }
 
     public void addItem(LfItem lfItem) {
@@ -173,4 +180,8 @@ public class WebService {
         }
     }
 
+    public void getUserById(ItemReceiver<User> itemReceiver, int owner) {
+        //// FIXME: 16/11/2017
+        itemReceiver.onItemArrived(new User(new Users("Noam", "noam@gmail.com", "050-3331234", "Modi", null)));
+    }
 }

@@ -1,19 +1,33 @@
 package il.co.noamsl.lostnfound.repository;
 
+import il.co.noamsl.lostnfound.repository.User.User;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.screens.itemsFeed.itemsBulk.ItemsBulk;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 
 /**
  * Created by noams on 04/08/2017.
  */
 
-public interface RepositoryExternal {
+public class RepositoryExternal {
 
-//    long getID();//?
+    public ItemsBulk getAllItemsItemsBulk() {
+        return getMyItemsItemsBulk();
+    }
 
-    ItemsBulk getAllItemsItemsBulk();
+    public ItemsBulk getMyItemsItemsBulk() {
+        return new ItemsBulk(Repository.getGlobal(),null);
+    }
 
-    ItemsBulk getMyItemsItemsBulk();
-    
-    void addItem(LfItem lfItem);
+    public void addItem(LfItem lfitem) {
+        Repository.getGlobal().addItem(lfitem);
+    }
+
+    public LfItem getItemById(int itemId) {
+        return Repository.getGlobal().getItemById(itemId);
+    }
+
+    public void getUserById(ItemReceiver<User> itemReceiver, int owner) {
+        Repository.getGlobal().getUserById(itemReceiver,owner);
+    }
 }

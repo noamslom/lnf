@@ -4,10 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import il.co.noamsl.lostnfound.webService.dataTransfer.DataPosition;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
@@ -22,9 +18,9 @@ import il.co.noamsl.lostnfound.screens.itemsFeed.Loadable;
  */
 
 public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
+    private static final String TAG = "ItemsBulk";
     private int tempItemsCount=0;
     private int mData; //// FIXME: 05/11/2017 delete this
-    private List<LfItem> savedItems; //sync
     private static final int ITEMS_PER_REQUEST = 30;
     private Repository repository;
     private RequestAgent requestAgent;
@@ -32,13 +28,14 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
     private ItemReceiver<LfItem> itemReceiver;
 //    private int itemsCount;
     private ItemsQuery currentFilter;
+    private ItemsBulkStorage storage;
 
     public ItemsBulk(Repository repository, Loadable requester) {
         this.repository = repository;
-        this.savedItems = Collections.synchronizedList(new ArrayList<LfItem>());
+        this.storage = new ItemsBulkStorage();
         requestAgent = new RequestAgent();
         this.requester=requester;
-        this.itemsCount=0;
+//        this.itemsCount=0;
     }
 
     public int describeContents() {
@@ -62,6 +59,7 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
 
     private ItemsBulk(Parcel in) {
         mData = in.readInt();
+        throw new UnsupportedOperationException("Parcel not imp yet");
     }
 
 /*
@@ -71,13 +69,14 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
 */
 
     public int getItemCount() {
-        return itemsCount;
+        return storage.size(currentFilter);
     }
 
     public LfItem get(int position) {
-        if(position>=itemsCount)
+        if(position>=getItemCount())
             return null;
-        return savedItems.get(position);
+        Integer itemId = storage.getItemId(currentFilter,position);
+        return repository.getItemById(itemId);
     }
 
     public void setRequester(Loadable requester) {
@@ -86,8 +85,8 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
 
     public void requestMoreItems() {
         DataPosition<LfItem> lastItemDataPosition;
-        if(savedItems.size()!=0){
-            lastItemDataPosition = new DataPosition<LfItem>(savedItems.get(savedItems.size()-1));
+        if(storage.size(currentFilter)!=0){
+            lastItemDataPosition = new DataPosition<LfItem>(repository.getItemById(storage.getLast(currentFilter)));
         }
         else{
             lastItemDataPosition = new DataPosition<>(null);
@@ -107,9 +106,9 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
             }
             return;
         }
-        savedItems.add(item);
-        Log.d("noamd", "itum bulk added" + itemsCount);
-        itemsCount++;
+        storage.addItemId(currentFilter,item.getId());
+//        Log.d("noamd", "itum bulk added" + itemsCount);
+//        itemsCount++;
         if(itemReceiver!=null){
             itemReceiver.onItemArrived(item);
         }
@@ -120,17 +119,23 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
         this.itemReceiver = itemReceiver;
     }
 
+/*
     public void temporarilyEmptyList() {
         if(itemsCount==0)
             return;
         tempItemsCount = itemsCount;
     }
+*/
 
+/*
     public void restoreList() {
         itemsCount= tempItemsCount;
     }
+*/
 
     public void filter(ItemsQuery filter) {
+        Log.d(TAG, "filter: filter = " + filter);
+
         currentFilter = filter;
     }
 }

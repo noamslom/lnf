@@ -106,6 +106,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public void filter(ItemsQuery filter) {
         itemsBulk.filter(filter);
+        myNotifyChange();
         fillFirstItems();
     }
 
@@ -116,7 +117,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         // each data item is just a string in this case
         public ImageView itemImage;
         public TextView itemTitle;
-        private Long itemId = null;
+        private Integer itemId = null;
 
         public ItemViewHolder(final View itemView, final Activity parent) {
             super(itemView);
@@ -128,7 +129,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     int position = getAdapterPosition();
 
                     Intent intent = new Intent(parent, PublishedItemActivity.class);
-                    intent.putExtra(PublishedItemActivity.ARG_ITEM_ID, (long) itemId);
+                    intent.putExtra(PublishedItemActivity.ARG_ITEM_ID, itemId);
                     parent.startActivity(intent);
 
 /*
@@ -147,7 +148,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         }
 
-        public void setItemId(long itemId) {
+        public void setItemId(int itemId) {
             this.itemId = itemId;
         }
     }
@@ -170,7 +171,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         initLoadingMechanism(recyclerView);
         initOnLoadMoreListener();
-        fillFirstItems();
+        filter(new ItemsQuery("","",null,true)); //fixme this is default query
 
 
     }

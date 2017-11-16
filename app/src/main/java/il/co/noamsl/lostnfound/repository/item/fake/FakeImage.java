@@ -13,20 +13,22 @@ import il.co.noamsl.lostnfound.repository.item.NoamImage;
  */
 
 public class FakeImage implements NoamImage {
-    Drawable image;
+    private Drawable image;
+    private Context context;
+
     public FakeImage() {
         this.context = MainActivity.getContextRemoveThisMethod();
         Drawable image1 = ContextCompat.getDrawable(MainActivity.getContextRemoveThisMethod(), R.drawable.ic_home_black_24dp);
         Drawable image2 = ContextCompat.getDrawable(MainActivity.getContextRemoveThisMethod(), R.drawable.ic_dashboard_black_24dp);
 
-        if(Math.random()>0.5){
+        if (Math.random() > 0.5) {
             image = image1;
-        }else{
+        } else {
             image = image2;
         }
     }
 
-    private Context context;
+
     @Override
     public Drawable getDrawable() {
         return image;

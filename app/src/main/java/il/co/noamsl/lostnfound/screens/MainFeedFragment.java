@@ -111,8 +111,7 @@ public class MainFeedFragment extends Fragment {
             }
         });
         tgbLostOrFound = (ToggleButton) getActivity().findViewById(R.id.toggleButton);
-
-
+        
     }
 
     private void filter() {

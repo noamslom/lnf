@@ -8,7 +8,7 @@ public class ItemsQuery {
     private final String name;
     private final String description;
     private final String location;
-    private final boolean isAFound;
+    private final Boolean isAFound;
 
     public String getName() {
         return name;
@@ -29,11 +29,12 @@ public class ItemsQuery {
 
         ItemsQuery that = (ItemsQuery) o;
 
-        if (isAFound != that.isAFound) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null)
             return false;
-        return location != null ? location.equals(that.location) : that.location == null;
+        if (location != null ? !location.equals(that.location) : that.location != null)
+            return false;
+        return isAFound != null ? isAFound.equals(that.isAFound) : that.isAFound == null;
 
     }
 
@@ -42,11 +43,21 @@ public class ItemsQuery {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (location != null ? location.hashCode() : 0);
-        result = 31 * result + (isAFound ? 1 : 0);
+        result = 31 * result + (isAFound != null ? isAFound.hashCode() : 0);
         return result;
     }
 
-    public ItemsQuery(String name, String description, String location, boolean isAFound) {
+    @Override
+    public String toString() {
+        return "ItemsQuery{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", location='" + location + '\'' +
+                ", isAFound=" + isAFound +
+                '}';
+    }
+
+    public ItemsQuery(String name, String description, String location, Boolean isAFound) {
 
         this.name = name;
         this.description = description;
@@ -54,7 +65,7 @@ public class ItemsQuery {
         this.isAFound = isAFound;
     }
 
-    public boolean isAFound() {
+    public Boolean isAFound() {
         return isAFound;
     }
 }

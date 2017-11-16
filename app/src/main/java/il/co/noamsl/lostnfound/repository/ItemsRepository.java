@@ -2,7 +2,7 @@ package il.co.noamsl.lostnfound.repository;
 
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
-import il.co.noamsl.lostnfound.repository.cache.LFItemsCache;
+import il.co.noamsl.lostnfound.repository.cache.Cache;
 import il.co.noamsl.lostnfound.webService.dataTransfer.Request;
 import il.co.noamsl.lostnfound.webService.dataTransfer.RequestAgent;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
@@ -13,12 +13,12 @@ import il.co.noamsl.lostnfound.webService.WebService;
  */
 
 class ItemsRepository {
-    private LFItemsCache itemsCache;
+    private Cache<LfItem> itemsCache;
     private WebService webService;
 
     public ItemsRepository(WebService webService) {
         this.webService = webService;
-        this.itemsCache = new LFItemsCache();
+        this.itemsCache = new Cache<>();
     }
 
     public void requestItems(final Request<LfItem> request, RequestAgent requestAgent) {
@@ -27,7 +27,7 @@ class ItemsRepository {
             public void onItemArrived(LfItem item) {
                 if (item != null) {
                     itemsCache.add(item);
-                    request.getItemReceiver().onItemArrived(itemsCache.getItem(item.getId()+""));
+                    request.getItemReceiver().onItemArrived(itemsCache.get(item.getId()+""));
                 }
                 else {
                     request.getItemReceiver().onItemArrived(null);
@@ -38,4 +38,7 @@ class ItemsRepository {
 
     }
 
+    public LfItem getItemById(int id) {
+        return itemsCache.get(id+"");
+    }
 }
