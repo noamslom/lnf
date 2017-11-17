@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.ServiceLocator;
@@ -72,5 +73,10 @@ public class PublishedItemActivity extends AppCompatActivity implements ItemRece
         this.owner = owner;
         tvEmail.setText(owner.getEmail());
         tvPhone.setText(owner.getPhoneNumber());
+    }
+
+    @Override
+    public void onRequestFailure() {
+        Toast.makeText(getApplicationContext(),"Unable to get published item details",Toast.LENGTH_SHORT).show();
     }
 }

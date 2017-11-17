@@ -69,4 +69,8 @@ public class User implements Cacheable,Serializable {
     public String getCacheId() {
         return String.valueOf(getUserid());
     }
+
+    public Users toWSUser() {
+        return wsUser;
+    }
 }

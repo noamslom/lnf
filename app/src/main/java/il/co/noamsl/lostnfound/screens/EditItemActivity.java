@@ -14,8 +14,9 @@ import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.ServiceLocator;
 import il.co.noamsl.lostnfound.repository.Repository;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 
-public class EditItemActivity extends AppCompatActivity {
+public class EditItemActivity extends AppCompatActivity implements ItemReceiver<Boolean> {
     public static final String ARG_ITEM_ID = "itemId";
 
     public enum Mode {EDIT, ADD}
@@ -74,14 +75,13 @@ public class EditItemActivity extends AppCompatActivity {
         String description = etDescription.getText() + "";
         LfItem newItem = new LfItem(null, name, description, location, owner, picture, relevant, isAFound);
         switch (MODE) {
-            case EDIT: ServiceLocator.getExternalRepository().addItem(newItem);
+            case EDIT: ServiceLocator.getExternalRepository().addItem(this,newItem);
                 break;
             case ADD:
-                ServiceLocator.getExternalRepository().updateItem(newItem);
+                ServiceLocator.getExternalRepository().updateItem(this,newItem);
             break;
         }
-        Toast.makeText(getApplicationContext(), "Submit Successful!", Toast.LENGTH_SHORT).show();
-        this.onBackPressed();
+        Toast.makeText(getApplicationContext(), "Submitting", Toast.LENGTH_SHORT).show();
     }
 
     private Integer getOwner() {
@@ -95,4 +95,17 @@ public class EditItemActivity extends AppCompatActivity {
     private boolean isToggleButtonAFound() {
         return tgbLostOrFound.isChecked() == FOUND_TOGGLE_VALUE;
     }
+
+    @Override
+    public void onItemArrived(Boolean item) {
+        Toast.makeText(getApplicationContext(), "Item Submit Successful!", Toast.LENGTH_SHORT).show();
+        this.onBackPressed();
+    }
+
+    @Override
+    public void onRequestFailure() {
+        Toast.makeText(getApplicationContext(), "Unable to submit!", Toast.LENGTH_SHORT).show();
+    }
+
+
 }

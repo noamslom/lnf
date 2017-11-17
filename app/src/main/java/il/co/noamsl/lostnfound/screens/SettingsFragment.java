@@ -99,8 +99,8 @@ public class SettingsFragment extends Fragment {
         String address= etAddress.getText()+"";
         Integer userId = loggedInUser.getUserid();
         ServiceLocator.getExternalRepository().updateUser(new User(new Users(name, email, phone, address, userId)));
-        Toast.makeText(getContext(), "Submit Successful!", Toast.LENGTH_SHORT).show();
-        getActivity().onBackPressed();
+        Toast.makeText(getContext(), "Settings Submit Successful!", Toast.LENGTH_SHORT).show();
+//        getActivity().onBackPressed();
     }
 
     @NonNull

@@ -32,6 +32,11 @@ public class LoggedInUserRepository {
                 }
                 itemReceiver.onItemArrived(user);
             }
+
+            @Override
+            public void onRequestFailure() {
+                itemReceiver.onRequestFailure();
+            }
         }, credential);
     }
 
@@ -46,6 +51,11 @@ public class LoggedInUserRepository {
                 if (user != null) {
                     loggedInUser = user;
                 }
+            }
+
+            @Override
+            public void onRequestFailure() {
+                throw new RuntimeException();
             }
         }, user);
 

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import il.co.noamsl.lostnfound.MainActivity;
 import il.co.noamsl.lostnfound.R;
+import il.co.noamsl.lostnfound.ServiceLocator;
 import il.co.noamsl.lostnfound.screens.itemsFeed.ItemFeed;
 
 
@@ -33,7 +34,7 @@ public class MyItemsFragment extends Fragment {
         if (savedInstanceState != null) {
             return;
         }
-        itemFeed = new ItemFeed(this,R.id.fl_feed_containter, MainActivity.getExternalRepository().getMyItemsItemsBulk());
+        itemFeed = new ItemFeed(this,R.id.fl_feed_containter, ServiceLocator.getExternalRepository().getMyItemsItemsBulk());
 
     }
 

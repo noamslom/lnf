@@ -115,6 +115,11 @@ protected ItemsQuery currentFilter;
         requestAgent.next();
     }
 
+    @Override
+    public void onRequestFailure() {
+        itemReceiver.onRequestFailure();
+    }
+
     public void setItemReceiver(ItemReceiver itemReceiver) {
         this.itemReceiver = itemReceiver;
     }

@@ -18,7 +18,7 @@ public interface ServerAPI {
     Call<Integer> user_edit(@Body Users u);
 
     @GET("user")
-    Call<Users> user_getSettings(@Query("id") Integer id);
+    Call<Users> user_getSettings(@Query("id") Integer id, @Query("email") String email);
 
     @GET("user/lost")
     Call<LostTableList> user_getLostItems(@Query("id") Integer id);

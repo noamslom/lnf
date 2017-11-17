@@ -13,8 +13,8 @@ public class LfItem implements Cacheable {
     private WSLfItem wsLfItem;
     private NoamImage fakeImage;
 
-    public LfItem(LostTable l) {
-        wsLfItem=l;
+    public LfItem(WSLfItem wsLfItem) {
+        this.wsLfItem=wsLfItem;
     }
 
     public String getName() {

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.Util;
@@ -79,6 +80,12 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             MyRecyclerAdapter.this.setIsLoading(false);
         }
         myNotifyChange();
+    }
+
+    @Override
+    public void onRequestFailure() {
+        onItemArrived(null);
+        Toast.makeText(recyclerView.getContext(), "Unable to load items",Toast.LENGTH_SHORT).show();
     }
 
     private void setIsLoading(boolean isLoading) {

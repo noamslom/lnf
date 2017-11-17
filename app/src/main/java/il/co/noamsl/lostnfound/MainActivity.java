@@ -151,7 +151,8 @@ public class MainActivity extends AppCompatActivity implements
 
             }
         },777);
-*/
+*//*
+
         try {
             Thread.sleep(300);
         } catch (InterruptedException e) {
@@ -177,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         }, new LfItem(4, "wal", "new one", "new loc", 3, "pic", true, false));
 
+*/
     }
 
     private void initFragment(Bundle savedInstanceState) {

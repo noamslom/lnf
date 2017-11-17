@@ -21,8 +21,8 @@ public class RepositoryExternal {
         return new MyItemsItemsBulk(Repository.getGlobal());
     }
 
-    public void addItem(LfItem lfitem) {
-        Repository.getGlobal().addItem(lfitem);
+    public void addItem(final ItemReceiver<Boolean> itemReceiver,LfItem lfitem) {
+        Repository.getGlobal().addItem(itemReceiver,lfitem);
     }
 
     public LfItem getItemById(int itemId) {
@@ -33,8 +33,8 @@ public class RepositoryExternal {
         Repository.getGlobal().getUserById(itemReceiver,owner);
     }
 
-    public void updateItem(LfItem newItem) {
-        Repository.getGlobal().updateItem(newItem);
+    public void updateItem(final ItemReceiver<Boolean> itemReceiver,LfItem newItem) {
+        Repository.getGlobal().updateItem(itemReceiver,newItem);
     }
 
     public void updateUser(User user) {

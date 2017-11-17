@@ -13,6 +13,7 @@ import il.co.noamsl.lostnfound.webService.WebService;
  */
 
 class ItemsRepository {
+    private static final String TAG = "ItemsRepository";
     private Cache<LfItem> itemsCache;
     private WebService webService;
 
@@ -22,7 +23,7 @@ class ItemsRepository {
     }
 
     public void requestItems(final Request<LfItem> request, RequestAgent requestAgent) {
-        ItemReceiver<LfItem> itemReceiver = new ItemReceiver<LfItem>() {
+        final ItemReceiver<LfItem> itemReceiver = new ItemReceiver<LfItem>() {
             @Override
             public void onItemArrived(LfItem item) {
                 if (item != null) {
@@ -33,6 +34,11 @@ class ItemsRepository {
                     request.getItemReceiver().onItemArrived(null);
                 }
             }
+
+            @Override
+            public void onRequestFailure() {
+                request.getItemReceiver().onRequestFailure();
+            }
         }  ;
         webService.requestItems(new Request<LfItem>(itemReceiver,request.getDataPosition(),request.getQuery()),null);
 
@@ -42,13 +48,35 @@ class ItemsRepository {
         return itemsCache.get(id+"");
     }
 
-    public void updateItem(final LfItem newItem) {
-        webService.updateItem(new ItemReceiver<Integer>(){
+    public void updateItem(final ItemReceiver<Boolean> itemReceiver, final LfItem newItem) {
+        webService.updateItem(new ItemReceiver<Boolean>(){
             @Override
-            public void onItemArrived(Integer answerCode) {
+            public void onItemArrived(Boolean success) {
                 //fixme check answer code
                 itemsCache.updateItem(newItem);
             }
+
+            @Override
+            public void onRequestFailure() {
+                itemReceiver.onRequestFailure();
+            }
         },newItem);
+    }
+
+    public void addItem(final ItemReceiver<Boolean> itemReceiver, final LfItem lfItem) {
+        webService.addItem(new ItemReceiver<Boolean>(){
+            @Override
+            public void onItemArrived(Boolean success) {
+                //fixme check answer code
+                itemsCache.add(lfItem);
+            }
+
+            @Override
+            public void onRequestFailure() {
+                itemReceiver.onRequestFailure();
+
+            }
+        },lfItem);
+
     }
 }

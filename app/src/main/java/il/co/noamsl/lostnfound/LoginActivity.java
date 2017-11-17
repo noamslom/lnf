@@ -325,6 +325,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         Log.d(TAG, "onItemArrived: notified");
                     }
                 }
+
+                @Override
+                public void onRequestFailure() {
+                    synchronized (UserLoginTask.this){
+                        gotResponse = true;
+                        UserLoginTask.this.notify();
+                    }
+                }
             },mEmail);
 
             synchronized (UserLoginTask.this){
@@ -338,6 +346,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             }
             User loggedInUser = Repository.getGlobal().getLoggedInUser();
+            Log.d(TAG, "doInBackground: loggedInUser = " + loggedInUser);
 
             // TODO: register the new account here.
             return loggedInUser!=null;

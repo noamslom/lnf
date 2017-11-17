@@ -10,12 +10,12 @@ public class Request<T> {
     private final ItemReceiver<T> ITEM_RECEIVER;
     private final Integer MAX_ITEMS;
     private final DataPosition<T> dataPosition;
+    private final Query query;
 
     public Query getQuery() {
         return query;
     }
 
-    private final Query query;
     public Request(ItemReceiver<T> itemReceiver,DataPosition<T> dataPosition,Query query) {
         this(itemReceiver, null,dataPosition,query);
     }

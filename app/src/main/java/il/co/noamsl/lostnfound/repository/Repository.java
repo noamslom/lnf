@@ -39,8 +39,8 @@ public class Repository {
         itemsRepository.requestItems(request, requestAgent);
     }
 
-    public void addItem(LfItem lfItem) {
-        webService.addItem(lfItem);
+    public void addItem(final ItemReceiver<Boolean> itemReceiver,LfItem lfItem) {
+        itemsRepository.addItem(itemReceiver,lfItem);
     }
 
     public LfItem getItemById(int itemId) {
@@ -64,8 +64,8 @@ public class Repository {
         loggedInUserRepository.setLoggedInUser(itemReceiver,credential);
     }
 
-    public void updateItem(LfItem newItem) {
-        itemsRepository.updateItem(newItem);
+    public void updateItem(final ItemReceiver<Boolean> itemReceiver,LfItem newItem) {
+        itemsRepository.updateItem(itemReceiver,newItem);
     }
 
     public User getLoggedInUser() {
