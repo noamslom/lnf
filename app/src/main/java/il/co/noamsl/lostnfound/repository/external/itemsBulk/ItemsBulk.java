@@ -86,7 +86,8 @@ protected ItemsQuery currentFilter;
     public void requestMoreItems() {
         DataPosition<LfItem> lastItemDataPosition;
         if(storage.size(currentFilter)!=0){
-            lastItemDataPosition = new DataPosition<LfItem>(repository.getItemById(storage.getLast(currentFilter)));
+//            lastItemDataPosition = new DataPosition<LfItem>(repository.getItemById(storage.getLast(currentFilter))); // FIXME: 17/11/2017 enable this
+            lastItemDataPosition = new DataPosition<>(null);
         }
         else{
             lastItemDataPosition = new DataPosition<>(null);

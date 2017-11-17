@@ -1,5 +1,9 @@
 package il.co.noamsl.lostnfound.repository;
 
+import android.util.Log;
+
+import java.util.List;
+
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.repository.cache.Cache;
@@ -14,18 +18,34 @@ import il.co.noamsl.lostnfound.webService.WebService;
 
 class ItemsRepository {
     private static final String TAG = "ItemsRepository";
-    private Cache<LfItem> itemsCache;
+    private LFItemsCache itemsCache;
     private WebService webService;
+
+    @Override
+    public String toString() {
+        return "ItemsRepository{" +
+                "itemsCache=" + itemsCache +
+                '}';
+    }
+
 
     public ItemsRepository(WebService webService) {
         this.webService = webService;
-        this.itemsCache = new Cache<>();
+        this.itemsCache = new LFItemsCache();
     }
 
     public void requestItems(final Request<LfItem> request, RequestAgent requestAgent) {
+        List<LfItem> cachedItems = itemsCache.get((ItemsQuery)request.getQuery());
+
+        for (LfItem cachedItem : cachedItems) {
+            request.getItemReceiver().onItemArrived(cachedItem);
+        }
+
         final ItemReceiver<LfItem> itemReceiver = new ItemReceiver<LfItem>() {
             @Override
             public void onItemArrived(LfItem item) {
+                Log.d(TAG, "onItemArrived: item = " + item + "request="+request);
+
                 if (item != null) {
                     itemsCache.add(item);
                     request.getItemReceiver().onItemArrived(itemsCache.get(item.getId()+""));

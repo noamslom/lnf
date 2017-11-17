@@ -118,16 +118,12 @@ public class WebService {
         ItemsQuery query = (ItemsQuery) request.getQuery();
         MultipleSourcesItemReceiver<LfItem> msItemReceiver = new MultipleSourcesItemReceiver<>(request.getItemReceiver());
         Boolean isAFound = query.isAFound();
+        Log.d(TAG, "requestItemsByFilter: isAFound = " + isAFound);
+
         if (isAFound == null || isAFound) {
-            Founds.requestItemsOfUser(request, query.getOwner(), msItemReceiver);
+            Founds.requestByFilter(request, msItemReceiver);
         }
         if (isAFound == null || !isAFound) {
-            Losts.requestItemsOfUser(request, query.getOwner(), msItemReceiver);
-        }
-
-        if (query.isAFound()) {
-            Founds.requestByFilter(request, msItemReceiver);
-        } else {
             Losts.requestByFilter(request, msItemReceiver);
         }
 
@@ -175,8 +171,6 @@ public class WebService {
     }
 
     public void getUserByCredential(final ItemReceiver<User> itemReceiver, String credential) {
-        Log.d(TAG, "onResponse: credential = " + credential);
-
 //        itemReceiver.onItemArrived(FAKE_USER);
         //fixme uncomment the code
         Callback<Users> callback = new Callback<Users>() {
@@ -222,6 +216,7 @@ public class WebService {
         API.user_edit(user.toWSUser()).enqueue(callback);
     }
 
+    //update only Founds!!!!!!!!!!!!!!!!!!!
     private static class Founds {
         private static void requestItemsOfUser(Request<LfItem> request, Integer owner, MultipleSourcesItemReceiver<LfItem> msItemReceiver) {
             Log.d(TAG, "requestItemsOfUser: ");
@@ -235,10 +230,12 @@ public class WebService {
                         itemReceiver.onRequestFailure();
                         return;
                     }
-                    List<FoundTable> foundTables = response.body().getFoundTables();
-                    if(foundTables!=null) {
-                        for (FoundTable foundTable : foundTables) {
-                            itemReceiver.onItemArrived(new LfItem(foundTable));
+                    if (response.body() != null) {
+                        List<FoundTable> foundTables = response.body().getFoundTables();
+                        if(foundTables!=null) {
+                            for (FoundTable foundTable : foundTables) {
+                                itemReceiver.onItemArrived(new LfItem(foundTable));
+                            }
                         }
                     }
                     itemReceiver.onItemArrived(null);
@@ -257,6 +254,8 @@ public class WebService {
 
 
         private static void requestByFilter(final Request<LfItem> request, final MultipleSourcesItemReceiver<LfItem> msItemReceiver) {
+            Log.d(TAG, "Founds.requestByFilter: ");
+
             ItemsQuery query = (ItemsQuery) request.getQuery();
             msItemReceiver.onWorkerStarted();
             Callback<FoundTableList> callback = new Callback<FoundTableList>() {
@@ -305,9 +304,13 @@ public class WebService {
         }
 
         public static void addItem(final ItemReceiver<Boolean> itemReceiver,LfItem lfItem) {
+            Log.d(TAG, "addItem: lfItem = " + lfItem);
+
             Callback<Integer> callback = new Callback<Integer>() {
                 @Override
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
+                    Log.d(TAG, "addItem.onResponse: response = " + response);
+
                     if(!response.isSuccessful()){
                         itemReceiver.onRequestFailure();
                         return;
@@ -317,6 +320,8 @@ public class WebService {
 
                 @Override
                 public void onFailure(Call<Integer> call, Throwable t) {
+                    Log.d(TAG, "addItem.onFailure: response = " );
+
                     itemReceiver.onRequestFailure();
                 }
             };
@@ -324,6 +329,7 @@ public class WebService {
         }
     }
 
+    //dont update losts!!!!!!!!!
     private static class Losts {
         private static void requestItemsOfUser(Request<LfItem> request, Integer owner, MultipleSourcesItemReceiver<LfItem> msItemReceiver) {
             Log.d(TAG, "requestItemsOfUser: ");
@@ -337,10 +343,12 @@ public class WebService {
                         itemReceiver.onRequestFailure();
                         return;
                     }
-                    List<LostTable> lostTables = response.body().getLostTables();
-                    if(lostTables!=null) {
-                        for (LostTable lostTable : lostTables) {
-                            itemReceiver.onItemArrived(new LfItem(lostTable));
+                    if (response.body() != null) {
+                        List<LostTable> lostTables = response.body().getLostTables();
+                        if(lostTables!=null) {
+                            for (LostTable lostTable : lostTables) {
+                                itemReceiver.onItemArrived(new LfItem(lostTable));
+                            }
                         }
                     }
                     itemReceiver.onItemArrived(null);
@@ -359,6 +367,8 @@ public class WebService {
 
 
         private static void requestByFilter(final Request<LfItem> request, final MultipleSourcesItemReceiver<LfItem> msItemReceiver) {
+            Log.d(TAG, "Founds.requestByFilter: ");
+
             ItemsQuery query = (ItemsQuery) request.getQuery();
             msItemReceiver.onWorkerStarted();
             Callback<LostTableList> callback = new Callback<LostTableList>() {
@@ -447,7 +457,7 @@ public class WebService {
                 }
                 return;
             }
-            onItemArrived(item);
+            parentItemReceiver.onItemArrived(item);
         }
 
         @Override

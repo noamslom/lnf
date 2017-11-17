@@ -80,7 +80,7 @@ public class ItemsFeedFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(getContext());
+        mLayoutManager = new MyLinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)

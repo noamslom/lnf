@@ -4,8 +4,10 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 
@@ -16,37 +18,42 @@ import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 public class ItemsBulkStorage {
     private static final String TAG = "ItemsBulkStorage";
     //query --> list of all items ids for this query
-    private Hashtable<ItemsQuery,List<Integer>> itemsIdTable;
+    private Hashtable<ItemsQuery,Set<Integer>> itemsIdTable;
 
     public ItemsBulkStorage() {
         itemsIdTable = new Hashtable<>();
     }
 
     public List<Integer> getItemsIdList(ItemsQuery filter){
-        return generateAndGetIdList(filter);
+        return new ArrayList<>(generateAndGetIdList(filter)); //// FIXME: 17/11/2017 note efficient
     }
 
-    private List<Integer> generateAndGetIdList(ItemsQuery filter) {
-        List<Integer> idList = itemsIdTable.get(filter);
+    private Set<Integer> generateAndGetIdList(ItemsQuery filter) {
+        Set<Integer> idList = itemsIdTable.get(filter);
         if(idList==null){
-            idList =  Collections.synchronizedList(new ArrayList<Integer>());
+            idList = Collections.synchronizedSet(new HashSet<Integer>());
         }
         return idList;
     }
 
     public void addItemId(ItemsQuery filter, int id) {
-        List<Integer> idList = generateAndGetIdList(filter);
+        Set<Integer> idList = generateAndGetIdList(filter);
         itemsIdTable.put(filter, idList);
         idList.add(id);
-        Log.d(TAG, "addItemId: added item id = "+id+"idList = " + idList);
+        Log.d(TAG, "addItemId: added item id = "+id+"idList = " + idList+"query= "+filter);
 
     }
 
     public int size(ItemsQuery currentFilter) {
+        Log.d(TAG, "size: currentFilter = " + currentFilter);
+        Log.d(TAG, "size: getItemsIdList(currentFilter).size() = " + getItemsIdList(currentFilter).size());
+
         return getItemsIdList(currentFilter).size();
     }
 
     public Integer getItemId(ItemsQuery filter, int position) {
+        Log.d(TAG, "getItemId: filter = " + filter);
+
         return getItemsIdList(filter).get(position);
     }
 

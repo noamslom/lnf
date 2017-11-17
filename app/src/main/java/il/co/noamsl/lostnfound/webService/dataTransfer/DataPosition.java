@@ -15,4 +15,11 @@ public class DataPosition<T> {
 
         this.last = last;
     }
+
+    @Override
+    public String toString() {
+        return "DataPosition{" +
+                "last=" + last +
+                '}';
+    }
 }

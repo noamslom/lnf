@@ -44,4 +44,14 @@ public class Request<T> {
     public DataPosition<T> getDataPosition() {
         return dataPosition;
     }
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                "ITEM_RECEIVER=" + ITEM_RECEIVER +
+                ", MAX_ITEMS=" + MAX_ITEMS +
+                ", dataPosition=" + dataPosition +
+                ", query=" + query +
+                '}';
+    }
 }

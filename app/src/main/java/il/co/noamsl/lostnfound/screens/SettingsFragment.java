@@ -60,16 +60,16 @@ public class SettingsFragment extends Fragment {
 
     private void restoreSettings() {
         if(loggedInUser.getAddress()!=null){
-            etAddress.setText(loggedInUser.getAddress());
+            etAddress.setText(String.valueOf(loggedInUser.getAddress()));
         }
         if(loggedInUser.getEmail()!=null){
-            etEmail.setText(loggedInUser.getEmail());
+            etEmail.setText(String.valueOf(loggedInUser.getEmail()));
         }
         if(loggedInUser.getName()!=null){
-            etName.setText(loggedInUser.getName());
+            etName.setText(String.valueOf(loggedInUser.getName()));
         }
         if(loggedInUser.getPhoneNumber()!=null){
-            etPhone.setText(loggedInUser.getPhoneNumber());
+            etPhone.setText(String.valueOf(loggedInUser.getPhoneNumber()));
         }
     }
 
@@ -105,7 +105,7 @@ public class SettingsFragment extends Fragment {
 
     @NonNull
     private String getEmailFromEditText() {
-        return etEmail.getText().toString().toLowerCase();
+        return String.valueOf(etEmail.getText()).toLowerCase();
     }
 
     private boolean checkEmail(String email) {

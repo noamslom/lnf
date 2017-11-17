@@ -1,15 +1,17 @@
 package il.co.noamsl.lostnfound.repository.cache;
 
 import java.util.HashMap;
+import java.util.List;
 
 import il.co.noamsl.lostnfound.repository.item.LfItem;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 
 /**
  * Created by noams on 14/11/2017.
  */
 
 public class Cache<T extends Cacheable> {
-    private HashMap<String, T> hashMap;
+    protected HashMap<String, T> hashMap;
 
     public Cache() {
         hashMap = new HashMap<>();
@@ -25,5 +27,12 @@ public class Cache<T extends Cacheable> {
 
     public void updateItem(T newItem) {
         hashMap.put(newItem.getCacheId(),newItem);
+    }
+
+    @Override
+    public String toString() {
+        return "Cache{" +
+                "hashMap=" + hashMap +
+                '}';
     }
 }

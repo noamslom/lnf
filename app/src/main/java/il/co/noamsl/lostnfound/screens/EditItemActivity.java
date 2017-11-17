@@ -75,10 +75,10 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
         String description = etDescription.getText() + "";
         LfItem newItem = new LfItem(null, name, description, location, owner, picture, relevant, isAFound);
         switch (MODE) {
-            case EDIT: ServiceLocator.getExternalRepository().addItem(this,newItem);
+            case EDIT: ServiceLocator.getExternalRepository().updateItem(this,newItem);
                 break;
             case ADD:
-                ServiceLocator.getExternalRepository().updateItem(this,newItem);
+                ServiceLocator.getExternalRepository().addItem(this,newItem);
             break;
         }
         Toast.makeText(getApplicationContext(), "Submitting", Toast.LENGTH_SHORT).show();
