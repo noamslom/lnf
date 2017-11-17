@@ -32,6 +32,8 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
  */
 
 public class WebService {
+    private static final User FAKE_USER = new User(new Users("N","a@gds.com","050-1234567","Hereeee",777));
+
     private static final String TAG = "WebService";
     // '/' at the end is required
     private static final String BASE_URL = "http://10.0.2.2:8080/lf_server/webresources/";
@@ -173,9 +175,15 @@ public class WebService {
     }
 
     public void getUserByCredential(final ItemReceiver<User> itemReceiver, String credential) {
+        Log.d(TAG, "onResponse: credential = " + credential);
+
+//        itemReceiver.onItemArrived(FAKE_USER);
+        //fixme uncomment the code
         Callback<Users> callback = new Callback<Users>() {
             @Override
             public void onResponse(Call<Users> call, Response<Users> response) {
+
+                Log.d(TAG, "getUserByCredential.onResponse: "+response.isSuccessful()+"Body="+response.body());
                 if(!response.isSuccessful()){
                     itemReceiver.onRequestFailure();
                     return;
