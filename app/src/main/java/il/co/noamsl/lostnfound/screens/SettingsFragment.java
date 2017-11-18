@@ -18,6 +18,7 @@ import android.widget.Toast;
 import il.co.noamsl.lostnfound.MainActivity;
 import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.ServiceLocator;
+import il.co.noamsl.lostnfound.Util;
 import il.co.noamsl.lostnfound.repository.Repository;
 import il.co.noamsl.lostnfound.repository.User.User;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
@@ -185,12 +186,12 @@ public class SettingsFragment extends Fragment implements ItemReceiver<Boolean> 
 
     @Override
     public void onItemArrived(Boolean item) {
-        Toast.makeText(getContext(), "Settings Submit Successful!", Toast.LENGTH_SHORT).show();
+        Util.MyToast.makeText(getContext(), "Settings Submit Successful!", Toast.LENGTH_SHORT);
     }
 
     @Override
     public void onRequestFailure() {
-        Toast.makeText(getContext(), "Unable to submit", Toast.LENGTH_SHORT).show();
+        Util.MyToast.makeText(getContext(), "Unable to submit", Toast.LENGTH_SHORT);
     }
 
     /**

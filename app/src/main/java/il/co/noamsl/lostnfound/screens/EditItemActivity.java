@@ -11,6 +11,7 @@ import android.widget.ToggleButton;
 
 import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.ServiceLocator;
+import il.co.noamsl.lostnfound.Util;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 
@@ -82,7 +83,7 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
                 ServiceLocator.getExternalRepository().addItem(this, newItem);
                 break;
         }
-        Toast.makeText(getApplicationContext(), "Submitting", Toast.LENGTH_SHORT).show();
+        Util.MyToast.makeText(getApplicationContext(), "Submitting", Toast.LENGTH_SHORT);
     }
 
     private Integer getOwner() {
@@ -101,13 +102,13 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
 
     @Override
     public void onItemArrived(Boolean item) {
-        Toast.makeText(getApplicationContext(), "Item Submit Successful!", Toast.LENGTH_SHORT).show();
+        Util.MyToast.makeText(getApplicationContext(), "Item Submit Successful!", Toast.LENGTH_SHORT);
         this.onBackPressed();
     }
 
     @Override
     public void onRequestFailure() {
-        Toast.makeText(getApplicationContext(), "Unable to submit!", Toast.LENGTH_SHORT).show();
+        Util.MyToast.makeText(getApplicationContext(), "Unable to submit!", Toast.LENGTH_SHORT);
     }
 
 

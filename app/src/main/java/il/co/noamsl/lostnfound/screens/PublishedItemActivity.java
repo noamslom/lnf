@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.ServiceLocator;
+import il.co.noamsl.lostnfound.Util;
 import il.co.noamsl.lostnfound.repository.external.RepositoryExternal;
 import il.co.noamsl.lostnfound.repository.User.User;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
@@ -83,6 +84,6 @@ public class PublishedItemActivity extends AppCompatActivity implements ItemRece
 
     @Override
     public void onRequestFailure() {
-        Toast.makeText(getApplicationContext(),"Unable to get published item details",Toast.LENGTH_SHORT).show();
+        Util.MyToast.makeText(getApplicationContext(),"Unable to get published item details",Toast.LENGTH_SHORT);
     }
 }

@@ -3,7 +3,6 @@ package il.co.noamsl.lostnfound.screens.itemsFeed;
 import android.app.Activity;
 import android.arch.lifecycle.LiveData;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -90,7 +89,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public synchronized void onRequestFailure() {
         onItemArrived(null);
-        Toast.makeText(recyclerView.getContext(), "Unable to load items", Toast.LENGTH_SHORT).show();
+        Util.MyToast.makeText(recyclerView.getContext(), "Unable to load items", Toast.LENGTH_SHORT);
     }
 
     private synchronized void setIsLoading(boolean isLoading) {
