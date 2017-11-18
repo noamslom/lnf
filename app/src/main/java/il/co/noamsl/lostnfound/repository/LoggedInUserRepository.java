@@ -60,4 +60,22 @@ public class LoggedInUserRepository {
         }, user);
 
     }
+
+    public void registerUser(final ItemReceiver<Boolean> itemReceiver, String mEmail) {
+        ItemReceiver<User> userItemReceiver = new ItemReceiver<User>() {
+            @Override
+            public void onItemArrived(User user) {
+                if (user == null)
+                    throw new IllegalStateException();
+                loggedInUser = user;
+                itemReceiver.onItemArrived(true);
+            }
+
+            @Override
+            public void onRequestFailure() {
+                itemReceiver.onRequestFailure();
+            }
+        };
+        webService.registerUser(userItemReceiver, mEmail);
+    }
 }

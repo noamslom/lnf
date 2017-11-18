@@ -32,9 +32,10 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
  */
 
 public class WebService {
+    private static final String TAG = "WebService";
+
     private static final User FAKE_USER = new User(new Users("N","a@gds.com","050-1234567","Hereeee",777));
 
-    private static final String TAG = "WebService";
     // '/' at the end is required
     private static final String BASE_URL = "http://10.0.2.2:8080/lf_server/webresources/";
     // order at which converters are added matters!
@@ -172,7 +173,6 @@ public class WebService {
 
     public void getUserByCredential(final ItemReceiver<User> itemReceiver, String credential) {
 //        itemReceiver.onItemArrived(FAKE_USER);
-        //fixme uncomment the code
         Callback<Users> callback = new Callback<Users>() {
             @Override
             public void onResponse(Call<Users> call, Response<Users> response) {
@@ -214,6 +214,27 @@ public class WebService {
             }
         };
         API.user_edit(user.toWSUser()).enqueue(callback);
+    }
+
+    //assumes legal registration email
+    public void registerUser(final ItemReceiver<User> userItemReceiver, final String mEmail) {
+        Log.d(TAG, "registerUser() called with: userItemReceiver = [" + userItemReceiver + "], mEmail = [" + mEmail + "]");
+        API.user_create(new Users(null, mEmail, null, null, null)).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                Log.d(TAG, "onResponse() called with: call = [" + call + "], response = [" + response + "]");
+                if(!response.isSuccessful() || response.body() == null){
+                    throw new IllegalStateException();
+                }
+                getUserByCredential(userItemReceiver,mEmail);
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Log.d(TAG, "onFailure() called with: call = [" + call + "], t = [" + t + "]");
+                userItemReceiver.onRequestFailure();
+            }
+        });
     }
 
     //update only Founds!!!!!!!!!!!!!!!!!!!

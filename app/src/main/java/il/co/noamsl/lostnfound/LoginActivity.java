@@ -30,6 +30,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -303,7 +304,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
-        private boolean gotResponse;
+        private boolean serverError;
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
@@ -313,14 +314,61 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-            gotResponse = false;
+            boolean userExists = userLogin();
+            if(userExists){
+                return true;
+            }
+            // TODO: register the new account here.
+            return userRegister();
+        }
+
+        private boolean userRegister() {
+            final boolean[] gotResponse = {false};
+            ItemReceiver<Boolean> itemReceiver = new ItemReceiver<Boolean>() {
+                @Override
+                public void onItemArrived(Boolean success) {
+                    if(!success)
+                        throw new IllegalStateException();
+                    synchronized (UserLoginTask.this){
+                        gotResponse[0] = true;
+                        UserLoginTask.this.notify();
+                    }
+
+                }
+
+                @Override
+                public void onRequestFailure() {
+                    synchronized (UserLoginTask.this){
+                        gotResponse[0] = true;
+                        serverError = true;
+                        UserLoginTask.this.notify();
+                    }
+                }
+            };
+            Repository.getGlobal().registerUser(itemReceiver,mEmail);
+            synchronized (UserLoginTask.this){
+                try {
+                    if(!gotResponse[0]){
+                        wait();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            User loggedInUser = Repository.getGlobal().getLoggedInUser();
+            return loggedInUser!=null;
+
+        }
+
+        private boolean userLogin() {
+            final boolean[] gotResponse = {false};
             Repository.getGlobal().setLoggedInUserId(new ItemReceiver<User>() {
                 @Override
                 public void onItemArrived(User loggedInUser) {
                     Log.d(TAG, "onItemArrived: arrived");
 
                     synchronized (UserLoginTask.this){
-                        gotResponse = true;
+                        gotResponse[0] = true;
                         UserLoginTask.this.notify();
                         Log.d(TAG, "onItemArrived: notified");
                     }
@@ -329,7 +377,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 @Override
                 public void onRequestFailure() {
                     synchronized (UserLoginTask.this){
-                        gotResponse = true;
+                        gotResponse[0] = true;
+                        serverError = true;
                         UserLoginTask.this.notify();
                     }
                 }
@@ -338,7 +387,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             synchronized (UserLoginTask.this){
                 try {
                     Log.d(TAG, "doInBackground: waiting");
-                    if(!gotResponse){
+                    if(!gotResponse[0]){
                         wait();
                     }
                 } catch (InterruptedException e) {
@@ -347,8 +396,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
             User loggedInUser = Repository.getGlobal().getLoggedInUser();
             Log.d(TAG, "doInBackground: loggedInUser = " + loggedInUser);
-
-            // TODO: register the new account here.
             return loggedInUser!=null;
         }
 
@@ -361,8 +408,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                if(!serverError){
+                    mPasswordView.setError(getString(R.string.error_incorrect_password_or_email));
+                    mPasswordView.requestFocus();
+                } else{
+                    Toast.makeText(getApplicationContext(),"Unable to connect to the server",Toast.LENGTH_SHORT).show();
+                }
             }
         }
 

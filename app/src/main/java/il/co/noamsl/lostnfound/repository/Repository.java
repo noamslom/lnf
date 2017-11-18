@@ -79,4 +79,8 @@ public class Repository {
             throw new IllegalStateException("only able to change logged in user");
         }
     }
+
+    public void registerUser(ItemReceiver<Boolean> itemReceiver, String mEmail) {
+        loggedInUserRepository.registerUser(itemReceiver,mEmail);
+    }
 }
