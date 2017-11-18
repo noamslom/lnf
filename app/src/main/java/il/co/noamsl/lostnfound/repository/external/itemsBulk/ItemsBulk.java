@@ -19,22 +19,22 @@ import il.co.noamsl.lostnfound.screens.itemsFeed.Loadable;
 
 public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
     private static final String TAG = "ItemsBulk";
-    private int tempItemsCount=0;
+    private int tempItemsCount = 0;
     private int mData; //// FIXME: 05/11/2017 delete this
     private static final int ITEMS_PER_REQUEST = 30;
     protected Repository repository;
     private RequestAgent requestAgent;
     private Loadable requester;
     private ItemReceiver<LfItem> itemReceiver;
-//    private int itemsCount;
-protected ItemsQuery currentFilter;
+    //    private int itemsCount;
+    protected ItemsQuery currentFilter;
     protected ItemsBulkStorage storage;
 
     public ItemsBulk(Repository repository, Loadable requester) {
         this.repository = repository;
         this.storage = new ItemsBulkStorage();
         requestAgent = new RequestAgent();
-        this.requester=requester;
+        this.requester = requester;
 //        this.itemsCount=0;
     }
 
@@ -68,14 +68,14 @@ protected ItemsQuery currentFilter;
     }
 */
 
-    public int getItemCount() {
+    public synchronized int getItemCount() {
         return storage.size(currentFilter);
     }
 
     public LfItem get(int position) {
-        if(position>=getItemCount())
+        if (position >= getItemCount())
             return null;
-        Integer itemId = storage.getItemId(currentFilter,position);
+        Integer itemId = storage.getItemId(currentFilter, position);
         return repository.getItemById(itemId);
     }
 
@@ -85,14 +85,13 @@ protected ItemsQuery currentFilter;
 
     public void requestMoreItems() {
         DataPosition<LfItem> lastItemDataPosition;
-        if(storage.size(currentFilter)!=0){
+        if (storage.size(currentFilter) != 0) {
 //            lastItemDataPosition = new DataPosition<LfItem>(repository.getItemById(storage.getLast(currentFilter))); // FIXME: 17/11/2017 enable this
             lastItemDataPosition = new DataPosition<>(null);
-        }
-        else{
+        } else {
             lastItemDataPosition = new DataPosition<>(null);
         }
-        repository.requestItems(new Request<LfItem>(this,lastItemDataPosition,currentFilter),null);//// FIXME: 13/11/2017 use request agent preferred
+        repository.requestItems(new Request<LfItem>(this, lastItemDataPosition, currentFilter), null);//// FIXME: 13/11/2017 use request agent preferred
 //        if(requester!=null){
 //            requester.setLoaded();
 //        }
@@ -102,15 +101,15 @@ protected ItemsQuery currentFilter;
     @Override
     public void onItemArrived(LfItem item) {
         if (item == null) {
-            if(itemReceiver!=null){
+            if (itemReceiver != null) {
                 itemReceiver.onItemArrived(item);
             }
             return;
         }
-        storage.addItemId(currentFilter,item.getId());
+        storage.addItemId(currentFilter, item.getId());
 //        Log.d("noamd", "itum bulk added" + itemsCount);
 //        itemsCount++;
-        if(itemReceiver!=null){
+        if (itemReceiver != null) {
             itemReceiver.onItemArrived(item);
         }
         requestAgent.next();

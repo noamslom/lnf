@@ -35,6 +35,7 @@ public class WebService {
     private static final String TAG = "WebService";
 
     private static final User FAKE_USER = new User(new Users("N","a@gds.com","050-1234567","Hereeee",777));
+    private static final FoundTable FAKE_FOUND = new FoundTable("Wallet","d","l",5,"pic",null,true);
 
     // '/' at the end is required
     private static final String BASE_URL = "http://10.0.2.2:8080/lf_server/webresources/";
@@ -239,6 +240,8 @@ public class WebService {
 
     //update only Founds!!!!!!!!!!!!!!!!!!!
     private static class Founds {
+        private static final String TAG = "WebService.Founds";
+
         private static void requestItemsOfUser(Request<LfItem> request, Integer owner, MultipleSourcesItemReceiver<LfItem> msItemReceiver) {
             Log.d(TAG, "requestItemsOfUser: ");
 
@@ -346,7 +349,10 @@ public class WebService {
                     itemReceiver.onRequestFailure();
                 }
             };
-            API.found_create(lfItem.toFoundTable()).enqueue(callback);
+            Log.d(TAG, "addItem: testing");
+
+            API.found_create(FAKE_FOUND/*lfItem.toFoundTable()*/).enqueue(callback); //// FIXME: 18/11/2017
+
         }
     }
 

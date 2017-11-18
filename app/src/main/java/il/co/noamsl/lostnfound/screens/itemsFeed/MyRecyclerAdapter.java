@@ -3,6 +3,8 @@ package il.co.noamsl.lostnfound.screens.itemsFeed;
 import android.app.Activity;
 import android.arch.lifecycle.LiveData;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,6 +15,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.Util;
@@ -37,7 +42,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private final int VIEW_TYPE_LOADING = 1;
     private OnLoadMoreListener onLoadMoreListener;
     private int lastVisibleItem, totalItemCount;
-    private boolean isLoading; //careful! should be set only using setter otherwise causing lack of persistence
+    private volatile Boolean isLoading = false; //careful! should be set only using setter otherwise causing lack of persistence
     private final int VISIBLE_THRESHOLD = 20;
     private final LiveData<Activity> parentActivity;
     private RecyclerView recyclerView;
@@ -75,7 +80,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
-    public void onItemArrived(LfItem item) {
+    public synchronized void onItemArrived(LfItem item) {
         if (item == null) {
             MyRecyclerAdapter.this.setIsLoading(false);
         }
@@ -83,23 +88,26 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
-    public void onRequestFailure() {
+    public synchronized void onRequestFailure() {
         onItemArrived(null);
-        Toast.makeText(recyclerView.getContext(), "Unable to load items",Toast.LENGTH_SHORT).show();
+        Toast.makeText(recyclerView.getContext(), "Unable to load items", Toast.LENGTH_SHORT).show();
     }
 
-    private void setIsLoading(boolean isLoading) {
-        Log.d(TAG, "setIsLoading: isLoading = " + isLoading + Util.trace(0));
-
+    private synchronized void setIsLoading(boolean isLoading) {
+        Log.d(TAG, "setIsLoading: isLoading = " + isLoading);
         this.isLoading = isLoading;
-//        myNotifyChange(); // FIXME: 16/11/2017 enable this
+        myNotifyChange(); // FIXME: 16/11/2017 enable this
     }
 
-    private void myNotifyChange() {
+    private synchronized void myNotifyChange() {
         Runnable notifier = new Runnable() {
             @Override
             public void run() {
-                notifyDataSetChanged(); //// FIXME: 05/11/2017 not efficient
+                synchronized (itemsBulk) {
+                    synchronized (isLoading) {
+                        notifyDataSetChanged(); //// FIXME: 05/11/2017 not efficient
+                    }
+                }
             }
         };
         recyclerView.post(notifier);
@@ -109,7 +117,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 //        }
     }
 
-    public boolean getIsLoading() {
+    public synchronized boolean getIsLoading() {
         return isLoading;
     }
 
@@ -128,6 +136,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public TextView itemTitle;
         private Integer itemId = null;
         private boolean isMyItem;
+
         public ItemViewHolder(final View itemView, final Activity parent, final boolean isMyItem) {
             super(itemView);
             this.isMyItem = isMyItem;
@@ -137,13 +146,12 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(isMyItem){
+                    if (isMyItem) {
                         Intent intent = new Intent(parent, EditItemActivity.class);
                         intent.putExtra(EditItemActivity.ARG_ITEM_ID, itemId);
                         intent.putExtra(EditItemActivity.ARG_MODE, EditItemActivity.Mode.EDIT.ordinal());
                         parent.startActivity(intent);
-                    }
-                    else{
+                    } else {
                         Intent intent = new Intent(parent, PublishedItemActivity.class);
                         intent.putExtra(PublishedItemActivity.ARG_ITEM_ID, itemId);
                         parent.startActivity(intent);
@@ -171,11 +179,25 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private class LoadingViewHolder extends RecyclerView.ViewHolder {
-        public ProgressBar progressBar;
-
+        private ProgressBar progressBar;
         public LoadingViewHolder(View view) {
             super(view);
             progressBar = (ProgressBar) view.findViewById(R.id.pb_loading_items);
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    synchronized (isLoading){
+                        recyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressBar.setVisibility(isLoading? View.VISIBLE: View.GONE);
+                            }
+                        });
+                    }
+                }
+            }, 100, 5000);
+
         }
     }
 
@@ -188,12 +210,14 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         initLoadingMechanism(recyclerView);
         initOnLoadMoreListener();
-        filter(new ItemsQuery("","",null,true)); //fixme this is default query
+        filter(new ItemsQuery("", "", null, true)); //fixme this is default query
 
 
     }
 
     private void fillFirstItems() {
+        Log.d(TAG, "fillFirstItems: ");
+
         requestMoreItems();
 
 /*
@@ -212,15 +236,38 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         itemsBulk.setRequester(this);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            public synchronized boolean isScrolling() {
+                return scrolling;
+            }
+
+            public synchronized void setScrolling(boolean scrolling) {
+                this.scrolling = scrolling;
+            }
+
+            private volatile boolean scrolling = false;
+            private final int MAX_SCROLL_FREQ = 500;
+
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+
+                if (isScrolling())
+                    return;
+                setScrolling(true);
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setScrolling(false);
+                    }
+                }, MAX_SCROLL_FREQ);
+
 
                 Log.d(TAG, "onScrolled: ");
 
                 totalItemCount = linearLayoutManager.getItemCount();
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                if (!isLoading && totalItemCount <= (lastVisibleItem + VISIBLE_THRESHOLD)) {
+                if (!getIsLoading() && totalItemCount <= (lastVisibleItem + VISIBLE_THRESHOLD)) {
                     if (onLoadMoreListener != null) {
                         onLoadMoreListener.onLoadMore();
                     }
@@ -244,7 +291,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_card_layout, parent, false); //careful
             //fixme not ideal to use instanceof here, not modular
-            return new ItemViewHolder(v, parentActivity.getValue(),itemsBulk instanceof MyItemsItemsBulk);
+            return new ItemViewHolder(v, parentActivity.getValue(), itemsBulk instanceof MyItemsItemsBulk);
         } else if (viewType == VIEW_TYPE_LOADING) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loading, parent, false);
             return new LoadingViewHolder(view);
@@ -278,7 +325,13 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         Log.d("noamd", "getItemCount: " + itemsBulk.getItemCount());
 //// FIXME: 15/11/2017 careful
         //fixme danger(with threads no persistence)
-        return isLoading ? itemsBulk.getItemCount() + 1 : itemsBulk.getItemCount();
+        synchronized (itemsBulk) {
+            synchronized (isLoading) {
+//                return getIsLoading() ? itemsBulk.getItemCount() + 1 : itemsBulk.getItemCount();
+                return itemsBulk.getItemCount()+1;
+            }
+        }
+
 //        return itemsBulk.getItemCount()+1;
     }
 

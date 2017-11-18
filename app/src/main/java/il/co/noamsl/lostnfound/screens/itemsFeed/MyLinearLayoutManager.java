@@ -3,7 +3,9 @@ package il.co.noamsl.lostnfound.screens.itemsFeed;
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 
 class MyLinearLayoutManager extends LinearLayoutManager {
     /**
@@ -27,4 +29,5 @@ class MyLinearLayoutManager extends LinearLayoutManager {
     public MyLinearLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
+
 }
