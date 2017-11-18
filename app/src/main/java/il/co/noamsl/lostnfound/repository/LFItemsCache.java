@@ -44,17 +44,17 @@ public class LFItemsCache extends Cache<LfItem> {
             return filter.isAFound()==item.isAFound();
 
         boolean matches = false;
-        if(filter.getOwner()!=null){
+        if(filter.getOwner()!=null && item.getOwner()!=null){
             matches |= filter.getOwner().equals(item.getOwner());
         }
-        if(filter.getName()!=null){
+        if(filter.getName()!=null && item.getName()!=null){
             matches |= item.getName().toLowerCase().contains(filter.getName().toLowerCase());
         }
-        if(filter.getDescription()!=null){
+        if(filter.getDescription()!=null && item.getDescription()!=null){
             matches |= item.getDescription().toLowerCase().contains(filter.getDescription().toLowerCase());
 
         }
-        if(filter.getLocation()!=null){
+        if(filter.getLocation()!=null && item.getLocation()!=null){
             matches |= item.getLocation().toLowerCase().contains(filter.getLocation().toLowerCase());
 
         }

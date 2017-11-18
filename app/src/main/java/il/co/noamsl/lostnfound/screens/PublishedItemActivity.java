@@ -19,12 +19,16 @@ import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 public class PublishedItemActivity extends AppCompatActivity implements ItemReceiver<User> {
 
     public static final String ARG_ITEM_ID = "itemID";
+    private static final String LOST_TEXT = "Lost Item:";
+    private static final String FOUND_TEXT = "Found Item";
+
     private int itemId;
     private TextView tvTitle;
     private TextView tvDescription;
     private TextView tvLocation;
     private TextView tvEmail;
     private TextView tvPhone;
+    private TextView tvLostOrFound;
     private ImageView ivMainImage;
     private User owner;
     private Button btnContact;
@@ -44,6 +48,7 @@ public class PublishedItemActivity extends AppCompatActivity implements ItemRece
         tvLocation = (TextView) findViewById(R.id.published_item_tv_location);
         ivMainImage = (ImageView) findViewById(R.id.published_item_iv_main_image);
         btnContact = (Button) findViewById(R.id.published_item_btn_contact);
+        tvLostOrFound = (TextView) findViewById(R.id.published_item_tv_lost_or_found);
         updateFields();
     }
 
@@ -58,6 +63,7 @@ public class PublishedItemActivity extends AppCompatActivity implements ItemRece
         tvDescription.setText(item.getDescription());
         tvLocation.setText(item.getLocation());
         ivMainImage.setImageDrawable(item.getMainImage().getDrawable());
+        tvLostOrFound.setText(item.isAFound() ? FOUND_TEXT : LOST_TEXT);
 
     }
 

@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +32,8 @@ public class ItemsFeedFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     private ItemsBulk itemsBulk;
+    private ItemsStateListener itemsStateListener;
+
     public ItemsFeedFragment() {
         // Required empty public constructor
     }
@@ -96,6 +97,7 @@ public class ItemsFeedFragment extends Fragment {
         if (getArguments() != null) {
             itemsBulk = getArguments().getParcelable(ARG_ITEMS_BULK);
         }
+        itemsBulk.setItemsStateListener(itemsStateListener);
 
     }
 
@@ -116,12 +118,18 @@ public class ItemsFeedFragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
     }
-    public static ItemsFeedFragment newInstance(ItemsBulk itemsBulk) {
+    public static ItemsFeedFragment newInstance(ItemsBulk itemsBulk, ItemsStateListener itemsStateListener) {
+        //// FIXME: 18/11/2017 not saving parent
         ItemsFeedFragment fragment = new ItemsFeedFragment();
+        fragment.setItemsStateListener(itemsStateListener);
         Bundle args = new Bundle();
         args.putParcelable(ARG_ITEMS_BULK,itemsBulk);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    private void setItemsStateListener(ItemsStateListener itemsStateListener) {
+        this.itemsStateListener = itemsStateListener;
     }
 
     @Override

@@ -1,40 +1,30 @@
 package il.co.noamsl.lostnfound;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 
-import il.co.noamsl.lostnfound.repository.Repository;
-import il.co.noamsl.lostnfound.repository.User.User;
-import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
-import il.co.noamsl.lostnfound.webService.eitan.Users;
-import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.repository.external.RepositoryExternal;
-import il.co.noamsl.lostnfound.webService.WebService;
 import il.co.noamsl.lostnfound.screens.itemsFeed.ItemsFeedFragment;
 import il.co.noamsl.lostnfound.screens.MainFeedFragment;
 import il.co.noamsl.lostnfound.screens.MyItemsFragment;
 import il.co.noamsl.lostnfound.screens.SettingsFragment;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class MainActivity extends AppCompatActivity implements
         MainFeedFragment.OnFragmentInteractionListener,
         MyItemsFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener,
-        ItemsFeedFragment.OnFragmentInteractionListener {
+        ItemsFeedFragment.OnFragmentInteractionListener{
     private static final String TAG = "MainActivity";
-    private static Context context_remove; //// FIXME: 05/11/2017
+    private static Context context; //// FIXME: 05/11/2017
 
     public static RepositoryExternal getExternalRepository() {
         return ServiceLocator.getExternalRepository();
@@ -72,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void setFragmentToSettings() {
         if (settingsFragment == null) {
-            settingsFragment = new SettingsFragment();
+            settingsFragment = SettingsFragment.newInstance(this);
         }
         replaceFragment(settingsFragment);
     }
@@ -107,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements
 
         initFragment(savedInstanceState);
 
-        context_remove = getApplicationContext();
+        context = getApplicationContext();
 
 
     }
@@ -145,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements
     //// FIXME: 15/11/2017 remove
     private static void doBullshit() {
 /*
-        Repository.getGlobal().setLoggedInUserId(new ItemReceiver<User>() {
+        Repository.getRepository().setLoggedInUserId(new ItemReceiver<User>() {
             @Override
             public void onItemArrived(User item) {
 
@@ -220,11 +210,19 @@ public class MainActivity extends AppCompatActivity implements
         //TODO handle later
     }
 
-    public static Context getContextRemoveThisMethod() {
-        return context_remove;
+    public static Context getContext() {
+        return context;
     }
 
     public void setNavigationListening(boolean navigationListening) {
         this.navigationListening = navigationListening;
+    }
+
+    public void logout() {
+        ServiceLocator.getRepository().clearLoggedInUser();
+        ServiceLocator.clearGlobalRepository();
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

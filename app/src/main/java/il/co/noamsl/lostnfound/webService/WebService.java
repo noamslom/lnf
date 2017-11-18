@@ -131,7 +131,7 @@ public class WebService {
 
     }
 
-    public void addItem(final ItemReceiver<Boolean> itemReceiver,LfItem lfItem) {
+    public void addItem(final ItemReceiver<Integer> itemReceiver, LfItem lfItem) {
         //// TODO: 17/11/2017 add failure handling
         if (lfItem.isAFound()) {
             Founds.addItem(itemReceiver,lfItem);
@@ -327,7 +327,7 @@ public class WebService {
             });
         }
 
-        public static void addItem(final ItemReceiver<Boolean> itemReceiver,LfItem lfItem) {
+        public static void addItem(final ItemReceiver<Integer> itemReceiver, LfItem lfItem) {
             Log.d(TAG, "addItem: lfItem = " + lfItem);
 
             Callback<Integer> callback = new Callback<Integer>() {
@@ -339,7 +339,7 @@ public class WebService {
                         itemReceiver.onRequestFailure();
                         return;
                     }
-                    itemReceiver.onItemArrived(true);
+                    itemReceiver.onItemArrived(response.body());
                 }
 
                 @Override
@@ -351,13 +351,15 @@ public class WebService {
             };
             Log.d(TAG, "addItem: testing");
 
-            API.found_create(FAKE_FOUND/*lfItem.toFoundTable()*/).enqueue(callback); //// FIXME: 18/11/2017
+            API.found_create(lfItem.toFoundTable()).enqueue(callback); //// FIXME: 18/11/2017
 
         }
     }
 
     //dont update losts!!!!!!!!!
     private static class Losts {
+        private static final String TAG = "WebService.Losts";
+
         private static void requestItemsOfUser(Request<LfItem> request, Integer owner, MultipleSourcesItemReceiver<LfItem> msItemReceiver) {
             Log.d(TAG, "requestItemsOfUser: ");
 
@@ -394,7 +396,7 @@ public class WebService {
 
 
         private static void requestByFilter(final Request<LfItem> request, final MultipleSourcesItemReceiver<LfItem> msItemReceiver) {
-            Log.d(TAG, "Founds.requestByFilter: ");
+            Log.d(TAG, "Losts.requestByFilter: ");
 
             ItemsQuery query = (ItemsQuery) request.getQuery();
             msItemReceiver.onWorkerStarted();
@@ -443,23 +445,32 @@ public class WebService {
             });
         }
 
-        public static void addItem(final ItemReceiver<Boolean> itemReceiver,LfItem lfItem) {
+        public static void addItem(final ItemReceiver<Integer> itemReceiver, LfItem lfItem) {
+            Log.d(TAG, "addItem: lfItem = " + lfItem);
+
             Callback<Integer> callback = new Callback<Integer>() {
                 @Override
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
+                    Log.d(TAG, "addItem.onResponse: response = " + response);
+
                     if(!response.isSuccessful()){
                         itemReceiver.onRequestFailure();
                         return;
                     }
-                    itemReceiver.onItemArrived(true);
+                    itemReceiver.onItemArrived(response.body());
                 }
 
                 @Override
                 public void onFailure(Call<Integer> call, Throwable t) {
+                    Log.d(TAG, "addItem.onFailure: response = " );
+
                     itemReceiver.onRequestFailure();
                 }
             };
-            API.lost_create(lfItem.toLostTable()).enqueue(callback);
+            Log.d(TAG, "addItem: testing");
+
+            API.lost_create(lfItem.toLostTable()).enqueue(callback); //// FIXME: 18/11/2017
+
         }
     }
 

@@ -35,7 +35,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import il.co.noamsl.lostnfound.repository.Repository;
 import il.co.noamsl.lostnfound.repository.User.User;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.webService.eitan.Users;
@@ -67,6 +66,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        ServiceLocator.initRepository(getApplicationContext());
+        checkAlreadyLoggedIn();
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -93,6 +96,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    private void checkAlreadyLoggedIn() {
+        if(ServiceLocator.getRepository().getLoggedInUser()!=null){
+            login();
+        }
     }
 
     private void populateAutoComplete() {
@@ -345,7 +354,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     }
                 }
             };
-            Repository.getGlobal().registerUser(itemReceiver,mEmail);
+            ServiceLocator.getRepository().registerUser(itemReceiver,mEmail);
             synchronized (UserLoginTask.this){
                 try {
                     if(!gotResponse[0]){
@@ -355,14 +364,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     e.printStackTrace();
                 }
             }
-            User loggedInUser = Repository.getGlobal().getLoggedInUser();
+            User loggedInUser = ServiceLocator.getRepository().getLoggedInUser();
             return loggedInUser!=null;
 
         }
 
         private boolean userLogin() {
             final boolean[] gotResponse = {false};
-            Repository.getGlobal().setLoggedInUserId(new ItemReceiver<User>() {
+            ServiceLocator.getRepository().setLoggedInUserId(new ItemReceiver<User>() {
                 @Override
                 public void onItemArrived(User loggedInUser) {
                     Log.d(TAG, "onItemArrived: arrived");
@@ -394,7 +403,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     e.printStackTrace();
                 }
             }
-            User loggedInUser = Repository.getGlobal().getLoggedInUser();
+            User loggedInUser = ServiceLocator.getRepository().getLoggedInUser();
             Log.d(TAG, "doInBackground: loggedInUser = " + loggedInUser);
             return loggedInUser!=null;
         }
@@ -405,8 +414,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
+                login();
             } else {
                 if(!serverError){
                     mPasswordView.setError(getString(R.string.error_incorrect_password_or_email));
@@ -422,6 +430,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    private void login() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
     }
 }
 

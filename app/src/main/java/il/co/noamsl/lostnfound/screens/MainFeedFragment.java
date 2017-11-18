@@ -82,7 +82,7 @@ public class MainFeedFragment extends Fragment {
         if (savedInstanceState != null) {
             return;
         }
-        itemFeed = new ItemFeed(this,R.id.main_feed_fl_feed_containter, MainActivity.getExternalRepository().getAllItemsItemsBulk());
+        itemFeed = new ItemFeed(this,R.id.main_feed_fl_feed_containter, MainActivity.getExternalRepository().getAllItemsItemsBulk(),null);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package il.co.noamsl.lostnfound.screens;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,8 +15,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import il.co.noamsl.lostnfound.MainActivity;
 import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.ServiceLocator;
+import il.co.noamsl.lostnfound.repository.Repository;
 import il.co.noamsl.lostnfound.repository.User.User;
 import il.co.noamsl.lostnfound.webService.eitan.Users;
 
@@ -28,16 +31,25 @@ import il.co.noamsl.lostnfound.webService.eitan.Users;
  */
 public class SettingsFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
-
+//    private static final String ARG_MAIN_ACTIVITY = "mainActivity";
     private EditText etName;
     private EditText etEmail;
     private EditText etPhone;
     private EditText etAddress;
     private User loggedInUser;
     private Button btnSubmit;
+    private Button btnLogout;
+    private MainActivity mainActivity;
 
     public SettingsFragment() {
-        // Required empty public constructor
+    }
+
+    public static SettingsFragment newInstance(MainActivity mainActivity) {
+        Bundle args = new Bundle();
+        SettingsFragment fragment = new SettingsFragment();
+        fragment.setMainActivity(mainActivity);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -48,13 +60,20 @@ public class SettingsFragment extends Fragment {
         etPhone = (EditText) getView().findViewById(R.id.settings_et_phone);
         etAddress = (EditText) getView().findViewById(R.id.setting_et_address);
         btnSubmit = (Button) getView().findViewById(R.id.settings_btn_submit);
+        btnLogout = (Button) getView().findViewById(R.id.settings_btn_logout);
+
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                submitChanges(v);
+                submitChanges();
             }
         });
-
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logout();
+            }
+        });
         restoreSettings();
     }
 
@@ -87,7 +106,7 @@ public class SettingsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
-    public void submitChanges(View view) {
+    public void submitChanges() {
         //// TODO: 17/11/2017
         String email = getEmailFromEditText();
 
@@ -101,6 +120,10 @@ public class SettingsFragment extends Fragment {
         ServiceLocator.getExternalRepository().updateUser(new User(new Users(name, email, phone, address, userId)));
         Toast.makeText(getContext(), "Settings Submit Successful!", Toast.LENGTH_SHORT).show();
 //        getActivity().onBackPressed();
+    }
+
+    public void logout() {
+        mainActivity.logout();
     }
 
     @NonNull
@@ -156,6 +179,10 @@ public class SettingsFragment extends Fragment {
         mListener = null;
     }
 
+    public void setMainActivity(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -170,5 +197,6 @@ public class SettingsFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }
 

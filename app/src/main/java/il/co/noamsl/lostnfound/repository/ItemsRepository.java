@@ -72,8 +72,10 @@ class ItemsRepository {
         webService.updateItem(new ItemReceiver<Boolean>(){
             @Override
             public void onItemArrived(Boolean success) {
-                //fixme check answer code
+                if(!success)
+                    throw new IllegalStateException();
                 itemsCache.updateItem(newItem);
+                itemReceiver.onItemArrived(success);
             }
 
             @Override
@@ -84,11 +86,15 @@ class ItemsRepository {
     }
 
     public void addItem(final ItemReceiver<Boolean> itemReceiver, final LfItem lfItem) {
-        webService.addItem(new ItemReceiver<Boolean>(){
+        webService.addItem(new ItemReceiver<Integer>(){
             @Override
-            public void onItemArrived(Boolean success) {
+            public void onItemArrived(Integer id) {
                 //fixme check answer code
-                itemsCache.add(lfItem);
+                if(id<0)
+                    throw new IllegalStateException();
+                lfItem.setRecordid(id);
+                itemsCache.add(lfItem); //careful
+                itemReceiver.onItemArrived(id>=0);
             }
 
             @Override

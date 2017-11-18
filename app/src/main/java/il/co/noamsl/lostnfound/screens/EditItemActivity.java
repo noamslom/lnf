@@ -9,10 +9,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import il.co.noamsl.lostnfound.MainActivity;
 import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.ServiceLocator;
-import il.co.noamsl.lostnfound.repository.Repository;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 
@@ -20,7 +18,8 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
     public static final String ARG_ITEM_ID = "itemId";
 
     public enum Mode {EDIT, ADD}
-    public static final String ARG_MODE ="MODE";
+
+    public static final String ARG_MODE = "MODE";
     private static final boolean FOUND_TOGGLE_VALUE = false;
     private Mode MODE;
 
@@ -29,12 +28,13 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
     private TextView etLocation;
     private CheckBox cbRelevant;
     private ToggleButton tgbLostOrFound;
+    private Integer itemId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_item);
-        int modeInt = getIntent().getExtras().getInt(ARG_MODE,-1);
+        int modeInt = getIntent().getExtras().getInt(ARG_MODE, -1);
         MODE = Mode.values()[modeInt];
         etTitle = (EditText) findViewById(R.id.edit_item_et_title);
         etDescription = (TextView) findViewById(R.id.edit_item_et_description);
@@ -54,40 +54,43 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
     }
 
     private void restoreFields() {
-        Integer itemId = getIntent().getExtras().getInt(ARG_ITEM_ID,-1);
-        LfItem item = Repository.getGlobal().getItemById(itemId);
+        itemId = getIntent().getExtras().getInt(ARG_ITEM_ID, -1);
+        LfItem item = ServiceLocator.getRepository().getItemById(itemId);
         etTitle.setText(item.getName());
         etDescription.setText(item.getDescription());
         etLocation.setText(item.getLocation());
         cbRelevant.setChecked(item.getRelevant());
 
-        tgbLostOrFound.setChecked(item.isAFound()? FOUND_TOGGLE_VALUE : !FOUND_TOGGLE_VALUE);
+        tgbLostOrFound.setChecked(item.isAFound() ? FOUND_TOGGLE_VALUE : !FOUND_TOGGLE_VALUE);
     }
 
 
     public void itemSubmitted(View v) {
         String name = etTitle.getText() + "";
-        String picture = "pic not imp";
+        String picture = null;
         boolean isAFound = isToggleButtonAFound();
         boolean relevant = cbRelevant.isChecked();
         Integer owner = getOwner()/*null*/;
         String location = etLocation.getText() + "";
         String description = etDescription.getText() + "";
-        LfItem newItem = new LfItem(null, name, description, location, owner, picture, relevant, isAFound);
+        LfItem newItem = new LfItem(itemId, name, description, location, owner, picture, relevant, isAFound);
         switch (MODE) {
-            case EDIT: ServiceLocator.getExternalRepository().updateItem(this,newItem);
+            case EDIT:
+                ServiceLocator.getExternalRepository().updateItem(this, newItem);
                 break;
             case ADD:
-                ServiceLocator.getExternalRepository().addItem(this,newItem);
-            break;
+                ServiceLocator.getExternalRepository().addItem(this, newItem);
+                break;
         }
         Toast.makeText(getApplicationContext(), "Submitting", Toast.LENGTH_SHORT).show();
     }
 
     private Integer getOwner() {
         switch (MODE) {
-            case EDIT: return null;
-            case ADD: return Repository.getGlobal().getLoggedInUserId();
+            case EDIT:
+                return null;
+            case ADD:
+                return ServiceLocator.getRepository().getLoggedInUserId();
         }
         throw new IllegalStateException("mode should be edit or add");
     }

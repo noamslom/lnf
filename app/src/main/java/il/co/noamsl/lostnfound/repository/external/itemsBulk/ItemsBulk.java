@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import il.co.noamsl.lostnfound.screens.itemsFeed.ItemsStateListener;
 import il.co.noamsl.lostnfound.webService.dataTransfer.DataPosition;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
@@ -29,6 +30,7 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
     //    private int itemsCount;
     protected ItemsQuery currentFilter;
     protected ItemsBulkStorage storage;
+    private ItemsStateListener itemsStateListener;
 
     public ItemsBulk(Repository repository, Loadable requester) {
         this.repository = repository;
@@ -86,8 +88,8 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
     public void requestMoreItems() {
         DataPosition<LfItem> lastItemDataPosition;
         if (storage.size(currentFilter) != 0) {
-//            lastItemDataPosition = new DataPosition<LfItem>(repository.getItemById(storage.getLast(currentFilter))); // FIXME: 17/11/2017 enable this
-            lastItemDataPosition = new DataPosition<>(null);
+            lastItemDataPosition = new DataPosition<LfItem>(repository.getItemById(storage.getLast(currentFilter))); // FIXME: 17/11/2017 enable this
+//            lastItemDataPosition = new DataPosition<>(null);
         } else {
             lastItemDataPosition = new DataPosition<>(null);
         }
@@ -107,6 +109,9 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
             return;
         }
         storage.addItemId(currentFilter, item.getId());
+        if (itemsStateListener != null) {
+            itemsStateListener.onNofItemsChange(getItemCount());
+        }
 //        Log.d("noamd", "itum bulk added" + itemsCount);
 //        itemsCount++;
         if (itemReceiver != null) {
@@ -142,5 +147,9 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
         Log.d(TAG, "filter: filter = " + filter);
 
         currentFilter = filter;
+    }
+
+    public void setItemsStateListener(ItemsStateListener itemsStateListener) {
+        this.itemsStateListener = itemsStateListener;
     }
 }

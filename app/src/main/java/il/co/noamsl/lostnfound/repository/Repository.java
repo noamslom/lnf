@@ -1,5 +1,9 @@
 package il.co.noamsl.lostnfound.repository;
 
+import android.content.Context;
+
+import il.co.noamsl.lostnfound.MainActivity;
+import il.co.noamsl.lostnfound.ServiceLocator;
 import il.co.noamsl.lostnfound.repository.User.User;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
@@ -18,29 +22,32 @@ public class Repository {
     private LoggedInUserRepository loggedInUserRepository;
     private SettingsRepository settingsRepository;
     private WebService webService;
-    private static Repository globalRepository;
+    private Context context;
 
-    public Repository() {
+
+    public Repository(Context applicationContext) {
+        this.context = applicationContext;
+        init();
+    }
+
+    private void init() {
         webService = new WebService();
         itemsRepository = new ItemsRepository(webService);
-        loggedInUserRepository = new LoggedInUserRepository(webService);
+        loggedInUserRepository = new LoggedInUserRepository(webService, context);
         settingsRepository = new SettingsRepository();
         userRepository = new UsersRepository(webService);
     }
 
-    public static Repository getGlobal() {
-        if (globalRepository == null) {
-            globalRepository = new Repository();
-        }
-        return globalRepository;
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     public void requestItems(Request<LfItem> request, RequestAgent requestAgent) {
         itemsRepository.requestItems(request, requestAgent);
     }
 
-    public void addItem(final ItemReceiver<Boolean> itemReceiver,LfItem lfItem) {
-        itemsRepository.addItem(itemReceiver,lfItem);
+    public void addItem(final ItemReceiver<Boolean> itemReceiver, LfItem lfItem) {
+        itemsRepository.addItem(itemReceiver, lfItem);
     }
 
     public LfItem getItemById(int itemId) {
@@ -51,8 +58,8 @@ public class Repository {
         return item;
     }
 
-    public void getUserById(ItemReceiver<User> itemReceiver,int owner) {
-        userRepository.getUserById(itemReceiver,owner);
+    public void getUserById(ItemReceiver<User> itemReceiver, int owner) {
+        userRepository.getUserById(itemReceiver, owner);
     }
 
 
@@ -60,20 +67,20 @@ public class Repository {
         return loggedInUserRepository.getLoggedInUserId();
     }
 
-    public void setLoggedInUserId(ItemReceiver<User> itemReceiver,String credential) {
-        loggedInUserRepository.setLoggedInUser(itemReceiver,credential);
+    public void setLoggedInUserId(ItemReceiver<User> itemReceiver, String credential) {
+        loggedInUserRepository.setLoggedInUser(itemReceiver, credential);
     }
 
-    public void updateItem(final ItemReceiver<Boolean> itemReceiver,LfItem newItem) {
-        itemsRepository.updateItem(itemReceiver,newItem);
+    public void updateItem(final ItemReceiver<Boolean> itemReceiver, LfItem newItem) {
+        itemsRepository.updateItem(itemReceiver, newItem);
     }
 
     public User getLoggedInUser() {
-        return loggedInUserRepository.getUser();
+        return loggedInUserRepository.getLoggedInUser();
     }
 
     public void updateUser(User user) {
-        if(user.getUserid()==getLoggedInUserId()){
+        if (user.getUserid() == getLoggedInUserId()) {
             loggedInUserRepository.update(user);
         } else {
             throw new IllegalStateException("only able to change logged in user");
@@ -81,6 +88,10 @@ public class Repository {
     }
 
     public void registerUser(ItemReceiver<Boolean> itemReceiver, String mEmail) {
-        loggedInUserRepository.registerUser(itemReceiver,mEmail);
+        loggedInUserRepository.registerUser(itemReceiver, mEmail);
+    }
+
+    public void clearLoggedInUser() {
+        loggedInUserRepository.clearLoggedInUser();
     }
 }
