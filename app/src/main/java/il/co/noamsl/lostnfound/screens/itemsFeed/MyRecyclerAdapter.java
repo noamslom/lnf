@@ -180,6 +180,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private class LoadingViewHolder extends RecyclerView.ViewHolder {
         private ProgressBar progressBar;
+        private final int REFRESH_FREQ = 500;
         public LoadingViewHolder(View view) {
             super(view);
             progressBar = (ProgressBar) view.findViewById(R.id.pb_loading_items);
@@ -196,7 +197,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         });
                     }
                 }
-            }, 100, 5000);
+            }, 100, REFRESH_FREQ);
 
         }
     }
