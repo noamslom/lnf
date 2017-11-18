@@ -225,7 +225,7 @@ public class WebService {
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 Log.d(TAG, "onResponse() called with: call = [" + call + "], response = [" + response + "]");
                 if(!response.isSuccessful() || response.body() == null){
-                    throw new IllegalStateException();
+                    userItemReceiver.onRequestFailure();
                 }
                 getUserByCredential(userItemReceiver,mEmail);
             }

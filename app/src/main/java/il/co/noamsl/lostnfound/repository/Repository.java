@@ -79,9 +79,9 @@ public class Repository {
         return loggedInUserRepository.getLoggedInUser();
     }
 
-    public void updateUser(User user) {
+    public void updateUser(final ItemReceiver<Boolean> itemReceiver,User user) {
         if (user.getUserid() == getLoggedInUserId()) {
-            loggedInUserRepository.update(user);
+            loggedInUserRepository.update(itemReceiver,user);
         } else {
             throw new IllegalStateException("only able to change logged in user");
         }

@@ -37,8 +37,8 @@ public class RepositoryExternal {
         ServiceLocator.getRepository().updateItem(itemReceiver,newItem);
     }
 
-    public void updateUser(User user) {
-        ServiceLocator.getRepository().updateUser(user);
+    public void updateUser(ItemReceiver<Boolean> itemReceiver,User user) {
+        ServiceLocator.getRepository().updateUser(itemReceiver,user);
     }
 
     public User getLoggedInUser() {

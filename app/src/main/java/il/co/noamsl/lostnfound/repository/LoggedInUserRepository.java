@@ -67,18 +67,19 @@ public class LoggedInUserRepository {
         }, credential);
     }
 
-    public void update(User user) {
+    public void update(final ItemReceiver<Boolean> itemReceiver, User user) {
         webService.updateUser(new ItemReceiver<User>() {
             @Override
             public void onItemArrived(User user) {
                 if (user != null) {
                     setLoggedInUser(user);
                 }
+                itemReceiver.onItemArrived(true);
             }
 
             @Override
             public void onRequestFailure() {
-                throw new RuntimeException();
+                itemReceiver.onRequestFailure();
             }
         }, user);
 

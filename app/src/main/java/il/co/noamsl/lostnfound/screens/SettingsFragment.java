@@ -20,6 +20,7 @@ import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.ServiceLocator;
 import il.co.noamsl.lostnfound.repository.Repository;
 import il.co.noamsl.lostnfound.repository.User.User;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.webService.eitan.Users;
 
 
@@ -29,7 +30,7 @@ import il.co.noamsl.lostnfound.webService.eitan.Users;
  * {@link SettingsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends Fragment implements ItemReceiver<Boolean> {
     private OnFragmentInteractionListener mListener;
 //    private static final String ARG_MAIN_ACTIVITY = "mainActivity";
     private EditText etName;
@@ -117,8 +118,7 @@ public class SettingsFragment extends Fragment {
         String phone = etPhone.getText()+"";
         String address= etAddress.getText()+"";
         Integer userId = loggedInUser.getUserid();
-        ServiceLocator.getExternalRepository().updateUser(new User(new Users(name, email, phone, address, userId)));
-        Toast.makeText(getContext(), "Settings Submit Successful!", Toast.LENGTH_SHORT).show();
+        ServiceLocator.getExternalRepository().updateUser(this,new User(new Users(name, email, phone, address, userId)));
 //        getActivity().onBackPressed();
     }
 
@@ -181,6 +181,16 @@ public class SettingsFragment extends Fragment {
 
     public void setMainActivity(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
+    }
+
+    @Override
+    public void onItemArrived(Boolean item) {
+        Toast.makeText(getContext(), "Settings Submit Successful!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRequestFailure() {
+        Toast.makeText(getContext(), "Unable to submit", Toast.LENGTH_SHORT).show();
     }
 
     /**
