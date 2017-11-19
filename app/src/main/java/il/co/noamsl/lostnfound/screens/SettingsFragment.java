@@ -1,6 +1,5 @@
 package il.co.noamsl.lostnfound.screens;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import il.co.noamsl.lostnfound.MainActivity;
 import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.ServiceLocator;
 import il.co.noamsl.lostnfound.Util;
-import il.co.noamsl.lostnfound.repository.Repository;
 import il.co.noamsl.lostnfound.repository.User.User;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.webService.eitan.Users;
@@ -186,12 +184,12 @@ public class SettingsFragment extends Fragment implements ItemReceiver<Boolean> 
 
     @Override
     public void onItemArrived(Boolean item) {
-        Util.MyToast.makeText(getContext(), "Settings Submit Successful!", Toast.LENGTH_SHORT);
+        Util.MyToast.show(getContext(), "Settings Submit Successful!", Toast.LENGTH_SHORT);
     }
 
     @Override
     public void onRequestFailure() {
-        Util.MyToast.makeText(getContext(), "Unable to submit", Toast.LENGTH_SHORT);
+        Util.MyToast.show(getContext(), "Unable to submit", Toast.LENGTH_SHORT);
     }
 
     /**

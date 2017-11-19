@@ -420,7 +420,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     mPasswordView.setError(getString(R.string.error_incorrect_password_or_email));
                     mPasswordView.requestFocus();
                 } else{
-                    Util.MyToast.makeText(getApplicationContext(),"Unable to connect to the server",Toast.LENGTH_SHORT);
+                    Util.MyToast.show(getApplicationContext(),"Unable to connect to the server",Toast.LENGTH_SHORT);
                 }
             }
         }

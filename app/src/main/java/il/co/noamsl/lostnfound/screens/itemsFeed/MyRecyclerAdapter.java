@@ -89,7 +89,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public synchronized void onRequestFailure() {
         onItemArrived(null);
-        Util.MyToast.makeText(recyclerView.getContext(), "Unable to load items", Toast.LENGTH_SHORT);
+        Util.MyToast.show(recyclerView.getContext(), "Unable to load items", Toast.LENGTH_SHORT);
     }
 
     private synchronized void setIsLoading(boolean isLoading) {

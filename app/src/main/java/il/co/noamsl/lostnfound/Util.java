@@ -36,12 +36,12 @@ public class Util {
 
     public static class MyToast {
         private static Toast lastToast;
-
-        public static void makeText(Context context, String s, int lengthShort) {
+        public static int LENGTH_SHORT = Toast.LENGTH_SHORT;
+        public static void show(Context context, String s, int duration) {
             if (lastToast != null) {
                 lastToast.cancel();
             }
-            lastToast = Toast.makeText(context, s, lengthShort);
+            lastToast = Toast.makeText(context, s, duration);
             lastToast.show();
         }
     }

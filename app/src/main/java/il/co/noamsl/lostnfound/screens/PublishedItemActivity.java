@@ -84,6 +84,6 @@ public class PublishedItemActivity extends AppCompatActivity implements ItemRece
 
     @Override
     public void onRequestFailure() {
-        Util.MyToast.makeText(getApplicationContext(),"Unable to get published item details",Toast.LENGTH_SHORT);
+        Util.MyToast.show(getApplicationContext(),"Unable to get published item details",Toast.LENGTH_SHORT);
     }
 }
