@@ -11,14 +11,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 //// FIXME: 19/11/2017 delete this
-public class WSTest {
+public class WSTest { //broken
     private static final String TAG = "WSTest";
-    private final Users FAKE_USER = new Users("N", "a@gds.com", "050-1234567", "Hereeee", 777);
-    private final FoundTable FAKE_FOUND = new FoundTable("Wallet", "d", "l", FAKE_USER.getUserid(), "pic", null, true);
-
+    private final Users FAKE_USER = new Users("N", "a@gds.com", "050-1234567", "Hereeee", null);
+    private final FoundTable FAKE_FOUND = new FoundTable("Wallet", "d", "l", null, "pic", null, true);
     private final Monitor monitor = new Monitor();
     private final ServerAPI TEST_API;
     private final int MAX_WAIT_MILLIES = 1000;
+    private final Boolean[] gotResponse = {false};
 
     public WSTest(ServerAPI test_api) {
         TEST_API = test_api;
@@ -26,33 +26,48 @@ public class WSTest {
 
     public void test() {
         Log.d(TAG, "test: testing");
-        synchronized (monitor) {
-            createUser();
-            waitForPrevTask();
-        }
-        synchronized (monitor) {
-            addFound();
-            waitForPrevTask();
-        }
 
-        synchronized (monitor) {
-            changeRelevant();
-            waitForPrevTask();
-        }
+        expectResponse();
+        createUser();
+        waitForPrevTask();
+        Log.d(TAG, "test: 1");
 
-        synchronized (monitor) {
-            getFounds();
-        }
+
+        expectResponse();
+        addFound();
+        waitForPrevTask();
+        Log.d(TAG, "test: 2");
+
+
+        expectResponse();
+        changeRelevant();
+        waitForPrevTask();
+        Log.d(TAG, "test: 3");
+
+
+        expectResponse();
+        getFounds();
+        Log.d(TAG, "test: 4");
 
 
     }
 
+    private void expectResponse() {
+        gotResponse[0] = false;
+    }
+
     private void waitForPrevTask() {
-        try {
-            monitor.wait(MAX_WAIT_MILLIES);
+        /*try {
+            synchronized (gotResponse) {
+                if (!gotResponse[0]) {
+                    synchronized (monitor) {
+                        monitor.wait();
+                    }
+                }
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
         sleep();
     }
 
@@ -80,6 +95,7 @@ public class WSTest {
                 FAKE_FOUND.getLocation(), FAKE_FOUND.getOwner(), FAKE_FOUND.getPicture(),
                 FAKE_FOUND.getRecordid(), false);
 */
+        Log.d(TAG, "changeRelevant: FAKE_FOUND before = " + FAKE_FOUND);
         FAKE_FOUND.setRelevant(false);
         TEST_API.found_edit(FAKE_FOUND).enqueue(new Callback<Integer>() {
             @Override
@@ -98,6 +114,8 @@ public class WSTest {
     }
 
     private void addFound() {
+        Log.d(TAG, "addFound: FAKE_FOUND = " + FAKE_FOUND);
+
         TEST_API.found_create(FAKE_FOUND).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -114,14 +132,14 @@ public class WSTest {
     }
 
     private void boomIfFailed(Response<Integer> response) {
-        if (!response.isSuccessful() || response.body() == null) {
-            boom();
+        if (!response.isSuccessful() || response.body() == null || response.body() < 0) {
+            throw new RuntimeException("Body = " + response.body());
         }
     }
 
     private void sleep() {
         try {
-            Thread.sleep(300);
+            Thread.sleep(0);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -132,6 +150,8 @@ public class WSTest {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 boomIfFailed(response);
+                FAKE_USER.setUserid(response.body());
+                FAKE_FOUND.setOwner(FAKE_USER.getUserid());
                 nextTask();
             }
 
@@ -145,6 +165,7 @@ public class WSTest {
 
     private void nextTask() {
         synchronized (monitor) {
+            gotResponse[0] = true;
             monitor.notify();
         }
     }

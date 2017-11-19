@@ -74,10 +74,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //// FIXME: 15/11/2017 remove this
-        doBullshit();
-
-
 
         ServiceLocator.initRepository(getApplicationContext());
         checkAlreadyLoggedIn();
