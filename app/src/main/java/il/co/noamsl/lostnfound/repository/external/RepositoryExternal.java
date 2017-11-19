@@ -7,9 +7,6 @@ import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.repository.external.itemsBulk.ItemsBulk;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 
-/**
- * Created by noams on 04/08/2017.
- */
 
 public class RepositoryExternal {
 

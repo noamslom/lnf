@@ -1,6 +1,6 @@
 package il.co.noamsl.lostnfound.repository;
 
-import android.util.Log;
+
 
 import java.util.List;
 
@@ -11,10 +11,6 @@ import il.co.noamsl.lostnfound.webService.dataTransfer.Request;
 import il.co.noamsl.lostnfound.webService.dataTransfer.RequestAgent;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.webService.WebService;
-
-/**
- * Created by noams on 13/11/2017.
- */
 
 class ItemsRepository {
     private static final String TAG = "ItemsRepository";
@@ -44,8 +40,6 @@ class ItemsRepository {
         final ItemReceiver<LfItem> itemReceiver = new ItemReceiver<LfItem>() {
             @Override
             public void onItemArrived(LfItem item) {
-                Log.d(TAG, "onItemArrived: item = " + item + "request="+request);
-
                 if (item != null) {
                     itemsCache.add(item);
                     request.getItemReceiver().onItemArrived(itemsCache.get(item.getId()+""));

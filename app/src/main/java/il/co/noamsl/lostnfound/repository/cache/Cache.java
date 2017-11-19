@@ -6,10 +6,6 @@ import java.util.List;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 
-/**
- * Created by noams on 14/11/2017.
- */
-
 public class Cache<T extends Cacheable> {
     protected HashMap<String, T> hashMap;
 
@@ -26,7 +22,7 @@ public class Cache<T extends Cacheable> {
     }
 
     public void updateItem(T newItem) {
-        hashMap.put(newItem.getCacheId(),newItem);
+        hashMap.put(newItem.getCacheId(), newItem);
     }
 
     @Override

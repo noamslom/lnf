@@ -2,7 +2,7 @@ package il.co.noamsl.lostnfound.repository;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
+
 
 import junit.framework.Assert;
 
@@ -16,10 +16,6 @@ import il.co.noamsl.lostnfound.Util;
 import il.co.noamsl.lostnfound.repository.User.User;
 import il.co.noamsl.lostnfound.webService.WebService;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
-
-/**
- * Created by noams on 14/11/2017.
- */
 
 public class LoggedInUserRepository {
     private static final String TAG = "LoggedInUserRepository";
@@ -105,8 +101,6 @@ public class LoggedInUserRepository {
 
     private void localSave() {
         try {
-            Log.d(TAG, "localSave: "+ loggedInUser);
-
             Assert.assertNotNull(context);
             FileOutputStream fos = context.openFileOutput(DATA_SAVE_FILE_NAME, Context.MODE_PRIVATE);
             ObjectOutputStream os = new ObjectOutputStream(fos);
@@ -120,8 +114,6 @@ public class LoggedInUserRepository {
     }
 
     private void localRestore() {
-        Log.d(TAG, "localRestore: restoring");
-
         try {
             FileInputStream fis = context.openFileInput(DATA_SAVE_FILE_NAME);
             ObjectInputStream is = new ObjectInputStream(fis);
@@ -129,7 +121,6 @@ public class LoggedInUserRepository {
             is.close();
             fis.close();
             loggedInUser =  user;
-            Log.d(TAG, "localRestore: restored user = " + user);
 
         } catch (IOException | ClassNotFoundException ignored) {
         }

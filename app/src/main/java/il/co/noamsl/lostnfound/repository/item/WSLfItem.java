@@ -1,8 +1,5 @@
 package il.co.noamsl.lostnfound.repository.item;
 
-/**
- * Created by noams on 14/11/2017.
- */
 
 public interface WSLfItem {
     String getName();

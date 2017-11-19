@@ -5,10 +5,6 @@ import il.co.noamsl.lostnfound.repository.cache.Cache;
 import il.co.noamsl.lostnfound.webService.WebService;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 
-/**
- * Created by noams on 16/11/2017.
- */
-
 class UsersRepository{
     private WebService webService;
 

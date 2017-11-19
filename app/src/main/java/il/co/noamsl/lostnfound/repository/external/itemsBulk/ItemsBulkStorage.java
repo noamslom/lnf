@@ -1,6 +1,6 @@
 package il.co.noamsl.lostnfound.repository.external.itemsBulk;
 
-import android.util.Log;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,9 +11,6 @@ import java.util.Set;
 
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 
-/**
- * Created by noams on 16/11/2017.
- */
 
 public class ItemsBulkStorage {
     private static final String TAG = "ItemsBulkStorage";
@@ -40,20 +37,15 @@ public class ItemsBulkStorage {
         Set<Integer> idList = generateAndGetIdList(filter);
         itemsIdTable.put(filter, idList);
         idList.add(id);
-        Log.d(TAG, "addItemId: added item id = "+id+"idList = " + idList+"query= "+filter);
+
 
     }
 
     public int size(ItemsQuery currentFilter) {
-        Log.d(TAG, "size: currentFilter = " + currentFilter);
-        Log.d(TAG, "size: getItemsIdList(currentFilter).size() = " + getItemsIdList(currentFilter).size());
-
         return getItemsIdList(currentFilter).size();
     }
 
     public Integer getItemId(ItemsQuery filter, int position) {
-        Log.d(TAG, "getItemId: filter = " + filter);
-
         return getItemsIdList(filter).get(position);
     }
 

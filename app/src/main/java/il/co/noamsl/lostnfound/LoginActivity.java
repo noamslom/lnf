@@ -20,7 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Log;
+
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -374,12 +374,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             ServiceLocator.getRepository().setLoggedInUserId(new ItemReceiver<User>() {
                 @Override
                 public void onItemArrived(User loggedInUser) {
-                    Log.d(TAG, "onItemArrived: arrived");
+
 
                     synchronized (UserLoginTask.this){
                         gotResponse[0] = true;
                         UserLoginTask.this.notify();
-                        Log.d(TAG, "onItemArrived: notified");
+
                     }
                 }
 
@@ -395,7 +395,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             synchronized (UserLoginTask.this){
                 try {
-                    Log.d(TAG, "doInBackground: waiting");
+
                     if(!gotResponse[0]){
                         wait();
                     }
@@ -404,7 +404,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             }
             User loggedInUser = ServiceLocator.getRepository().getLoggedInUser();
-            Log.d(TAG, "doInBackground: loggedInUser = " + loggedInUser);
+
             return loggedInUser!=null;
         }
 

@@ -8,7 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +68,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private void requestMoreItems() {
-        Log.d(TAG, "requestMoreItems: ");
+
 
         if (getIsLoading())
             return;
@@ -99,7 +99,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private synchronized void setIsLoading(boolean isLoading) {
-        Log.d(TAG, "setIsLoading: isLoading = " + isLoading);
         this.isLoading = isLoading;
         myNotifyChange(true); // FIXME: 16/11/2017 enable this
     }
@@ -177,7 +176,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public void filter(ItemsQuery filter) {
-        Log.d(TAG, "filter: filter = " + filter);
         loadedAll = false;
         itemsBulk.filter(filter);
 
@@ -281,8 +279,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private void fillFirstItems() {
-        Log.d(TAG, "fillFirstItems: ");
-
         requestMoreItems();
 
 /*
@@ -327,8 +323,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     }
                 }, MAX_SCROLL_FREQ);
 
-
-                Log.d(TAG, "onScrolled: ");
 
                 totalItemCount = linearLayoutManager.getItemCount();
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
@@ -387,7 +381,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        Log.d("noamd", "getItemCount: " + itemsBulk.getItemCount());
 //// FIXME: 15/11/2017 careful
         //fixme danger(with threads no persistence)
         synchronized (itemsBulk) {

@@ -27,9 +27,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
-/**
- * Created by noams on 13/11/2017.
- */
 
 public class WebService {
     private static final String TAG = "WebService";
@@ -56,7 +53,7 @@ public class WebService {
 
 
     public void requestItems(final Request<LfItem> request, RequestAgent requestAgent) {
-        Log.d(TAG, "requestItems: ");
+
 
         if (requestAgent != null) {
             throw new UnsupportedOperationException("Not imp yet");
@@ -76,15 +73,9 @@ public class WebService {
     }
 
     private void requestItemsOfUser(final Request<LfItem> request) {
-        //// TODO: 16/11/2017 implement for real
-/*
-        request.getItemReceiver().onItemArrived(new LfItem(107, "wallet tekjke" + 107, "descrip" + 107, "here", 777, "pic", new Random().nextBoolean(), true));
-        request.getItemReceiver().onItemArrived(null);
-*/
-        Log.d(TAG, "requestItemsOfUser: ");
         ItemsQuery query = (ItemsQuery) request.getQuery();
         Boolean isAFound = query.isAFound();
-        Log.d(TAG, "requestItemsOfUser: isAFound = " + isAFound);
+
 
         MultipleSourcesItemReceiver<LfItem> msItemReceiver = new MultipleSourcesItemReceiver<>(request.getItemReceiver());
 
@@ -109,7 +100,7 @@ public class WebService {
 
                         request.getItemReceiver().onItemArrived(
                                 new LfItem(i, "wallet tekjke" + i, "descrip" + i, "here", 5, "pic", new Random().nextBoolean(), true));
-                        Log.d(TAG, "run: received item" + i);
+
 
                     }
                     request.getItemReceiver().onItemArrived(null);
@@ -121,7 +112,7 @@ public class WebService {
         ItemsQuery query = (ItemsQuery) request.getQuery();
         MultipleSourcesItemReceiver<LfItem> msItemReceiver = new MultipleSourcesItemReceiver<>(request.getItemReceiver());
         Boolean isAFound = query.isAFound();
-        Log.d(TAG, "requestItemsByFilter: isAFound = " + isAFound);
+
 
         if (isAFound == null || isAFound) {
             Founds.requestByFilter(request, msItemReceiver);
@@ -133,7 +124,6 @@ public class WebService {
     }
 
     public void addItem(final ItemReceiver<Integer> itemReceiver, LfItem lfItem) {
-        //// TODO: 17/11/2017 add failure handling
         if (lfItem.isAFound()) {
             Founds.addItem(itemReceiver,lfItem);
         } else if (lfItem.isALost()) {
@@ -174,12 +164,11 @@ public class WebService {
     }
 
     public void getUserByCredential(final ItemReceiver<User> itemReceiver, String credential) {
-//        itemReceiver.onItemArrived(FAKE_USER);
         Callback<Users> callback = new Callback<Users>() {
             @Override
             public void onResponse(Call<Users> call, Response<Users> response) {
 
-                Log.d(TAG, "getUserByCredential.onResponse: "+response.isSuccessful()+"Body="+response.body());
+
                 if(!response.isSuccessful()){
                     itemReceiver.onRequestFailure();
                     return;
@@ -220,11 +209,11 @@ public class WebService {
 
     //assumes legal registration email
     public void registerUser(final ItemReceiver<User> userItemReceiver, final String mEmail) {
-        Log.d(TAG, "registerUser() called with: userItemReceiver = [" + userItemReceiver + "], mEmail = [" + mEmail + "]");
+
         API.user_create(new Users(null, mEmail, null, null, null)).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
-                Log.d(TAG, "onResponse() called with: call = [" + call + "], response = [" + response + "]");
+
                 if(!response.isSuccessful() || response.body() == null){
                     userItemReceiver.onRequestFailure();
                 }
@@ -233,18 +222,17 @@ public class WebService {
 
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
-                Log.d(TAG, "onFailure() called with: call = [" + call + "], t = [" + t + "]");
+
                 userItemReceiver.onRequestFailure();
             }
         });
     }
 
-    //update only Founds!!!!!!!!!!!!!!!!!!!
     private static class Founds {
         private static final String TAG = "WebService.Founds";
 
         private static void requestItemsOfUser(Request<LfItem> request, Integer owner, MultipleSourcesItemReceiver<LfItem> msItemReceiver) {
-            Log.d(TAG, "requestItemsOfUser: ");
+
 
             final ItemReceiver<LfItem> itemReceiver = msItemReceiver;
             msItemReceiver.onWorkerStarted();
@@ -269,7 +257,7 @@ public class WebService {
 
                 @Override
                 public void onFailure(Call<FoundTableList> call, Throwable t) {
-                    Log.d(TAG, "onFailure: ");
+
 
                     itemReceiver.onRequestFailure();
                 }
@@ -279,7 +267,7 @@ public class WebService {
 
 
         private static void requestByFilter(final Request<LfItem> request, final MultipleSourcesItemReceiver<LfItem> msItemReceiver) {
-            Log.d(TAG, "Founds.requestByFilter: ");
+
 
             ItemsQuery query = (ItemsQuery) request.getQuery();
             msItemReceiver.onWorkerStarted();
@@ -329,12 +317,12 @@ public class WebService {
         }
 
         public static void addItem(final ItemReceiver<Integer> itemReceiver, LfItem lfItem) {
-            Log.d(TAG, "addItem: lfItem = " + lfItem);
+
 
             Callback<Integer> callback = new Callback<Integer>() {
                 @Override
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
-                    Log.d(TAG, "addItem.onResponse: response = " + response);
+
 
                     if(!response.isSuccessful()){
                         itemReceiver.onRequestFailure();
@@ -345,24 +333,23 @@ public class WebService {
 
                 @Override
                 public void onFailure(Call<Integer> call, Throwable t) {
-                    Log.d(TAG, "addItem.onFailure: response = " );
+
 
                     itemReceiver.onRequestFailure();
                 }
             };
-            Log.d(TAG, "addItem: testing");
+
 
             API.found_create(lfItem.toFoundTable()).enqueue(callback); //// FIXME: 18/11/2017
 
         }
     }
 
-    //dont update losts!!!!!!!!!
     private static class Losts {
         private static final String TAG = "WebService.Losts";
 
         private static void requestItemsOfUser(Request<LfItem> request, Integer owner, MultipleSourcesItemReceiver<LfItem> msItemReceiver) {
-            Log.d(TAG, "requestItemsOfUser: ");
+
 
             final ItemReceiver<LfItem> itemReceiver = msItemReceiver;
             msItemReceiver.onWorkerStarted();
@@ -387,7 +374,7 @@ public class WebService {
 
                 @Override
                 public void onFailure(Call<LostTableList> call, Throwable t) {
-                    Log.d(TAG, "onFailure: ");
+
 
                     itemReceiver.onRequestFailure();
                 }
@@ -397,7 +384,7 @@ public class WebService {
 
 
         private static void requestByFilter(final Request<LfItem> request, final MultipleSourcesItemReceiver<LfItem> msItemReceiver) {
-            Log.d(TAG, "Losts.requestByFilter: ");
+
 
             ItemsQuery query = (ItemsQuery) request.getQuery();
             msItemReceiver.onWorkerStarted();
@@ -447,12 +434,12 @@ public class WebService {
         }
 
         public static void addItem(final ItemReceiver<Integer> itemReceiver, LfItem lfItem) {
-            Log.d(TAG, "addItem: lfItem = " + lfItem);
+
 
             Callback<Integer> callback = new Callback<Integer>() {
                 @Override
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
-                    Log.d(TAG, "addItem.onResponse: response = " + response);
+
 
                     if(!response.isSuccessful()){
                         itemReceiver.onRequestFailure();
@@ -463,12 +450,12 @@ public class WebService {
 
                 @Override
                 public void onFailure(Call<Integer> call, Throwable t) {
-                    Log.d(TAG, "addItem.onFailure: response = " );
+
 
                     itemReceiver.onRequestFailure();
                 }
             };
-            Log.d(TAG, "addItem: testing");
+
 
             API.lost_create(lfItem.toLostTable()).enqueue(callback); //// FIXME: 18/11/2017
 

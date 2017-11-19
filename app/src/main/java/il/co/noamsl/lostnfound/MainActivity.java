@@ -151,19 +151,19 @@ public class MainActivity extends AppCompatActivity implements
         WebService.API.user_create(new Users("Noam", "a@b.com", "050-1234567", "Modi", 3)).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
-                Log.d("serverd", "User create s" + response.body());
+
             }
 
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
-                Log.d("serverd", "User create f" + t);
+                lost
             }
         });
         WebService ws = new WebService();
         ws.updateItem(new ItemReceiver<Integer>() {
             @Override
             public void onItemArrived(Integer item) {
-                Log.d(TAG, "onItemArrived: item = " + item);
+                lost
 
             }
         }, new LfItem(4, "wal", "new one", "new loc", 3, "pic", true, false));

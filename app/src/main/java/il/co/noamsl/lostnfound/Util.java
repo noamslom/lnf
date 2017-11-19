@@ -18,9 +18,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 
-/**
- * Created by noams on 16/11/2017.
- */
 
 public class Util {
     public static <T> LiveData<T> createLiveData(T object) {

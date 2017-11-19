@@ -2,9 +2,6 @@ package il.co.noamsl.lostnfound.webService.dataTransfer;
 
 import junit.framework.Assert;
 
-/**
- * Created by noams on 05/11/2017.
- */
 
 public class Request<T> {
     private final ItemReceiver<T> ITEM_RECEIVER;

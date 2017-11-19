@@ -1,8 +1,5 @@
 package il.co.noamsl.lostnfound.webService.dataTransfer;
 
-/**
- * Created by noams on 15/11/2017.
- */
 
 public class ItemsQuery implements Query{
     private final String name;

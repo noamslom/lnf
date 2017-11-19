@@ -3,6 +3,7 @@ package il.co.noamsl.lostnfound.repository;
 import android.content.Context;
 import android.util.Log;
 
+
 import il.co.noamsl.lostnfound.MainActivity;
 import il.co.noamsl.lostnfound.ServiceLocator;
 import il.co.noamsl.lostnfound.repository.User.User;
@@ -12,9 +13,6 @@ import il.co.noamsl.lostnfound.webService.dataTransfer.Request;
 import il.co.noamsl.lostnfound.webService.dataTransfer.RequestAgent;
 import il.co.noamsl.lostnfound.webService.WebService;
 
-/**
- * Created by noams on 13/11/2017.
- */
 
 public class Repository {
     private static final String TAG = "Repository";

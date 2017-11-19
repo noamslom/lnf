@@ -1,8 +1,5 @@
 package il.co.noamsl.lostnfound.webService.dataTransfer;
 
-/**
- * Created by noams on 05/11/2017.
- */
 
 public class RequestAgent {
     private volatile int nextRequestSerial = 0;

@@ -2,7 +2,7 @@ package il.co.noamsl.lostnfound.repository.external.itemsBulk;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
+
 
 import il.co.noamsl.lostnfound.screens.itemsFeed.ItemsStateListener;
 import il.co.noamsl.lostnfound.webService.dataTransfer.DataPosition;
@@ -14,9 +14,6 @@ import il.co.noamsl.lostnfound.webService.dataTransfer.Request;
 import il.co.noamsl.lostnfound.webService.dataTransfer.RequestAgent;
 import il.co.noamsl.lostnfound.screens.itemsFeed.Loadable;
 
-/**
- * Created by noams on 05/11/2017.
- */
 
 public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
     private static final String TAG = "ItemsBulk";
@@ -88,8 +85,7 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
     public void requestMoreItems() {
         DataPosition<LfItem> lastItemDataPosition;
         if (storage.size(currentFilter) != 0) {
-            lastItemDataPosition = new DataPosition<LfItem>(repository.getItemById(storage.getLast(currentFilter))); // FIXME: 17/11/2017 enable this
-//            lastItemDataPosition = new DataPosition<>(null);
+            lastItemDataPosition = new DataPosition<LfItem>(repository.getItemById(storage.getLast(currentFilter)));
         } else {
             lastItemDataPosition = new DataPosition<>(null);
         }
@@ -112,7 +108,6 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
         if (itemsStateListener != null) {
             itemsStateListener.onNofItemsChange(getItemCount());
         }
-//        Log.d("noamd", "itum bulk added" + itemsCount);
 //        itemsCount++;
         if (itemReceiver != null) {
             itemReceiver.onItemArrived(item);
@@ -144,7 +139,6 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
 */
 
     public void filter(ItemsQuery filter) {
-        Log.d(TAG, "filter: filter = " + filter);
 
         currentFilter = filter;
     }

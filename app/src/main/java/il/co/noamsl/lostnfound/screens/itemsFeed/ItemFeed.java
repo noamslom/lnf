@@ -6,9 +6,6 @@ import il.co.noamsl.lostnfound.repository.external.itemsBulk.ItemsBulk;
 import il.co.noamsl.lostnfound.screens.MyItemsFragment;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 
-/**
- * Created by noams on 05/11/2017.
- */
 
 public class ItemFeed {
     private ItemsFeedFragment itemsFeedFragment;

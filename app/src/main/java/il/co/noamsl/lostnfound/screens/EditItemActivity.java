@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -93,7 +94,6 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
 
     private void restorePicture(LfItem item) {
         base64Image = item.getPicture();
-        Log.d(TAG, "restorePicture: base64Image = " + base64Image);
 
         if(base64Image!=null) {
             imageButton.setImageDrawable(Util.base64ToDrawable(getResources(), base64Image));
@@ -107,7 +107,7 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
         String name = etTitle.getText() + "";
         boolean isAFound = isToggleButtonAFound();
         boolean relevant = cbRelevant.isChecked();
-        Integer owner = getOwner(prevItem)/*null*/;
+        Integer owner = getOwner(prevItem);
         String location = etLocation.getText() + "";
         String description = etDescription.getText() + "";
         String picture = base64Image;
@@ -180,13 +180,11 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
                 inputStream = Util.inputStreamFromBitmap(bitmap);
 
                 base64Image = inputStreamToBase64(inputStream);
-//                imageButton.setImageDrawable(Util.base64ToDrawable(getResources(),base64Image));
 
 
             } catch (java.io.IOException e) {
                 e.printStackTrace();
             }
-            //Now you can do whatever you want with your inpustream, save it as file, upload to a server, decode a bitmap...
         }
     }
 
