@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -132,6 +133,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                                 synchronized (itemsBulk) {
                                     synchronized (isLoading) {
                                         notifyDataSetChanged();
+                                        Log.d(TAG, "notifyDataSetChanged");
 
                                     }
                                 }
@@ -179,11 +181,14 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public void filter(ItemsQuery filter) {
+        Log.d(TAG, "filter: "+filter);
+
         loadedAll = false;
         itemsBulk.filter(filter);
 
         myNotifyChange(true);
         fillFirstItems();
+
     }
 
     public void clear() {
@@ -203,21 +208,25 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     // you provide access to all the views for a data item in a view holder
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public ImageView itemImage;
-        public TextView itemTitle;
+        private ImageView itemImage;
+        private TextView itemTitle;
+        private TextView itemDescription;
+        private TextView itemLocation;
         private Integer itemId = null;
         private boolean isMyItem;
-        private final Context context;
         private final ItemOpener itemOpener;
+
 
         public ItemViewHolder(final View itemView, final Activity parent, final boolean isMyItem, Context context, ItemOpener itemOpener) {
             super(itemView);
             this.isMyItem = isMyItem;
-            this.context = context;
             this.itemOpener = itemOpener;
 
             itemImage = (ImageView) itemView.findViewById(R.id.item_image);
             itemTitle = (TextView) itemView.findViewById(R.id.item_title);
+            itemDescription = (TextView) itemView.findViewById(R.id.item_card_tv_item_details);
+            itemLocation = (TextView) itemView.findViewById(R.id.item_card_tv_location);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -237,7 +246,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
 
-        public void updateFields(Drawable picture, String title) {
+        public void updateFields(Drawable picture, String title,String description,String address) {
+            itemDescription.setText(description);
+            itemLocation.setText(address);
             itemTitle.setText(title);
             itemImage.setImageDrawable(picture);
 
@@ -380,7 +391,8 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (holder instanceof ItemViewHolder) {
             LfItem itemInPosition = itemsBulk.get(position);
             ItemViewHolder myHolder = (ItemViewHolder) holder;
-            myHolder.updateFields(itemInPosition.getDrawablePicture(context), itemInPosition.getName());
+            myHolder.updateFields(itemInPosition.getDrawablePicture(context), itemInPosition.getName(),
+                    itemInPosition.getDescription(),itemInPosition.getLocation());
             myHolder.setItemId(itemInPosition.getId());
 
         } else if (holder instanceof LoadingViewHolder) {

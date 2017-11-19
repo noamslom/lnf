@@ -11,11 +11,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.SearchView;
 import android.widget.ToggleButton;
 
 import il.co.noamsl.lostnfound.MainActivity;
 import il.co.noamsl.lostnfound.R;
+import il.co.noamsl.lostnfound.Util;
 import il.co.noamsl.lostnfound.screens.itemsFeed.ItemFeed;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 
@@ -92,11 +94,20 @@ public class MainFeedFragment extends Fragment {
     }
 
     private void filter() {
-        itemFeed.filter(new ItemsQuery(svFilter.getQuery()+"", svFilter.getQuery()+"",null,isToggleButtonAFound(),true));
+        final String search = svFilter.getQuery() + "";
+        itemFeed.filter(new ItemsQuery(search, search,search,isToggleButtonAFound(),true));
     }
 
     private boolean isToggleButtonAFound() {
         return tgbLostOrFound.isChecked() == FOUND_TOGGLE_VALUE;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Util.MLog.d(TAG,"onresume");
+        closeKeyboard();
+        itemFeed.reload();
     }
 
     @Override
@@ -137,4 +148,15 @@ public class MainFeedFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    private void closeKeyboard() {
+        View currentFocus = getActivity().getCurrentFocus();
+        if (currentFocus!=null){
+            android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager)getActivity().getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
+        }
+        getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
 }

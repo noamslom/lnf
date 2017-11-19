@@ -29,5 +29,9 @@ public class ItemFeed {
     public void filter(ItemsQuery itemsQuery) {
         itemsFeedFragment.filter(itemsQuery);
     }
+
+    public void reload() {
+        itemsFeedFragment.reload();
+    }
 }
 
