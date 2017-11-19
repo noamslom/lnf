@@ -1,18 +1,27 @@
 package il.co.noamsl.lostnfound.screens.itemsFeed;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import il.co.noamsl.lostnfound.R;
+import il.co.noamsl.lostnfound.ServiceLocator;
+import il.co.noamsl.lostnfound.Util;
 import il.co.noamsl.lostnfound.repository.external.itemsBulk.ItemsBulk;
+import il.co.noamsl.lostnfound.screens.EditItemActivity;
+import il.co.noamsl.lostnfound.screens.PublishedItemActivity;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 
 
@@ -22,15 +31,16 @@ import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
  * {@link ItemsFeedFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class ItemsFeedFragment extends Fragment {
+public class ItemsFeedFragment extends Fragment implements ItemReceiver<Boolean>, ItemOpener {
     private static final String TAG = "ItemsFeedFragment";
 
     private static final String ARG_ITEMS_BULK = "itemsBulk";
+    private static final int REQUEST_ITEM_CHANGE = 1;
     private RecyclerView mRecyclerView;
     private MyRecyclerAdapter mAdapter; //fixme
     private RecyclerView.LayoutManager mLayoutManager;
     private OnFragmentInteractionListener mListener;
-
+    private SwipeRefreshLayout swipeRefreshLayout;
     private ItemsBulk itemsBulk;
     private ItemsStateListener itemsStateListener;
 
@@ -41,10 +51,11 @@ public class ItemsFeedFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(savedInstanceState!=null){//careful
+        if (savedInstanceState != null) {//careful
             return;
         }
 
+        swipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swiperefresh);
         mRecyclerView = (RecyclerView) getView().findViewById(R.id.rv_my_items);
 
         // use this setting to improve performance if you know that changes
@@ -56,9 +67,32 @@ public class ItemsFeedFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new MyRecyclerAdapter(itemsBulk,mRecyclerView,getActivity(), getContext());
+        mAdapter = new MyRecyclerAdapter(itemsBulk, mRecyclerView, getActivity(), getContext(), this);
         mRecyclerView.setAdapter(mAdapter);
 
+        initSwipeToRefresh();
+    }
+
+    private void initSwipeToRefresh() {
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        Util.MLog.d(TAG, "onRefresh called from SwipeRefreshLayout");
+
+                        // This method performs the actual data-refresh operation.
+                        // The method calls setRefreshing(false) when it's finished.
+                        refresh();
+                    }
+                }
+        );
+
+    }
+
+    private void refresh() {
+        mAdapter.clear();
+        ServiceLocator.getRepository().clearItems();
+        mAdapter.reloadByCurrentFilter(this);
     }
 
 
@@ -89,12 +123,13 @@ public class ItemsFeedFragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
     }
+
     public static ItemsFeedFragment newInstance(ItemsBulk itemsBulk, ItemsStateListener itemsStateListener) {
         //// FIXME: 18/11/2017 not saving parent
         ItemsFeedFragment fragment = new ItemsFeedFragment();
         fragment.setItemsStateListener(itemsStateListener);
         Bundle args = new Bundle();
-        args.putParcelable(ARG_ITEMS_BULK,itemsBulk);
+        args.putParcelable(ARG_ITEMS_BULK, itemsBulk);
         fragment.setArguments(args);
         return fragment;
     }
@@ -111,6 +146,41 @@ public class ItemsFeedFragment extends Fragment {
 
     public void filter(ItemsQuery filter) {
         mAdapter.filter(filter);
+    }
+
+    @Override
+    public void onItemArrived(Boolean item) {
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onRequestFailure() {
+        Log.e(TAG, "not supposed to be here", new IllegalStateException());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult: ");
+        if (requestCode == REQUEST_ITEM_CHANGE && resultCode == Activity.RESULT_OK) {
+            Util.MLog.d(TAG,"refreshed!");
+            refresh();
+        }
+
+    }
+
+    @Override
+    public void openItem(boolean isMyItem, Integer itemId) {
+        if (isMyItem) {
+            Intent intent = new Intent(getContext(), EditItemActivity.class);
+            intent.putExtra(EditItemActivity.ARG_ITEM_ID, itemId);
+            intent.putExtra(EditItemActivity.ARG_MODE, EditItemActivity.Mode.EDIT.ordinal());
+            startActivityForResult(intent, REQUEST_ITEM_CHANGE);
+        } else {
+            Intent intent = new Intent(getContext(), PublishedItemActivity.class);
+            intent.putExtra(PublishedItemActivity.ARG_ITEM_ID, itemId);
+            startActivity(intent);
+        }
     }
 
     /**

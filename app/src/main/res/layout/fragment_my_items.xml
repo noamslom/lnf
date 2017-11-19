@@ -12,6 +12,6 @@
         android:id="@+id/my_items_tv_no_items"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="You don't have any items"
+        android:text="@string/you_dont_have_any_items"
         android:textSize="30dp" />
 </FrameLayout>

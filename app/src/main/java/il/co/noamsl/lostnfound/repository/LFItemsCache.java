@@ -1,7 +1,5 @@
 package il.co.noamsl.lostnfound.repository;
 
-import android.arch.lifecycle.LiveData;
-
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,9 +25,6 @@ public class LFItemsCache extends Cache<LfItem> {
     }
 
     private boolean matches(LfItem item, ItemsQuery filter) {
-        if(filter.getOwner()==null && filter.getName()==null && filter.getDescription() == null && filter.getLocation()==null)
-            return filter.isAFound()==item.isAFound();
-
         boolean matches = false;
         if(filter.getOwner()!=null && item.getOwner()!=null){
             matches |= filter.getOwner().equals(item.getOwner());
@@ -48,7 +43,12 @@ public class LFItemsCache extends Cache<LfItem> {
         if(filter.isAFound()!=null){
             matches&=(filter.isAFound()==item.isAFound());
         }
+        if(filter.isRelevant()!=null){
+            matches&=(filter.isRelevant()==item.getRelevant());
+        }
         return matches;
 
     }
+
+
 }

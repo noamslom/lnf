@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Lost n Found</string>
+    <string name="app_name">LostNFound</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
@@ -14,6 +14,25 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="togglebutton">ToggleButton</string>
+    <string name="i_found">I Found</string>
+    <string name="i_lost">I Lost</string>
+    <string name="name">Name</string>
+    <string name="desc">Desc.</string>
+    <string name="description">Description</string>
+    <string name="place">Place</string>
+    <string name="relevant">relevant</string>
+    <string name="submit">Submit</string>
+    <string name="unknown_type">Unknown Type</string>
+    <string name="contact">Contact</string>
+    <string name="founds">Founds</string>
+    <string name="losts">Losts</string>
+    <string name="you_dont_have_any_items">You don\'t have any items</string>
+    <string name="user_name">Name</string>
+    <string name="email">Email</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="address">Address</string>
+    <string name="logout">Logout</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 

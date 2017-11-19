@@ -31,4 +31,8 @@ public class Cache<T extends Cacheable> {
                 "hashMap=" + hashMap +
                 '}';
     }
+
+    public void clear() {
+        hashMap = new HashMap<>();
+    }
 }

@@ -16,12 +16,14 @@ import il.co.noamsl.lostnfound.Util;
 import il.co.noamsl.lostnfound.repository.User.User;
 import il.co.noamsl.lostnfound.webService.WebService;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
+import il.co.noamsl.lostnfound.webService.eitan.Users;
 
 public class LoggedInUserRepository {
     private static final String TAG = "LoggedInUserRepository";
     private static final String DATA_SAVE_FILE_NAME = "LoggedInUser";
+    private static final User FAKE_USER = new User(new Users("Noam","noam@gma.com","050","DSF",5));
     private final WebService webService;
-    private volatile User loggedInUser = null;
+    private volatile User loggedInUser = null ;//// FIXME: 19/11/2017
     private final Context context;
 
     public synchronized User getLoggedInUser() {

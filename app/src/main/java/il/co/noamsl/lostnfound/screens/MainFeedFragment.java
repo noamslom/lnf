@@ -92,7 +92,7 @@ public class MainFeedFragment extends Fragment {
     }
 
     private void filter() {
-        itemFeed.filter(new ItemsQuery(svFilter.getQuery()+"", svFilter.getQuery()+"",null,isToggleButtonAFound()));
+        itemFeed.filter(new ItemsQuery(svFilter.getQuery()+"", svFilter.getQuery()+"",null,isToggleButtonAFound(),true));
     }
 
     private boolean isToggleButtonAFound() {

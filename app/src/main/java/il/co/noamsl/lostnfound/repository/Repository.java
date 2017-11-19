@@ -96,4 +96,8 @@ public class Repository {
     public void clearLoggedInUser() {
         loggedInUserRepository.clearLoggedInUser();
     }
+
+    public void clearItems() {
+        itemsRepository.clear();
+    }
 }

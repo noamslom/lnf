@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import il.co.noamsl.lostnfound.repository.User.User;
+import il.co.noamsl.lostnfound.webService.WSTest;
+import il.co.noamsl.lostnfound.webService.WebService;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.webService.eitan.Users;
 
@@ -62,10 +64,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
 
+    //// FIXME: 15/11/2017 remove
+    private static void doBullshit() {
+        new WSTest(WebService.API).test();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        //// FIXME: 15/11/2017 remove this
+        doBullshit();
+
+
 
         ServiceLocator.initRepository(getApplicationContext());
         checkAlreadyLoggedIn();

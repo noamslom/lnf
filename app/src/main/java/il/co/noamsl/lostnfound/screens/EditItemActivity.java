@@ -73,6 +73,7 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
 
         switch (MODE) {
             case EDIT:
+                cbRelevant.setVisibility(View.VISIBLE);
                 restoreFields();
                 break;
             case ADD:
@@ -140,10 +141,18 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
     public void onItemArrived(Boolean item) {
         Util.MyToast.show(getApplicationContext(), "Item Submit Successful!", LENGTH_SHORT);
         try {
-            this.onBackPressed();
+            goBack();
         } catch (Exception e) {
-            Log.w(TAG, "back presseed after saved instance", e);
+            Log.w(TAG, "back presseed after saved instance\finish problem", e);
         }
+    }
+
+    private void goBack() {
+        Util.MLog.d(TAG, "goBack() called");
+        Intent returnIntent = getIntent();
+        setResult(Activity.RESULT_OK,returnIntent);
+        finish();
+//        this.onBackPressed();
     }
 
     @Override

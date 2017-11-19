@@ -2,8 +2,8 @@ package il.co.noamsl.lostnfound.repository.external.itemsBulk;
 
 import il.co.noamsl.lostnfound.repository.Repository;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
-import il.co.noamsl.lostnfound.screens.itemsFeed.Loadable;
 import il.co.noamsl.lostnfound.webService.dataTransfer.DataPosition;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 import il.co.noamsl.lostnfound.webService.dataTransfer.Request;
 
@@ -21,7 +21,7 @@ public class MyItemsItemsBulk extends ItemsBulk {
         else{
             lastItemDataPosition = new DataPosition<>(null);
         }
-        ItemsQuery query = new ItemsQuery(null, null, null, null, repository.getLoggedInUserId());
+        ItemsQuery query = new ItemsQuery(null, null, null, null, repository.getLoggedInUserId(),null);
         repository.requestItems(new Request<LfItem>(this,lastItemDataPosition,query),null);//// FIXME: 13/11/2017 use request agent preferred
 
     }

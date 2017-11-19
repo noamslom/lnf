@@ -99,4 +99,8 @@ class ItemsRepository {
         },lfItem);
 
     }
+
+    public void clear() {
+        itemsCache.clear();
+    }
 }

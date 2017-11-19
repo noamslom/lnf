@@ -53,4 +53,8 @@ public class ItemsBulkStorage {
         List<Integer> itemsIdList = getItemsIdList(filter);
         return itemsIdList.get(itemsIdList.size()-1);
     }
+
+    public void clear() {
+        itemsIdTable = new Hashtable<>();
+    }
 }

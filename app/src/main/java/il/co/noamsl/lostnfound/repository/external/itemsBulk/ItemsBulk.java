@@ -29,6 +29,11 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
     protected ItemsBulkStorage storage;
     private ItemsStateListener itemsStateListener;
 
+    public ItemsQuery getCurrentFilter() {
+        return currentFilter;
+    }
+
+
     public ItemsBulk(Repository repository, Loadable requester) {
         this.repository = repository;
         this.storage = new ItemsBulkStorage();
@@ -104,6 +109,13 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
             }
             return;
         }
+        //// FIXME: 19/11/2017 only because server returning non relevant
+/*
+        Boolean filterRelevant = currentFilter.isRelevant();
+        if(!item.getRelevant() && filterRelevant!=null && filterRelevant == true){
+            return;
+        }
+*/
         storage.addItemId(currentFilter, item.getId());
         if (itemsStateListener != null) {
             itemsStateListener.onNofItemsChange(getItemCount());
@@ -145,5 +157,9 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
 
     public void setItemsStateListener(ItemsStateListener itemsStateListener) {
         this.itemsStateListener = itemsStateListener;
+    }
+
+    public void clear() {
+        storage.clear();
     }
 }

@@ -3,7 +3,6 @@ package il.co.noamsl.lostnfound.screens.itemsFeed;
 import android.app.Activity;
 import android.arch.lifecycle.LiveData;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,10 +23,8 @@ import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.Util;
 import il.co.noamsl.lostnfound.repository.external.itemsBulk.MyItemsItemsBulk;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
-import il.co.noamsl.lostnfound.screens.EditItemActivity;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.repository.external.itemsBulk.ItemsBulk;
-import il.co.noamsl.lostnfound.screens.PublishedItemActivity;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 
 /**
@@ -50,7 +47,8 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private final int NOTIFY_FREQ = 500;
     private volatile boolean changesToNotifyMade = false;
     private volatile boolean loadedAll = false;
-
+    private ItemReceiver<Boolean> containerItemReceiver = null;
+    private final ItemOpener itemOpener;
     private void initOnLoadMoreListener() {
         this.onLoadMoreListener = new OnLoadMoreListener() {
             @Override
@@ -88,6 +86,10 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (item == null) {
             MyRecyclerAdapter.this.setIsLoading(false);
             loadedAll = true;
+            if(containerItemReceiver!=null) {
+                containerItemReceiver.onItemArrived(true);
+            }
+
         }
         myNotifyChange(false);
     }
@@ -95,6 +97,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public synchronized void onRequestFailure() {
         onItemArrived(null);
+        Util.MLog.d(TAG,Util.trace(0));
         Util.MyToast.show(recyclerView.getContext(), "Unable to load items", Toast.LENGTH_SHORT);
     }
 
@@ -183,6 +186,18 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         fillFirstItems();
     }
 
+    public void clear() {
+        synchronized (this){
+            itemsBulk.clear();
+            notifyDataSetChanged();
+        }
+    }
+
+    public void reloadByCurrentFilter(ItemReceiver<Boolean> refreshItemReceiver) {
+        this.containerItemReceiver = refreshItemReceiver;
+        filter(itemsBulk.getCurrentFilter());
+    }
+
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -193,26 +208,22 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         private Integer itemId = null;
         private boolean isMyItem;
         private final Context context;
+        private final ItemOpener itemOpener;
 
-        public ItemViewHolder(final View itemView, final Activity parent, final boolean isMyItem, Context context) {
+        public ItemViewHolder(final View itemView, final Activity parent, final boolean isMyItem, Context context, ItemOpener itemOpener) {
             super(itemView);
             this.isMyItem = isMyItem;
             this.context = context;
+            this.itemOpener = itemOpener;
 
             itemImage = (ImageView) itemView.findViewById(R.id.item_image);
             itemTitle = (TextView) itemView.findViewById(R.id.item_title);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (isMyItem) {
-                        Intent intent = new Intent(parent, EditItemActivity.class);
-                        intent.putExtra(EditItemActivity.ARG_ITEM_ID, itemId);
-                        intent.putExtra(EditItemActivity.ARG_MODE, EditItemActivity.Mode.EDIT.ordinal());
-                        parent.startActivity(intent);
-                    } else {
-                        Intent intent = new Intent(parent, PublishedItemActivity.class);
-                        intent.putExtra(PublishedItemActivity.ARG_ITEM_ID, itemId);
-                        parent.startActivity(intent);
+                    if (ItemViewHolder.this.itemOpener != null) {
+                        ItemViewHolder.this.itemOpener.openItem(isMyItem,itemId);
+
                     }
 
 /*
@@ -224,6 +235,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 }
             });
         }
+
 
         public void updateFields(Drawable picture, String title) {
             itemTitle.setText(title);
@@ -262,9 +274,10 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyRecyclerAdapter(ItemsBulk itemsBulk, RecyclerView recyclerView, Activity parent, Context context) {
+    public MyRecyclerAdapter(ItemsBulk itemsBulk, RecyclerView recyclerView, Activity parent, Context context, ItemOpener itemOpener) {
         this.itemsBulk = itemsBulk;
         this.context = context;
+        this.itemOpener = itemOpener;
         this.itemsBulk.setItemReceiver(this);
         this.recyclerView = recyclerView;
         this.parentActivity = Util.createLiveData(parent);
@@ -273,7 +286,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         initOnLoadMoreListener();
         initNotifier();
 
-        filter(new ItemsQuery("", "", null, true)); //fixme this is default query
+        filter(new ItemsQuery("", "", null, true,null)); //fixme this is default query
 
 
     }
@@ -350,7 +363,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_card_layout, parent, false); //careful
             //fixme not ideal to use instanceof here, not modular
-            return new ItemViewHolder(v, parentActivity.getValue(), itemsBulk instanceof MyItemsItemsBulk, context);
+            return new ItemViewHolder(v, parentActivity.getValue(), itemsBulk instanceof MyItemsItemsBulk, context, itemOpener);
         } else if (viewType == VIEW_TYPE_LOADING) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loading, parent, false);
             return new LoadingViewHolder(view);
@@ -380,7 +393,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
-    public int getItemCount() {
+    public synchronized int getItemCount() {
 //// FIXME: 15/11/2017 careful
         //fixme danger(with threads no persistence)
         synchronized (itemsBulk) {

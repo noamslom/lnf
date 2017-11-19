@@ -31,9 +31,9 @@
             android:id="@+id/editItem_toggleButton_lostOrFound"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ToggleButton"
-            android:textOff="I Found"
-            android:textOn="I Lost" />
+            android:text="@string/togglebutton"
+            android:textOff="@string/i_found"
+            android:textOn="@string/i_lost" />
 
         <TableLayout
             android:layout_width="match_parent"
@@ -47,14 +47,14 @@
                     android:id="@+id/editItem_textView_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Name" />
+                    android:text="@string/name" />
 
                 <EditText
                     android:id="@+id/edit_item_et_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:hint="Name"
+                    android:hint="@string/name"
                     android:inputType="textPersonName" />
 
             </TableRow>
@@ -67,14 +67,14 @@
                     android:id="@+id/textView_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Desc." />
+                    android:text="@string/desc" />
 
                 <EditText
                     android:id="@+id/edit_item_et_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:hint="Description"
+                    android:hint="@string/description"
                     android:inputType="textMultiLine"
                     android:minLines="3" />
             </TableRow>
@@ -87,14 +87,14 @@
                     android:id="@+id/textView_place"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Place" />
+                    android:text="@string/place" />
 
                 <EditText
                     android:id="@+id/edit_item_et_adress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:hint="Adress"
+                    android:hint="@string/address"
                     android:inputType="textPostalAddress" />
 
             </TableRow>
@@ -110,7 +110,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="relevant" />
+                android:text="@string/relevant"
+                android:visibility="invisible" />
         </TableRow>
 
         <Button
@@ -118,7 +119,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="itemSubmitted"
-            android:text="Submit" />
+            android:text="@string/submit" />
 
         <ImageButton
             android:id="@+id/edit_item_ib_picture"

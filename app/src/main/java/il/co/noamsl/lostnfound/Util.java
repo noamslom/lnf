@@ -8,7 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.widget.PopupMenu;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.apache.commons.codec.binary.Base64;
@@ -85,4 +85,9 @@ public class Util {
         return bitmap;
     }
 
+    public static class MLog {
+        public static void d(String tag, String message) {
+            Log.d(tag,message);
+        }
+    }
 }

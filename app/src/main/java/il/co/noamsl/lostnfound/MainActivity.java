@@ -16,6 +16,7 @@ import il.co.noamsl.lostnfound.screens.itemsFeed.ItemsFeedFragment;
 import il.co.noamsl.lostnfound.screens.MainFeedFragment;
 import il.co.noamsl.lostnfound.screens.MyItemsFragment;
 import il.co.noamsl.lostnfound.screens.SettingsFragment;
+import il.co.noamsl.lostnfound.webService.WebService;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -88,8 +89,6 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
 
-        //// FIXME: 15/11/2017 remove this
-        doBullshit();
 
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -132,44 +131,6 @@ public class MainActivity extends AppCompatActivity implements
         return getSupportFragmentManager().findFragmentById(R.id.frame_layout_fragment_container);
     }
 
-    //// FIXME: 15/11/2017 remove
-    private static void doBullshit() {
-/*
-        Repository.getRepository().setLoggedInUserId(new ItemReceiver<User>() {
-            @Override
-            public void onItemArrived(User item) {
-
-            }
-        },777);
-*//*
-
-        try {
-            Thread.sleep(300);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        WebService.API.user_create(new Users("Noam", "a@b.com", "050-1234567", "Modi", 3)).enqueue(new Callback<Integer>() {
-            @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
-
-            }
-
-            @Override
-            public void onFailure(Call<Integer> call, Throwable t) {
-                lost
-            }
-        });
-        WebService ws = new WebService();
-        ws.updateItem(new ItemReceiver<Integer>() {
-            @Override
-            public void onItemArrived(Integer item) {
-                lost
-
-            }
-        }, new LfItem(4, "wal", "new one", "new loc", 3, "pic", true, false));
-
-*/
-    }
 
     private void initFragment(Bundle savedInstanceState) {
         // However, if we're being restored from a previous state,

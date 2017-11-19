@@ -6,12 +6,27 @@ public class ItemsQuery implements Query{
     private final String description;
     private final String location;
     private final Boolean isAFound;
+    private final Integer owner;
+
+    public Boolean getAFound() {
+        return isAFound;
+    }
+
+    public Boolean isRelevant() {
+        return isRelevant;
+    }
+
+    public void setRelevant(Boolean relevant) {
+        isRelevant = relevant;
+    }
+
+    private Boolean isRelevant;
 
     public Integer getOwner() {
         return owner;
     }
 
-    private final Integer owner;
+
     public String getName() {
         return name;
     }
@@ -41,34 +56,39 @@ public class ItemsQuery implements Query{
     }
 
     @Override
-    public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (location != null ? location.hashCode() : 0);
-        result = 31 * result + (isAFound != null ? isAFound.hashCode() : 0);
-        return result;
-    }
-
-    @Override
     public String toString() {
         return "ItemsQuery{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", location='" + location + '\'' +
                 ", isAFound=" + isAFound +
+                ", owner=" + owner +
+                ", isRelevant=" + isRelevant +
                 '}';
     }
 
-    public ItemsQuery(String name, String description, String location, Boolean isAFound) {
-        this(name, description, location, isAFound, null);
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (location != null ? location.hashCode() : 0);
+        result = 31 * result + (isAFound != null ? isAFound.hashCode() : 0);
+        result = 31 * result + (owner != null ? owner.hashCode() : 0);
+        result = 31 * result + (isRelevant != null ? isRelevant.hashCode() : 0);
+        return result;
     }
 
-    public ItemsQuery(String name, String description, String location, Boolean isAFound, Integer owner) {
+    public ItemsQuery(String name, String description, String location, Boolean isAFound, Boolean isRelevant) {
+        this(name, description, location, isAFound, null,isRelevant);
+    }
+
+    public ItemsQuery(String name, String description, String location, Boolean isAFound, Integer owner,Boolean isRelevant) {
         this.name = name;
         this.description = description;
         this.location = location;
         this.isAFound = isAFound;
         this.owner = owner;
+        this.isRelevant = isRelevant;
     }
 
     public Boolean isAFound() {

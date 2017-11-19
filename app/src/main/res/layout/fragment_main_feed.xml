@@ -28,9 +28,9 @@
                     android:id="@+id/toggleButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ToggleButton"
-                    android:textOff="Founds"
-                    android:textOn="Losts" />
+                    android:text="@string/togglebutton"
+                    android:textOff="@string/founds"
+                    android:textOn="@string/losts" />
 
                 <SearchView
                     android:id="@+id/main_feed_sv_filter"

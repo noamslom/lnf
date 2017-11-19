@@ -98,10 +98,9 @@ public class LfItem implements Cacheable {
     public LfItem(Integer id, String name, String description, String location, Integer owner, String picture, boolean relevant, boolean isAFound) {
         if (isAFound) {
             wsLfItem = new FoundTable(name, description, location, owner, picture,id,relevant) ;
-            // FIXME: 14/11/2017 change from null , picture shouldnt be string in server
         }
         else {
-            wsLfItem = new LostTable(name, description, location, owner, null,id,relevant);
+            wsLfItem = new LostTable(name, description, location, owner, picture,id,relevant);
         }
     }
 
