@@ -9,12 +9,24 @@ public class Request<T> {
     private final DataPosition<T> dataPosition;
     private final Query query;
 
-    public Query getQuery() {
-        return query;
+    public Request(ItemReceiver<T> itemReceiver, DataPosition<T> dataPosition, Query query) {
+        this(itemReceiver, null, dataPosition, query);
     }
 
-    public Request(ItemReceiver<T> itemReceiver,DataPosition<T> dataPosition,Query query) {
-        this(itemReceiver, null,dataPosition,query);
+    /**
+     * @param itemReceiver
+     * @param maxItems     - number of items to request. unlimited if null
+     */
+    public Request(ItemReceiver<T> itemReceiver, Integer maxItems, DataPosition<T> dataPosition, Query query) {
+        Assert.assertEquals(maxItems, null);
+        this.ITEM_RECEIVER = itemReceiver;
+        this.MAX_ITEMS = maxItems;
+        this.dataPosition = dataPosition;
+        this.query = query;
+    }
+
+    public Query getQuery() {
+        return query;
     }
 
     public ItemReceiver<T> getItemReceiver() {
@@ -23,19 +35,6 @@ public class Request<T> {
 
     public Integer getMaxItems() {
         return MAX_ITEMS;
-    }
-
-    /**
-     *
-     * @param itemReceiver
-     * @param maxItems - number of items to request. unlimited if null
-     */
-    public Request(ItemReceiver<T> itemReceiver, Integer maxItems,DataPosition<T> dataPosition,Query query) {
-        Assert.assertEquals(maxItems,null);
-        this.ITEM_RECEIVER = itemReceiver;
-        this.MAX_ITEMS = maxItems;
-        this.dataPosition = dataPosition;
-        this.query = query;
     }
 
     public DataPosition<T> getDataPosition() {

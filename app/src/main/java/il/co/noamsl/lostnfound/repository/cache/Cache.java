@@ -1,10 +1,6 @@
 package il.co.noamsl.lostnfound.repository.cache;
 
 import java.util.HashMap;
-import java.util.List;
-
-import il.co.noamsl.lostnfound.repository.item.LfItem;
-import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 
 public class Cache<T extends Cacheable> {
     protected HashMap<String, T> hashMap;

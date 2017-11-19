@@ -17,7 +17,8 @@ public class ServiceLocator {
         }
         return externalRepository;
     }
-    public static void initRepository(Context applicationContext){
+
+    public static void initRepository(Context applicationContext) {
         globalRepository = new Repository(applicationContext);
 
     }

@@ -1,4 +1,4 @@
-package il.co.noamsl.lostnfound.webService.eitan;
+package il.co.noamsl.lostnfound.webService.serverInternal;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

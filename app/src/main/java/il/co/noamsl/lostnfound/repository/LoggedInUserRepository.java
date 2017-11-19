@@ -1,8 +1,6 @@
 package il.co.noamsl.lostnfound.repository;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-
 
 import junit.framework.Assert;
 
@@ -12,22 +10,24 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import il.co.noamsl.lostnfound.Util;
 import il.co.noamsl.lostnfound.repository.User.User;
 import il.co.noamsl.lostnfound.webService.WebService;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
-import il.co.noamsl.lostnfound.webService.eitan.Users;
 
 public class LoggedInUserRepository {
     private static final String TAG = "LoggedInUserRepository";
     private static final String DATA_SAVE_FILE_NAME = "LoggedInUser";
-    private static final User FAKE_USER = new User(new Users("Noam","noam@gma.com","050","DSF",5));
     private final WebService webService;
-    private volatile User loggedInUser = null ;//// FIXME: 19/11/2017
     private final Context context;
+    private volatile User loggedInUser = null;
+
+    public LoggedInUserRepository(WebService webService, Context context) {
+        this.context = context;
+        this.webService = webService;
+    }
 
     public synchronized User getLoggedInUser() {
-        if(loggedInUser==null){
+        if (loggedInUser == null) {
             localRestore();
         }
         return loggedInUser;
@@ -36,12 +36,6 @@ public class LoggedInUserRepository {
     private synchronized void setLoggedInUser(User loggedInUser) {
         this.loggedInUser = loggedInUser;
         localSave();
-    }
-
-
-    public LoggedInUserRepository(WebService webService, Context context) {
-        this.context = context;
-        this.webService = webService;
     }
 
     public int getLoggedInUserId() {
@@ -122,7 +116,7 @@ public class LoggedInUserRepository {
             User user = (User) is.readObject();
             is.close();
             fis.close();
-            loggedInUser =  user;
+            loggedInUser = user;
 
         } catch (IOException | ClassNotFoundException ignored) {
         }

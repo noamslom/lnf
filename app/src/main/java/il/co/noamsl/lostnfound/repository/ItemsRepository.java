@@ -1,21 +1,24 @@
 package il.co.noamsl.lostnfound.repository;
 
 
-
 import java.util.List;
 
-import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
-import il.co.noamsl.lostnfound.repository.cache.Cache;
+import il.co.noamsl.lostnfound.webService.WebService;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
+import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 import il.co.noamsl.lostnfound.webService.dataTransfer.Request;
 import il.co.noamsl.lostnfound.webService.dataTransfer.RequestAgent;
-import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
-import il.co.noamsl.lostnfound.webService.WebService;
 
 class ItemsRepository {
     private static final String TAG = "ItemsRepository";
     private LFItemsCache itemsCache;
     private WebService webService;
+
+    public ItemsRepository(WebService webService) {
+        this.webService = webService;
+        this.itemsCache = new LFItemsCache();
+    }
 
     @Override
     public String toString() {
@@ -24,14 +27,8 @@ class ItemsRepository {
                 '}';
     }
 
-
-    public ItemsRepository(WebService webService) {
-        this.webService = webService;
-        this.itemsCache = new LFItemsCache();
-    }
-
     public void requestItems(final Request<LfItem> request, RequestAgent requestAgent) {
-        List<LfItem> cachedItems = itemsCache.get((ItemsQuery)request.getQuery());
+        List<LfItem> cachedItems = itemsCache.get((ItemsQuery) request.getQuery());
 
         for (LfItem cachedItem : cachedItems) {
             request.getItemReceiver().onItemArrived(cachedItem);
@@ -42,9 +39,8 @@ class ItemsRepository {
             public void onItemArrived(LfItem item) {
                 if (item != null) {
                     itemsCache.add(item);
-                    request.getItemReceiver().onItemArrived(itemsCache.get(item.getId()+""));
-                }
-                else {
+                    request.getItemReceiver().onItemArrived(itemsCache.get(item.getId() + ""));
+                } else {
                     request.getItemReceiver().onItemArrived(null);
                 }
             }
@@ -53,20 +49,20 @@ class ItemsRepository {
             public void onRequestFailure() {
                 request.getItemReceiver().onRequestFailure();
             }
-        }  ;
-        webService.requestItems(new Request<LfItem>(itemReceiver,request.getDataPosition(),request.getQuery()),null);
+        };
+        webService.requestItems(new Request<LfItem>(itemReceiver, request.getDataPosition(), request.getQuery()), null);
 
     }
 
     public LfItem getItemById(int id) {
-        return itemsCache.get(id+"");
+        return itemsCache.get(id + "");
     }
 
     public void updateItem(final ItemReceiver<Boolean> itemReceiver, final LfItem newItem) {
-        webService.updateItem(new ItemReceiver<Boolean>(){
+        webService.updateItem(new ItemReceiver<Boolean>() {
             @Override
             public void onItemArrived(Boolean success) {
-                if(!success)
+                if (!success)
                     throw new IllegalStateException();
                 itemsCache.updateItem(newItem);
                 itemReceiver.onItemArrived(success);
@@ -76,19 +72,18 @@ class ItemsRepository {
             public void onRequestFailure() {
                 itemReceiver.onRequestFailure();
             }
-        },newItem);
+        }, newItem);
     }
 
     public void addItem(final ItemReceiver<Boolean> itemReceiver, final LfItem lfItem) {
-        webService.addItem(new ItemReceiver<Integer>(){
+        webService.addItem(new ItemReceiver<Integer>() {
             @Override
             public void onItemArrived(Integer id) {
-                //fixme check answer code
-                if(id<0)
+                if (id < 0)
                     throw new IllegalStateException();
                 lfItem.setRecordid(id);
                 itemsCache.add(lfItem); //careful
-                itemReceiver.onItemArrived(id>=0);
+                itemReceiver.onItemArrived(id >= 0);
             }
 
             @Override
@@ -96,7 +91,7 @@ class ItemsRepository {
                 itemReceiver.onRequestFailure();
 
             }
-        },lfItem);
+        }, lfItem);
 
     }
 

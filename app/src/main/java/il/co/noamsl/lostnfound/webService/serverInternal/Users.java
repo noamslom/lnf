@@ -1,4 +1,4 @@
-package il.co.noamsl.lostnfound.webService.eitan;
+package il.co.noamsl.lostnfound.webService.serverInternal;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 @Root(strict = false)
 public class Users implements Serializable {
 
+    private static final Pattern EMAIL_REGEX = Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
     @Element(required = false)
     private String name;
     @Element(required = false)
@@ -20,8 +21,6 @@ public class Users implements Serializable {
     private String address;
     @Element(required = false)
     private Integer userid;
-
-    private static final Pattern EMAIL_REGEX = Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
 
     public Users() {
     }
@@ -36,6 +35,10 @@ public class Users implements Serializable {
         if (phoneNumber != null) this.phoneNumber = phoneNumber;
         if (address != null) this.address = address;
         if (userid != null) this.userid = userid;
+    }
+
+    public static boolean validateEmail(String email) {
+        return EMAIL_REGEX.matcher(email).matches();
     }
 
     public String getName() {
@@ -80,10 +83,6 @@ public class Users implements Serializable {
 
     public boolean validateEmail() {
         return EMAIL_REGEX.matcher(this.email).matches();
-    }
-
-    public static boolean validateEmail(String email) {
-        return EMAIL_REGEX.matcher(email).matches();
     }
 
     public String toString() {

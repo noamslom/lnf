@@ -3,24 +3,21 @@ package il.co.noamsl.lostnfound;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
-
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,10 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import il.co.noamsl.lostnfound.repository.User.User;
-import il.co.noamsl.lostnfound.webService.WSTest;
-import il.co.noamsl.lostnfound.webService.WebService;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
-import il.co.noamsl.lostnfound.webService.eitan.Users;
+import il.co.noamsl.lostnfound.webService.serverInternal.Users;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -63,11 +58,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-
-    //// FIXME: 15/11/2017 remove
-    private static void doBullshit() {
-        new WSTest(WebService.API).test();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +97,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void checkAlreadyLoggedIn() {
-        if(ServiceLocator.getRepository().getLoggedInUser()!=null){
+        if (ServiceLocator.getRepository().getLoggedInUser() != null) {
             login();
         }
     }
@@ -302,6 +292,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
+    private void login() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+    }
 
     private interface ProfileQuery {
         String[] PROJECTION = {
@@ -322,6 +316,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private final String mEmail;
         private final String mPassword;
         private boolean serverError;
+
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
@@ -332,7 +327,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // TODO: attempt authentication against a network service.
 
             boolean userExists = userLogin();
-            if(userExists){
+            if (userExists) {
                 return true;
             }
             // TODO: register the new account here.
@@ -344,9 +339,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             ItemReceiver<Boolean> itemReceiver = new ItemReceiver<Boolean>() {
                 @Override
                 public void onItemArrived(Boolean success) {
-                    if(!success)
+                    if (!success)
                         throw new IllegalStateException();
-                    synchronized (UserLoginTask.this){
+                    synchronized (UserLoginTask.this) {
                         gotResponse[0] = true;
                         UserLoginTask.this.notify();
                     }
@@ -355,17 +350,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 @Override
                 public void onRequestFailure() {
-                    synchronized (UserLoginTask.this){
+                    synchronized (UserLoginTask.this) {
                         gotResponse[0] = true;
                         serverError = true;
                         UserLoginTask.this.notify();
                     }
                 }
             };
-            ServiceLocator.getRepository().registerUser(itemReceiver,mEmail);
-            synchronized (UserLoginTask.this){
+            ServiceLocator.getRepository().registerUser(itemReceiver, mEmail);
+            synchronized (UserLoginTask.this) {
                 try {
-                    if(!gotResponse[0]){
+                    if (!gotResponse[0]) {
                         wait();
                     }
                 } catch (InterruptedException e) {
@@ -373,7 +368,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             }
             User loggedInUser = ServiceLocator.getRepository().getLoggedInUser();
-            return loggedInUser!=null;
+            return loggedInUser != null;
 
         }
 
@@ -384,7 +379,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 public void onItemArrived(User loggedInUser) {
 
 
-                    synchronized (UserLoginTask.this){
+                    synchronized (UserLoginTask.this) {
                         gotResponse[0] = true;
                         UserLoginTask.this.notify();
 
@@ -393,18 +388,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 @Override
                 public void onRequestFailure() {
-                    synchronized (UserLoginTask.this){
+                    synchronized (UserLoginTask.this) {
                         gotResponse[0] = true;
                         serverError = true;
                         UserLoginTask.this.notify();
                     }
                 }
-            },mEmail);
+            }, mEmail);
 
-            synchronized (UserLoginTask.this){
+            synchronized (UserLoginTask.this) {
                 try {
 
-                    if(!gotResponse[0]){
+                    if (!gotResponse[0]) {
                         wait();
                     }
                 } catch (InterruptedException e) {
@@ -413,7 +408,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
             User loggedInUser = ServiceLocator.getRepository().getLoggedInUser();
 
-            return loggedInUser!=null;
+            return loggedInUser != null;
         }
 
         @Override
@@ -424,11 +419,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             if (success) {
                 login();
             } else {
-                if(!serverError){
+                if (!serverError) {
                     mPasswordView.setError(getString(R.string.error_incorrect_password_or_email));
                     mPasswordView.requestFocus();
-                } else{
-                    Util.MyToast.show(getApplicationContext(),"Unable to connect to the server",Toast.LENGTH_SHORT);
+                } else {
+                    Util.MyToast.show(getApplicationContext(), "Unable to connect to the server", Toast.LENGTH_SHORT);
                 }
             }
         }
@@ -438,11 +433,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
-    }
-
-    private void login() {
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
     }
 }
 

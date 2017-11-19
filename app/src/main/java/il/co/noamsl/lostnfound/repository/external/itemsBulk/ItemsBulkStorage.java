@@ -1,7 +1,6 @@
 package il.co.noamsl.lostnfound.repository.external.itemsBulk;
 
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -15,19 +14,19 @@ import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 public class ItemsBulkStorage {
     private static final String TAG = "ItemsBulkStorage";
     //query --> list of all items ids for this query
-    private Hashtable<ItemsQuery,Set<Integer>> itemsIdTable;
+    private Hashtable<ItemsQuery, Set<Integer>> itemsIdTable;
 
     public ItemsBulkStorage() {
         itemsIdTable = new Hashtable<>();
     }
 
-    public List<Integer> getItemsIdList(ItemsQuery filter){
-        return new ArrayList<>(generateAndGetIdList(filter)); //// FIXME: 17/11/2017 note efficient
+    public List<Integer> getItemsIdList(ItemsQuery filter) {
+        return new ArrayList<>(generateAndGetIdList(filter));
     }
 
     private Set<Integer> generateAndGetIdList(ItemsQuery filter) {
         Set<Integer> idList = itemsIdTable.get(filter);
-        if(idList==null){
+        if (idList == null) {
             idList = Collections.synchronizedSet(new HashSet<Integer>());
         }
         return idList;
@@ -51,7 +50,7 @@ public class ItemsBulkStorage {
 
     public Integer getLast(ItemsQuery filter) {
         List<Integer> itemsIdList = getItemsIdList(filter);
-        return itemsIdList.get(itemsIdList.size()-1);
+        return itemsIdList.get(itemsIdList.size() - 1);
     }
 
     public void clear() {

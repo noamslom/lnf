@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +47,16 @@ public class ItemsFeedFragment extends Fragment implements ItemReceiver<Boolean>
         // Required empty public constructor
     }
 
+    public static ItemsFeedFragment newInstance(ItemsBulk itemsBulk, ItemsStateListener itemsStateListener) {
+        //// FIXME: 18/11/2017 not saving parent
+        ItemsFeedFragment fragment = new ItemsFeedFragment();
+        fragment.setItemsStateListener(itemsStateListener);
+        Bundle args = new Bundle();
+        args.putParcelable(ARG_ITEMS_BULK, itemsBulk);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -78,7 +87,6 @@ public class ItemsFeedFragment extends Fragment implements ItemReceiver<Boolean>
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        Util.MLog.d(TAG, "onRefresh called from SwipeRefreshLayout");
 
                         // This method performs the actual data-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
@@ -94,7 +102,6 @@ public class ItemsFeedFragment extends Fragment implements ItemReceiver<Boolean>
         ServiceLocator.getRepository().clearItems();
         mAdapter.reloadByCurrentFilter(this);
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -122,16 +129,6 @@ public class ItemsFeedFragment extends Fragment implements ItemReceiver<Boolean>
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-    }
-
-    public static ItemsFeedFragment newInstance(ItemsBulk itemsBulk, ItemsStateListener itemsStateListener) {
-        //// FIXME: 18/11/2017 not saving parent
-        ItemsFeedFragment fragment = new ItemsFeedFragment();
-        fragment.setItemsStateListener(itemsStateListener);
-        Bundle args = new Bundle();
-        args.putParcelable(ARG_ITEMS_BULK, itemsBulk);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     private void setItemsStateListener(ItemsStateListener itemsStateListener) {
@@ -163,7 +160,6 @@ public class ItemsFeedFragment extends Fragment implements ItemReceiver<Boolean>
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult: ");
         if (requestCode == REQUEST_ITEM_CHANGE && resultCode == Activity.RESULT_OK) {
-            Util.MLog.d(TAG,"refreshed!");
             refresh();
         }
 

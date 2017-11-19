@@ -12,6 +12,7 @@ import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 
 public class LFItemsCache extends Cache<LfItem> {
     private static final String TAG = "LFItemsCache";
+
     public List<LfItem> get(ItemsQuery filter) {
         List<LfItem> filteredItems = new ArrayList<>();
         Collection<LfItem> allItems = hashMap.values();
@@ -26,25 +27,25 @@ public class LFItemsCache extends Cache<LfItem> {
 
     private boolean matches(LfItem item, ItemsQuery filter) {
         boolean matches = false;
-        if(filter.getOwner()!=null && item.getOwner()!=null){
+        if (filter.getOwner() != null && item.getOwner() != null) {
             matches |= filter.getOwner().equals(item.getOwner());
         }
-        if(filter.getName()!=null && item.getName()!=null){
+        if (filter.getName() != null && item.getName() != null) {
             matches |= item.getName().toLowerCase().contains(filter.getName().toLowerCase());
         }
-        if(filter.getDescription()!=null && item.getDescription()!=null){
+        if (filter.getDescription() != null && item.getDescription() != null) {
             matches |= item.getDescription().toLowerCase().contains(filter.getDescription().toLowerCase());
 
         }
-        if(filter.getLocation()!=null && item.getLocation()!=null){
+        if (filter.getLocation() != null && item.getLocation() != null) {
             matches |= item.getLocation().toLowerCase().contains(filter.getLocation().toLowerCase());
 
         }
-        if(filter.isAFound()!=null){
-            matches&=(filter.isAFound()==item.isAFound());
+        if (filter.isAFound() != null) {
+            matches &= (filter.isAFound() == item.isAFound());
         }
-        if(filter.isRelevant()!=null){
-            matches&=(filter.isRelevant()==item.getRelevant());
+        if (filter.isRelevant() != null) {
+            matches &= (filter.isRelevant() == item.getRelevant());
         }
         return matches;
 

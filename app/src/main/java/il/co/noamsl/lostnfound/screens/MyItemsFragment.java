@@ -5,13 +5,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import il.co.noamsl.lostnfound.MainActivity;
 import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.ServiceLocator;
 import il.co.noamsl.lostnfound.screens.itemsFeed.ItemFeed;
@@ -26,11 +24,12 @@ import il.co.noamsl.lostnfound.screens.itemsFeed.ItemsStateListener;
  */
 public class MyItemsFragment extends Fragment implements ItemsStateListener {
     private static final String TAG = "MyItemsFragment";
-    private OnFragmentInteractionListener mListener;
-    private ItemFeed itemFeed ;
-    private TextView tvNoItems;
     boolean noItems = true;
-//    private ItemsFeedFragment itemsFeedFragment;
+    private OnFragmentInteractionListener mListener;
+    private ItemFeed itemFeed;
+    private TextView tvNoItems;
+
+    //    private ItemsFeedFragment itemsFeedFragment;
     public MyItemsFragment() {
         // Required empty public constructor
     }
@@ -42,7 +41,7 @@ public class MyItemsFragment extends Fragment implements ItemsStateListener {
             return;
         }
 
-        itemFeed = new ItemFeed(this,R.id.fl_feed_containter, ServiceLocator.getExternalRepository().getMyItemsItemsBulk(),this);
+        itemFeed = new ItemFeed(this, R.id.fl_feed_containter, ServiceLocator.getExternalRepository().getMyItemsItemsBulk(), this);
 
     }
 
@@ -54,9 +53,9 @@ public class MyItemsFragment extends Fragment implements ItemsStateListener {
 
     }
 
-    public void onNofItemsChange(int nofItems){
-        noItems = (nofItems<=0);
-        if(tvNoItems!=null){
+    public void onNofItemsChange(int nofItems) {
+        noItems = (nofItems <= 0);
+        if (tvNoItems != null) {
             updateNoItemsVisibility();
         }
     }
@@ -65,21 +64,6 @@ public class MyItemsFragment extends Fragment implements ItemsStateListener {
         tvNoItems.setVisibility(noItems ? View.VISIBLE : View.GONE);
     }
 
-    /* private void initItemFeed(Bundle savedInstanceState) {
-         if (savedInstanceState != null) {
-             return;
-         }
-         // Create a new Fragment to be placed in the activity layout
-         itemsFeedFragment = new ItemsFeedFragment();
-         // In case this activity was started with special instructions from an
-         // Intent, pass the Intent's extras to the fragment as arguments
-         itemsFeedFragment.setArguments(getActivity().getIntent().getExtras());
-
-         // Add the fragment to the 'fragment_container' FrameLayout
-         getChildFragmentManager().beginTransaction()
-                 .add(R.id.fl_feed_containter, itemsFeedFragment).commit();
-     }
- */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -119,7 +103,6 @@ public class MyItemsFragment extends Fragment implements ItemsStateListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
 
 
 }

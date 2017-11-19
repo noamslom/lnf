@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,19 +31,20 @@ public class MainFeedFragment extends Fragment {
     private static final String TAG = "MainFeedFragment";
     private static final boolean FOUND_TOGGLE_VALUE = false;
     private OnFragmentInteractionListener mListener;
-    private ItemFeed itemFeed ;
+    private ItemFeed itemFeed;
     private SearchView svFilter;
     private ToggleButton tgbLostOrFound;
 
 
     private FloatingActionButton fabNewItem;
+
     public MainFeedFragment() {
         // Required empty public constructor
     }
 
-    public void newItem(){
+    public void newItem() {
 //        Util.MyToast.show(getContext(), "Clicked", MyToast.LENGTH_SHORT);
-        Intent intent = new Intent(getContext(),EditItemActivity.class);
+        Intent intent = new Intent(getContext(), EditItemActivity.class);
         intent.putExtra(EditItemActivity.ARG_MODE, EditItemActivity.Mode.ADD.ordinal());
         startActivity(intent);
     }
@@ -55,7 +55,7 @@ public class MainFeedFragment extends Fragment {
         if (savedInstanceState != null) {
             return;
         }
-        itemFeed = new ItemFeed(this,R.id.main_feed_fl_feed_containter, MainActivity.getExternalRepository().getAllItemsItemsBulk(),null);
+        itemFeed = new ItemFeed(this, R.id.main_feed_fl_feed_containter, MainActivity.getExternalRepository().getAllItemsItemsBulk(), null);
     }
 
     @Override
@@ -90,12 +90,12 @@ public class MainFeedFragment extends Fragment {
                 filter();
             }
         });
-        
+
     }
 
     private void filter() {
         final String search = svFilter.getQuery() + "";
-        itemFeed.filter(new ItemsQuery(search, search,search,isToggleButtonAFound(),true));
+        itemFeed.filter(new ItemsQuery(search, search, search, isToggleButtonAFound(), true));
     }
 
     private boolean isToggleButtonAFound() {
@@ -105,7 +105,6 @@ public class MainFeedFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Util.MLog.d(TAG,"onresume");
         closeKeyboard();
         itemFeed.resetAndreload();
     }
@@ -134,6 +133,16 @@ public class MainFeedFragment extends Fragment {
         mListener = null;
     }
 
+    private void closeKeyboard() {
+        View currentFocus = getActivity().getCurrentFocus();
+        if (currentFocus != null) {
+            android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getActivity().getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
+        }
+        getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -147,16 +156,6 @@ public class MainFeedFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    private void closeKeyboard() {
-        View currentFocus = getActivity().getCurrentFocus();
-        if (currentFocus!=null){
-            android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager)getActivity().getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
-        }
-        getActivity().getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
 }

@@ -12,37 +12,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import il.co.noamsl.lostnfound.repository.external.RepositoryExternal;
-import il.co.noamsl.lostnfound.screens.itemsFeed.ItemsFeedFragment;
 import il.co.noamsl.lostnfound.screens.MainFeedFragment;
 import il.co.noamsl.lostnfound.screens.MyItemsFragment;
 import il.co.noamsl.lostnfound.screens.SettingsFragment;
-import il.co.noamsl.lostnfound.webService.WebService;
+import il.co.noamsl.lostnfound.screens.itemsFeed.ItemsFeedFragment;
 
 
 public class MainActivity extends AppCompatActivity implements
         MainFeedFragment.OnFragmentInteractionListener,
         MyItemsFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener,
-        ItemsFeedFragment.OnFragmentInteractionListener{
+        ItemsFeedFragment.OnFragmentInteractionListener {
     private static final String TAG = "MainActivity";
-    private static Context context; //// FIXME: 05/11/2017
-
-    public static RepositoryExternal getExternalRepository() {
-        return ServiceLocator.getExternalRepository();
-    }
-
     private MyItemsFragment myItemsFragment = null;
     private MainFeedFragment mainFeedFragment = null;
     private SettingsFragment settingsFragment = null;
     private BottomNavigationView navigation;
     private boolean navigationListening = true;
-
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            if(!navigationListening)
+            if (!navigationListening)
                 return true;
             switch (item.getItemId()) {
                 case R.id.navigation_feed:
@@ -60,6 +52,10 @@ public class MainActivity extends AppCompatActivity implements
 
 
     };
+
+    public static RepositoryExternal getExternalRepository() {
+        return ServiceLocator.getExternalRepository();
+    }
 
     private void setFragmentToSettings() {
         if (settingsFragment == null) {
@@ -89,14 +85,11 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
 
-
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 
         initFragment(savedInstanceState);
-
-        context = getApplicationContext();
 
 
     }
@@ -131,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements
         return getSupportFragmentManager().findFragmentById(R.id.frame_layout_fragment_container);
     }
 
-
     private void initFragment(Bundle savedInstanceState) {
         // However, if we're being restored from a previous state,
         // then we don't need to do anything and should return or else
@@ -150,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements
                 .add(R.id.frame_layout_fragment_container, mainFeedFragment).commit();
     }
 
-
     private void replaceFragment(Fragment newFragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -165,14 +156,8 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-
     @Override
     public void onFragmentInteraction(Uri uri) {
-        //TODO handle later
-    }
-
-    public static Context getContext() {
-        return context;
     }
 
     public void setNavigationListening(boolean navigationListening) {

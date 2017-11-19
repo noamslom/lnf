@@ -9,9 +9,9 @@ import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 public class ItemFeed {
     private ItemsFeedFragment itemsFeedFragment;
 
-    public ItemFeed(Fragment parent, int container, ItemsBulk itemsBulk,ItemsStateListener itemsStateListener) {
+    public ItemFeed(Fragment parent, int container, ItemsBulk itemsBulk, ItemsStateListener itemsStateListener) {
         // Create a new Fragment to be placed in the activity layout
-        itemsFeedFragment = ItemsFeedFragment.newInstance(itemsBulk,itemsStateListener);
+        itemsFeedFragment = ItemsFeedFragment.newInstance(itemsBulk, itemsStateListener);
         // In case this activity was started with special instructions from an
         // Intent, pass the Intent's extras to the fragment as arguments
 
@@ -22,7 +22,6 @@ public class ItemFeed {
         parent.getChildFragmentManager().beginTransaction()
                 .add(container, itemsFeedFragment).commit();
     }
-
 
 
     public void filter(ItemsQuery itemsQuery) {

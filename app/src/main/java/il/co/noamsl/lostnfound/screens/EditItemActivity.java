@@ -8,7 +8,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -33,18 +32,13 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 
 public class EditItemActivity extends AppCompatActivity implements ItemReceiver<Boolean> {
-    private static final String TAG = "EditItemActivity";
     public static final String ARG_ITEM_ID = "itemId";
-    private static final int PICK_PHOTO_FOR_AVATAR = 1;
-    private final int COMPRESSION_RATIO = 50;
-
-
-    public enum Mode {EDIT, ADD}
-
     public static final String ARG_MODE = "MODE";
+    private static final String TAG = "EditItemActivity";
+    private static final int PICK_PHOTO_FOR_AVATAR = 1;
     private static final boolean FOUND_TOGGLE_VALUE = false;
+    private final int COMPRESSION_RATIO = 50;
     private Mode MODE;
-
     private TextView etTitle;
     private TextView etDescription;
     private TextView etLocation;
@@ -54,6 +48,12 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
     private ImageButton imageButton;
     private volatile String base64Image = null;
     private LfItem prevItem = null;
+
+    @NonNull
+    private static String inputStreamToBase64(InputStream inputStream) throws IOException {
+        return new String(Base64.encodeBase64(IOUtils.toByteArray(inputStream)));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +96,7 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
     private void restorePicture(LfItem item) {
         base64Image = item.getPicture();
 
-        if(base64Image!=null) {
+        if (base64Image != null) {
             imageButton.setImageDrawable(Util.base64ToDrawable(getResources(), base64Image));
         }
     }
@@ -148,11 +148,9 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
     }
 
     private void goBack() {
-        Util.MLog.d(TAG, "goBack() called");
         Intent returnIntent = getIntent();
-        setResult(Activity.RESULT_OK,returnIntent);
+        setResult(Activity.RESULT_OK, returnIntent);
         finish();
-//        this.onBackPressed();
     }
 
     @Override
@@ -198,9 +196,6 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
     }
 
 
-    @NonNull
-    private static String inputStreamToBase64(InputStream inputStream) throws IOException {
-        return new String(Base64.encodeBase64(IOUtils.toByteArray(inputStream)));
-    }
+    public enum Mode {EDIT, ADD}
 
 }

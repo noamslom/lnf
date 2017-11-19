@@ -8,19 +8,18 @@ import org.simpleframework.xml.core.Persister;
 import java.util.Arrays;
 import java.util.List;
 
-import il.co.noamsl.lostnfound.Util;
 import il.co.noamsl.lostnfound.repository.User.User;
+import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 import il.co.noamsl.lostnfound.webService.dataTransfer.Request;
-import il.co.noamsl.lostnfound.webService.eitan.FoundTable;
-import il.co.noamsl.lostnfound.webService.eitan.FoundTableList;
-import il.co.noamsl.lostnfound.webService.eitan.LostTable;
-import il.co.noamsl.lostnfound.webService.eitan.LostTableList;
-import il.co.noamsl.lostnfound.webService.eitan.ServerAPI;
-import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.webService.dataTransfer.RequestAgent;
-import il.co.noamsl.lostnfound.webService.eitan.Users;
+import il.co.noamsl.lostnfound.webService.serverInternal.FoundTable;
+import il.co.noamsl.lostnfound.webService.serverInternal.FoundTableList;
+import il.co.noamsl.lostnfound.webService.serverInternal.LostTable;
+import il.co.noamsl.lostnfound.webService.serverInternal.LostTableList;
+import il.co.noamsl.lostnfound.webService.serverInternal.ServerAPI;
+import il.co.noamsl.lostnfound.webService.serverInternal.Users;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,8 +36,6 @@ public class WebService {
     // '/' at the end is required
     private static final String BASE_URL_PHONE = "http://192.168.1.102:8080/lf_server/webresources/";
     private static final String BASE_URL_EMULATOR = "http://10.0.2.2:8080/lf_server/webresources/";
-    private static final String BASE_URL_DEFAULT = BASE_URL_EMULATOR;
-    private static final String[] BASE_URLS = {BASE_URL_PHONE, BASE_URL_EMULATOR};
     // order at which converters are added matters!
     // Scalar converter should be added first.
     public static final ServerAPI API = new Retrofit.Builder()
@@ -51,35 +48,9 @@ public class WebService {
                     )
             )
             .build().create(ServerAPI.class);
+    private static final String BASE_URL_DEFAULT = BASE_URL_EMULATOR;
+    private static final String[] BASE_URLS = {BASE_URL_PHONE, BASE_URL_EMULATOR};
 
-
-/*
-    static {
-        for (final String url: BASE_URLS) {
-            final ServerAPI tempTestingAPI = new Retrofit.Builder()
-                    .baseUrl(url)
-                    .client(new OkHttpClient())
-                    .addConverterFactory(ScalarsConverterFactory.create())
-                    .addConverterFactory(
-                            SimpleXmlConverterFactory.createNonStrict(
-                                    new Persister(new AnnotationStrategy())
-                            )
-                    )
-                    .build().create(ServerAPI.class);
-            tempTestingAPI.user_getSettings(null,null).enqueue(new Callback<Users>() {
-                @Override
-                public void onResponse(Call<Users> call, Response<Users> response) {
-                    API = tempTestingAPI;
-                }
-
-                @Override
-                public void onFailure(Call<Users> call, Throwable t) {
-                    Util.MLog.d(TAG, "isAlive failed: "+url);
-                }
-            });
-        }
-    }
-*/
 
 
     public void requestItems(final Request<LfItem> request, RequestAgent requestAgent) {
@@ -120,25 +91,7 @@ public class WebService {
 
 
     private void requestItemsByFilter(final Request<LfItem> request) {
-/*
-        //// FIXME: 16/11/2017 delete this, just for faster testings
-        {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    for (int i = 0; i < 20; i++) {
 
-                        request.getItemReceiver().onItemArrived(
-                                new LfItem(i, "wallet tekjke" + i, "descrip" + i, "here", 5, "pic", new Random().nextBoolean(), true));
-
-
-                    }
-                    request.getItemReceiver().onItemArrived(null);
-                }
-            }, 1000);
-            if (true) return;
-        }
-*/
         ItemsQuery query = (ItemsQuery) request.getQuery();
         MultipleSourcesItemReceiver<LfItem> msItemReceiver = new MultipleSourcesItemReceiver<>(request.getItemReceiver());
         Boolean isAFound = query.isAFound();
@@ -178,7 +131,7 @@ public class WebService {
         Callback<Users> callback = new Callback<Users>() {
             @Override
             public void onResponse(Call<Users> call, Response<Users> response) {
-                if (!response.isSuccessful()) {
+                if (!response.isSuccessful() || response.body() == null) {
                     itemReceiver.onRequestFailure();
                     return;
                 }
@@ -278,7 +231,6 @@ public class WebService {
                         if (foundTables != null) {
                             for (FoundTable foundTable : foundTables) {
                                 itemReceiver.onItemArrived(new LfItem(foundTable));
-                                Util.MLog.d(TAG, "onResponse: received = "+foundTable);
 
                             }
                         }
@@ -298,32 +250,27 @@ public class WebService {
         }
 
         private static void requestByFilter(final Request<LfItem> request, final MultipleSourcesItemReceiver<LfItem> msItemReceiver) {
-            ItemsQuery query = (ItemsQuery) request.getQuery();
-            Log.d(TAG, "requestByFilter: "+query);
-
-            //// FIXME: 19/11/2017
-            Util.MLog.d(TAG,"DeleteThis");
-            query = new ItemsQuery(query.getName(), query.getDescription(), null, query.isAFound(), query.isRelevant());
-            final ItemsQuery finalQuery = query;
+            final ItemsQuery query = (ItemsQuery) request.getQuery();
 
             msItemReceiver.onWorkerStarted();
             Callback<FoundTableList> callback = new Callback<FoundTableList>() {
                 @Override
                 public void onResponse(Call<FoundTableList> call, Response<FoundTableList> response) {
-                    Log.d(TAG, "onResponse: response = " + response.body().getFoundTables());
                     if (!response.isSuccessful()) {
-                        Log.d(TAG, "onResponse not successful: query = " + Arrays.toString(new String[]{finalQuery.getName(), finalQuery.getDescription(), finalQuery.getLocation()}));
+                        Log.d(TAG, "onResponse not successful: query = " + Arrays.toString(new String[]{query.getName(), query.getDescription(), query.getLocation()}));
                         Log.d(TAG, "onResponse: response.raw() = " + response.raw());
 
                         msItemReceiver.onRequestFailure();
                         return;
                     }
-                    List<FoundTable> lst = response.body().getFoundTables();
-                    if (lst != null) {
-                        for (FoundTable l : lst) {
-                            Log.d(TAG, "onResponse: l = " + l);
+                    if(response.body() != null){
+                        List<FoundTable> lst = response.body().getFoundTables();
+                        if (lst != null) {
+                            for (FoundTable l : lst) {
+                                Log.d(TAG, "onResponse: l = " + l);
 
-                            msItemReceiver.onItemArrived(new LfItem(l));
+                                msItemReceiver.onItemArrived(new LfItem(l));
+                            }
                         }
                     }
                     msItemReceiver.onItemArrived(null);
@@ -359,7 +306,6 @@ public class WebService {
         }
 
         public static void addItem(final ItemReceiver<Integer> itemReceiver, LfItem lfItem) {
-            Util.MLog.d(TAG,"Found.addItem Item = "+lfItem);
 
             Callback<Integer> callback = new Callback<Integer>() {
                 @Override
@@ -407,6 +353,7 @@ public class WebService {
                         if (lostTables != null) {
                             for (LostTable lostTable : lostTables) {
                                 itemReceiver.onItemArrived(new LfItem(lostTable));
+
                             }
                         }
                     }
@@ -424,23 +371,28 @@ public class WebService {
             API.user_getLostItems(owner).enqueue(callback);
         }
 
-
         private static void requestByFilter(final Request<LfItem> request, final MultipleSourcesItemReceiver<LfItem> msItemReceiver) {
+            final ItemsQuery query = (ItemsQuery) request.getQuery();
 
-
-            ItemsQuery query = (ItemsQuery) request.getQuery();
             msItemReceiver.onWorkerStarted();
             Callback<LostTableList> callback = new Callback<LostTableList>() {
                 @Override
                 public void onResponse(Call<LostTableList> call, Response<LostTableList> response) {
                     if (!response.isSuccessful()) {
+                        Log.d(TAG, "onResponse not successful: query = " + Arrays.toString(new String[]{query.getName(), query.getDescription(), query.getLocation()}));
+                        Log.d(TAG, "onResponse: response.raw() = " + response.raw());
+
                         msItemReceiver.onRequestFailure();
                         return;
                     }
-                    List<LostTable> lst = response.body().getLostTables();
-                    if (lst != null) {
-                        for (LostTable l : lst) {
-                            msItemReceiver.onItemArrived(new LfItem(l));
+                    if(response.body() != null){
+                        List<LostTable> lst = response.body().getLostTables();
+                        if (lst != null) {
+                            for (LostTable l : lst) {
+                                Log.d(TAG, "onResponse: l = " + l);
+
+                                msItemReceiver.onItemArrived(new LfItem(l));
+                            }
                         }
                     }
                     msItemReceiver.onItemArrived(null);
@@ -476,7 +428,6 @@ public class WebService {
         }
 
         public static void addItem(final ItemReceiver<Integer> itemReceiver, LfItem lfItem) {
-
 
             Callback<Integer> callback = new Callback<Integer>() {
                 @Override

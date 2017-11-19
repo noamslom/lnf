@@ -1,4 +1,4 @@
-package il.co.noamsl.lostnfound.webService.eitan;
+package il.co.noamsl.lostnfound.webService.serverInternal;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;

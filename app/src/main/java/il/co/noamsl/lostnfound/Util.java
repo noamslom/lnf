@@ -49,19 +49,6 @@ public class Util {
 
     }
 
-    public static class MyToast {
-        private static Toast lastToast;
-        public static int LENGTH_SHORT = Toast.LENGTH_SHORT;
-
-        public static void show(Context context, String s, int duration) {
-            if (lastToast != null) {
-                lastToast.cancel();
-            }
-            lastToast = Toast.makeText(context, s, duration);
-            lastToast.show();
-        }
-    }
-
     public static Drawable base64ToDrawable(Resources resources, String base64Image) {
         return base64ToDrawable(resources, base64Image, 100);
     }
@@ -72,22 +59,30 @@ public class Util {
         }
         byte[] decodedBytes = Base64.decodeBase64(base64Image.getBytes());
         Bitmap bitmap1 = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-        bitmap1 = compressBitmap(bitmap1,compressionRation);
+        bitmap1 = compressBitmap(bitmap1, compressionRation);
         return new BitmapDrawable(resources, bitmap1);
 
 
     }
 
-    public static Bitmap compressBitmap(Bitmap bitmap,int compressionRation) {
+    public static Bitmap compressBitmap(Bitmap bitmap, int compressionRation) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, compressionRation, outputStream);
         bitmap = BitmapFactory.decodeStream(new ByteArrayInputStream(outputStream.toByteArray()));
         return bitmap;
     }
 
-    public static class MLog {
-        public static void d(String tag, String message) {
-            Log.d(tag,message);
+    public static class MyToast {
+        public static int LENGTH_SHORT = Toast.LENGTH_SHORT;
+        private static Toast lastToast;
+
+        public static void show(Context context, String s, int duration) {
+            if (lastToast != null) {
+                lastToast.cancel();
+            }
+            lastToast = Toast.makeText(context, s, duration);
+            lastToast.show();
         }
     }
+
 }

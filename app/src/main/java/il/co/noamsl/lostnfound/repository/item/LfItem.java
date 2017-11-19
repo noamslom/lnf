@@ -5,8 +5,8 @@ import android.graphics.drawable.Drawable;
 
 import il.co.noamsl.lostnfound.Util;
 import il.co.noamsl.lostnfound.repository.cache.Cacheable;
-import il.co.noamsl.lostnfound.webService.eitan.FoundTable;
-import il.co.noamsl.lostnfound.webService.eitan.LostTable;
+import il.co.noamsl.lostnfound.webService.serverInternal.FoundTable;
+import il.co.noamsl.lostnfound.webService.serverInternal.LostTable;
 
 
 public class LfItem implements Cacheable {
@@ -14,7 +14,15 @@ public class LfItem implements Cacheable {
     private Drawable drawablePicture = null;
 
     public LfItem(WSLfItem wsLfItem) {
-        this.wsLfItem=wsLfItem;
+        this.wsLfItem = wsLfItem;
+    }
+
+    public LfItem(Integer id, String name, String description, String location, Integer owner, String picture, boolean relevant, boolean isAFound) {
+        if (isAFound) {
+            wsLfItem = new FoundTable(name, description, location, owner, picture, id, relevant);
+        } else {
+            wsLfItem = new LostTable(name, description, location, owner, picture, id, relevant);
+        }
     }
 
     public String getName() {
@@ -41,30 +49,19 @@ public class LfItem implements Cacheable {
         wsLfItem.setOwner(owner);
     }
 
+
+
     public String getPicture() {
         return wsLfItem.getPicture();
     }
-
-
-/*
-    public NoamImage getMainImage() {
-        if (fakeImage == null) {
-            fakeImage = new FakeImage();
-        }
-        return fakeImage; //// FIXME: 14/11/2017  server need to fix
-    }
-*/
-
 
     public Integer getId() {
         return wsLfItem.getRecordid();
     }
 
-
     public boolean isAFound() {
         return wsLfItem instanceof FoundTable;
     }
-
 
     public boolean isALost() {
         return wsLfItem instanceof LostTable;
@@ -90,30 +87,16 @@ public class LfItem implements Cacheable {
         wsLfItem.setRelevant(relevant);
     }
 
-
     public String toString() {
         return wsLfItem.toString();
     }
 
-    public LfItem(Integer id, String name, String description, String location, Integer owner, String picture, boolean relevant, boolean isAFound) {
-        if (isAFound) {
-            wsLfItem = new FoundTable(name, description, location, owner, picture,id,relevant) ;
-        }
-        else {
-            wsLfItem = new LostTable(name, description, location, owner, picture,id,relevant);
-        }
-    }
-
-
-
-
     public FoundTable toFoundTable() {
-        //// FIXME: 14/11/2017 change picture from string and dont put null
         return (FoundTable) wsLfItem;
 
     }
 
-    public LostTable toLostTable(){
+    public LostTable toLostTable() {
         return (LostTable) wsLfItem;
     }
 
@@ -123,7 +106,7 @@ public class LfItem implements Cacheable {
     }
 
     public Drawable getDrawablePicture(Context context) {
-        if(drawablePicture!=null)
+        if (drawablePicture != null)
             return drawablePicture;
 
         final int compressionRation = 10;

@@ -20,7 +20,7 @@ import il.co.noamsl.lostnfound.ServiceLocator;
 import il.co.noamsl.lostnfound.Util;
 import il.co.noamsl.lostnfound.repository.User.User;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
-import il.co.noamsl.lostnfound.webService.eitan.Users;
+import il.co.noamsl.lostnfound.webService.serverInternal.Users;
 
 
 /**
@@ -31,7 +31,7 @@ import il.co.noamsl.lostnfound.webService.eitan.Users;
  */
 public class SettingsFragment extends Fragment implements ItemReceiver<Boolean> {
     private OnFragmentInteractionListener mListener;
-//    private static final String ARG_MAIN_ACTIVITY = "mainActivity";
+    //    private static final String ARG_MAIN_ACTIVITY = "mainActivity";
     private EditText etName;
     private EditText etEmail;
     private EditText etPhone;
@@ -78,16 +78,16 @@ public class SettingsFragment extends Fragment implements ItemReceiver<Boolean> 
     }
 
     private void restoreSettings() {
-        if(loggedInUser.getAddress()!=null){
+        if (loggedInUser.getAddress() != null) {
             etAddress.setText(String.valueOf(loggedInUser.getAddress()));
         }
-        if(loggedInUser.getEmail()!=null){
+        if (loggedInUser.getEmail() != null) {
             etEmail.setText(String.valueOf(loggedInUser.getEmail()));
         }
-        if(loggedInUser.getName()!=null){
+        if (loggedInUser.getName() != null) {
             etName.setText(String.valueOf(loggedInUser.getName()));
         }
-        if(loggedInUser.getPhoneNumber()!=null){
+        if (loggedInUser.getPhoneNumber() != null) {
             etPhone.setText(String.valueOf(loggedInUser.getPhoneNumber()));
         }
     }
@@ -107,18 +107,16 @@ public class SettingsFragment extends Fragment implements ItemReceiver<Boolean> 
     }
 
     public void submitChanges() {
-        //// TODO: 17/11/2017
         String email = getEmailFromEditText();
 
-        if(!checkEmail(email)){
+        if (!checkEmail(email)) {
             return;
         }
-        String name = etName.getText()+"";
-        String phone = etPhone.getText()+"";
-        String address= etAddress.getText()+"";
+        String name = etName.getText() + "";
+        String phone = etPhone.getText() + "";
+        String address = etAddress.getText() + "";
         Integer userId = loggedInUser.getUserid();
-        ServiceLocator.getExternalRepository().updateUser(this,new User(new Users(name, email, phone, address, userId)));
-//        getActivity().onBackPressed();
+        ServiceLocator.getExternalRepository().updateUser(this, new User(new Users(name, email, phone, address, userId)));
     }
 
     public void logout() {

@@ -3,15 +3,12 @@ package il.co.noamsl.lostnfound.repository;
 import android.content.Context;
 import android.util.Log;
 
-
-import il.co.noamsl.lostnfound.MainActivity;
-import il.co.noamsl.lostnfound.ServiceLocator;
 import il.co.noamsl.lostnfound.repository.User.User;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
+import il.co.noamsl.lostnfound.webService.WebService;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.webService.dataTransfer.Request;
 import il.co.noamsl.lostnfound.webService.dataTransfer.RequestAgent;
-import il.co.noamsl.lostnfound.webService.WebService;
 
 
 public class Repository {
@@ -53,7 +50,6 @@ public class Repository {
     public LfItem getItemById(int itemId) {
         LfItem item = itemsRepository.getItemById(itemId);
         if (item == null) {
-//            throw new IllegalStateException("Should not ask for an item not present");
             Log.e(TAG, "Should not ask for an item not present");
             return null;
         }
@@ -81,9 +77,9 @@ public class Repository {
         return loggedInUserRepository.getLoggedInUser();
     }
 
-    public void updateUser(final ItemReceiver<Boolean> itemReceiver,User user) {
+    public void updateUser(final ItemReceiver<Boolean> itemReceiver, User user) {
         if (user.getUserid() == getLoggedInUserId()) {
-            loggedInUserRepository.update(itemReceiver,user);
+            loggedInUserRepository.update(itemReceiver, user);
         } else {
             throw new IllegalStateException("only able to change logged in user");
         }

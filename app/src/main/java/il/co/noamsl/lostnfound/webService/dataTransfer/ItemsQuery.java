@@ -1,12 +1,26 @@
 package il.co.noamsl.lostnfound.webService.dataTransfer;
 
 
-public class ItemsQuery implements Query{
+public class ItemsQuery implements Query {
     private final String name;
     private final String description;
     private final String location;
     private final Boolean isAFound;
     private final Integer owner;
+    private Boolean isRelevant;
+
+    public ItemsQuery(String name, String description, String location, Boolean isAFound, Boolean isRelevant) {
+        this(name, description, location, isAFound, null, isRelevant);
+    }
+
+    public ItemsQuery(String name, String description, String location, Boolean isAFound, Integer owner, Boolean isRelevant) {
+        this.name = name;
+        this.description = description;
+        this.location = location;
+        this.isAFound = isAFound;
+        this.owner = owner;
+        this.isRelevant = isRelevant;
+    }
 
     public Boolean getAFound() {
         return isAFound;
@@ -20,12 +34,9 @@ public class ItemsQuery implements Query{
         isRelevant = relevant;
     }
 
-    private Boolean isRelevant;
-
     public Integer getOwner() {
         return owner;
     }
-
 
     public String getName() {
         return name;
@@ -76,19 +87,6 @@ public class ItemsQuery implements Query{
         result = 31 * result + (owner != null ? owner.hashCode() : 0);
         result = 31 * result + (isRelevant != null ? isRelevant.hashCode() : 0);
         return result;
-    }
-
-    public ItemsQuery(String name, String description, String location, Boolean isAFound, Boolean isRelevant) {
-        this(name, description, location, isAFound, null,isRelevant);
-    }
-
-    public ItemsQuery(String name, String description, String location, Boolean isAFound, Integer owner,Boolean isRelevant) {
-        this.name = name;
-        this.description = description;
-        this.location = location;
-        this.isAFound = isAFound;
-        this.owner = owner;
-        this.isRelevant = isRelevant;
     }
 
     public Boolean isAFound() {

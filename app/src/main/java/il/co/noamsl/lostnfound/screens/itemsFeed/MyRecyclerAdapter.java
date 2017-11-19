@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,10 +21,10 @@ import java.util.TimerTask;
 
 import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.Util;
+import il.co.noamsl.lostnfound.repository.external.itemsBulk.ItemsBulk;
 import il.co.noamsl.lostnfound.repository.external.itemsBulk.MyItemsItemsBulk;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
-import il.co.noamsl.lostnfound.repository.external.itemsBulk.ItemsBulk;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 
 /**
@@ -35,33 +34,45 @@ import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements ItemReceiver<LfItem> {
     private static final String TAG = "MyRecyclerAdapter";
-    private ItemsBulk itemsBulk;
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
-    private OnLoadMoreListener onLoadMoreListener;
-    private int lastVisibleItem, totalItemCount;
-    private volatile Boolean isLoading = false; //careful! should be set only using setter otherwise causing lack of persistence
     private final int VISIBLE_THRESHOLD = 10;
     private final LiveData<Activity> parentActivity;
-    private RecyclerView recyclerView;
     private final Context context;
     private final int NOTIFY_FREQ = 500;
+    private final ItemOpener itemOpener;
+    private ItemsBulk itemsBulk;
+    private OnLoadMoreListener onLoadMoreListener;
+    private int lastVisibleItem, totalItemCount;
+    private volatile Boolean isLoading = false;
+    private RecyclerView recyclerView;
     private volatile boolean changesToNotifyMade = false;
     private volatile boolean loadedAll = false;
     private ItemReceiver<Boolean> containerItemReceiver = null;
-    private final ItemOpener itemOpener;
+
+    // Provide a suitable constructor (depends on the kind of dataset)
+    public MyRecyclerAdapter(ItemsBulk itemsBulk, RecyclerView recyclerView, Activity parent, Context context, ItemOpener itemOpener) {
+        this.itemsBulk = itemsBulk;
+        this.context = context;
+        this.itemOpener = itemOpener;
+        this.itemsBulk.setItemReceiver(this);
+        this.recyclerView = recyclerView;
+        this.parentActivity = Util.createLiveData(parent);
+
+        initLoadingMechanism(recyclerView);
+        initOnLoadMoreListener();
+        initNotifier();
+
+        filter(new ItemsQuery("", "", null, true, null)); //fixme this is default query
+
+
+    }
+
     private void initOnLoadMoreListener() {
         this.onLoadMoreListener = new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
                 requestMoreItems();
-//                MyRecyclerAdapter.this.setLoaded();
-
-//                new Thread(new Runnable() {
-//                    public void run() {
-//                    }
-//                }).start(); // FIXME: 16/11/2017 think if should be in thread
-
             }
         };
     }
@@ -85,7 +96,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (item == null) {
             MyRecyclerAdapter.this.setIsLoading(false);
             loadedAll = true;
-            if(containerItemReceiver!=null) {
+            if (containerItemReceiver != null) {
                 containerItemReceiver.onItemArrived(true);
             }
 
@@ -96,13 +107,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public synchronized void onRequestFailure() {
         onItemArrived(null);
-        Util.MLog.d(TAG,Util.trace(0));
         Util.MyToast.show(recyclerView.getContext(), "Unable to load items", Toast.LENGTH_SHORT);
-    }
-
-    private synchronized void setIsLoading(boolean isLoading) {
-        this.isLoading = isLoading;
-        myNotifyChange(true); // FIXME: 16/11/2017 enable this
     }
 
     private void postToNextNotify() {
@@ -150,36 +155,20 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             postToNextNotify();
         }
         //fixme not doing anything here
-/*
-        Runnable notifier = new Runnable() {
-            @Override
-            public void run() {
-                synchronized (itemsBulk) {
-                    synchronized (isLoading) {
-                        if (all) {
-                            notifyDataSetChanged();
-                        } else {
-                            notifyDataSetChanged();
-                        }
-//                        notifyDataSetChanged(); //// FIXME: 05/11/2017 not efficient
-                    }
-                }
-            }
-        };
-*/
-//        recyclerView.post(notifier);
-//        if (parentActivity != null) {
-//            parentActivity.getValue().runOnUiThread(notifier);
-//
-//        }
+
     }
 
     public synchronized boolean getIsLoading() {
         return isLoading;
     }
 
+    private synchronized void setIsLoading(boolean isLoading) {
+        this.isLoading = isLoading;
+        myNotifyChange(true); // FIXME: 16/11/2017 enable this
+    }
+
     public void filter(ItemsQuery filter) {
-        Log.d(TAG, "filter: "+filter);
+        Log.d(TAG, "filter: " + filter);
 
         loadedAll = false;
         itemsBulk.filter(filter);
@@ -190,7 +179,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public void clear() {
-        synchronized (this){
+        synchronized (this) {
             itemsBulk.clear();
             notifyDataSetChanged();
         }
@@ -199,105 +188,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void reloadByCurrentFilter(ItemReceiver<Boolean> refreshItemReceiver) {
         this.containerItemReceiver = refreshItemReceiver;
         filter(itemsBulk.getCurrentFilter());
-    }
-
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
-    public static class ItemViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
-        private ImageView itemImage;
-        private TextView itemTitle;
-        private TextView itemDescription;
-        private TextView itemLocation;
-        private Integer itemId = null;
-        private boolean isMyItem;
-        private final ItemOpener itemOpener;
-
-
-        public ItemViewHolder(final View itemView, final Activity parent, final boolean isMyItem, Context context, ItemOpener itemOpener) {
-            super(itemView);
-            this.isMyItem = isMyItem;
-            this.itemOpener = itemOpener;
-
-            itemImage = (ImageView) itemView.findViewById(R.id.item_image);
-            itemTitle = (TextView) itemView.findViewById(R.id.item_title);
-            itemDescription = (TextView) itemView.findViewById(R.id.item_card_tv_item_details);
-            itemLocation = (TextView) itemView.findViewById(R.id.item_card_tv_location);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (ItemViewHolder.this.itemOpener != null) {
-                        ItemViewHolder.this.itemOpener.openItem(isMyItem,itemId);
-
-                    }
-
-/*
-                    Snackbar.make(v, "Click detected on item " + position,
-                            Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-*/
-
-                }
-            });
-        }
-
-
-        public void updateFields(Drawable picture, String title,String description,String address) {
-            itemDescription.setText(description);
-            itemLocation.setText(address);
-            itemTitle.setText(title);
-            itemImage.setImageDrawable(picture);
-
-        }
-
-        public void setItemId(int itemId) {
-            this.itemId = itemId;
-        }
-    }
-
-    private class LoadingViewHolder extends RecyclerView.ViewHolder {
-        private ProgressBar progressBar;
-        private final int REFRESH_FREQ = 500;
-
-        public LoadingViewHolder(View view) {
-            super(view);
-            progressBar = (ProgressBar) view.findViewById(R.id.pb_loading_items);
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    synchronized (isLoading) {
-                        recyclerView.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-                            }
-                        });
-                    }
-                }
-            }, 100, REFRESH_FREQ);
-
-        }
-    }
-
-    // Provide a suitable constructor (depends on the kind of dataset)
-    public MyRecyclerAdapter(ItemsBulk itemsBulk, RecyclerView recyclerView, Activity parent, Context context, ItemOpener itemOpener) {
-        this.itemsBulk = itemsBulk;
-        this.context = context;
-        this.itemOpener = itemOpener;
-        this.itemsBulk.setItemReceiver(this);
-        this.recyclerView = recyclerView;
-        this.parentActivity = Util.createLiveData(parent);
-
-        initLoadingMechanism(recyclerView);
-        initOnLoadMoreListener();
-        initNotifier();
-
-        filter(new ItemsQuery("", "", null, true,null)); //fixme this is default query
-
-
     }
 
     private void fillFirstItems() {
@@ -318,6 +208,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private void initLoadingMechanism(RecyclerView recyclerView) {
         final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            private final int MAX_SCROLL_FREQ = 500;
+            private volatile boolean scrolling = false;
+
             public synchronized boolean isScrolling() {
                 return scrolling;
             }
@@ -325,9 +218,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             public synchronized void setScrolling(boolean scrolling) {
                 this.scrolling = scrolling;
             }
-
-            private volatile boolean scrolling = false;
-            private final int MAX_SCROLL_FREQ = 500;
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -356,7 +246,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         });
     }
 
-
     public int getItemViewType(int position) {
         return itemsBulk.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
     }
@@ -379,7 +268,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return null;
     }
 
-
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
@@ -389,7 +277,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             LfItem itemInPosition = itemsBulk.get(position);
             ItemViewHolder myHolder = (ItemViewHolder) holder;
             myHolder.updateFields(itemInPosition.getDrawablePicture(context), itemInPosition.getName(),
-                    itemInPosition.getDescription(),itemInPosition.getLocation());
+                    itemInPosition.getDescription(), itemInPosition.getLocation());
             myHolder.setItemId(itemInPosition.getId());
 
         } else if (holder instanceof LoadingViewHolder) {
@@ -413,6 +301,87 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
 //        return itemsBulk.getItemCount()+1;
+    }
+
+    // Provide a reference to the views for each data item
+    // Complex data items may need more than one view per item, and
+    // you provide access to all the views for a data item in a view holder
+    public static class ItemViewHolder extends RecyclerView.ViewHolder {
+        private final ItemOpener itemOpener;
+        // each data item is just a string in this case
+        private ImageView itemImage;
+        private TextView itemTitle;
+        private TextView itemDescription;
+        private TextView itemLocation;
+        private Integer itemId = null;
+        private boolean isMyItem;
+
+
+        public ItemViewHolder(final View itemView, final Activity parent, final boolean isMyItem, Context context, ItemOpener itemOpener) {
+            super(itemView);
+            this.isMyItem = isMyItem;
+            this.itemOpener = itemOpener;
+
+            itemImage = (ImageView) itemView.findViewById(R.id.item_image);
+            itemTitle = (TextView) itemView.findViewById(R.id.item_title);
+            itemDescription = (TextView) itemView.findViewById(R.id.item_card_tv_item_details);
+            itemLocation = (TextView) itemView.findViewById(R.id.item_card_tv_location);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (ItemViewHolder.this.itemOpener != null) {
+                        ItemViewHolder.this.itemOpener.openItem(isMyItem, itemId);
+
+                    }
+
+/*
+                    Snackbar.make(v, "Click detected on item " + position,
+                            Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+*/
+
+                }
+            });
+        }
+
+
+        public void updateFields(Drawable picture, String title, String description, String address) {
+            itemDescription.setText(description);
+            itemLocation.setText(address);
+            itemTitle.setText(title);
+            itemImage.setImageDrawable(picture);
+
+        }
+
+        public void setItemId(int itemId) {
+            this.itemId = itemId;
+        }
+    }
+
+    private class LoadingViewHolder extends RecyclerView.ViewHolder {
+        private final int REFRESH_FREQ = 500;
+        private ProgressBar progressBar;
+
+        public LoadingViewHolder(View view) {
+            super(view);
+            progressBar = (ProgressBar) view.findViewById(R.id.pb_loading_items);
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    synchronized (isLoading) {
+                        recyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+                            }
+                        });
+                    }
+                }
+            }, 100, REFRESH_FREQ);
+
+        }
     }
 
 }

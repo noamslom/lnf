@@ -3,10 +3,10 @@ package il.co.noamsl.lostnfound.repository.User;
 import java.io.Serializable;
 
 import il.co.noamsl.lostnfound.repository.cache.Cacheable;
-import il.co.noamsl.lostnfound.webService.eitan.Users;
+import il.co.noamsl.lostnfound.webService.serverInternal.Users;
 
 
-public class User implements Cacheable,Serializable {
+public class User implements Cacheable, Serializable {
     private Users wsUser;
 
     public User(Users wsUser) {

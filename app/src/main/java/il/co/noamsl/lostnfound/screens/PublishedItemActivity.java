@@ -12,8 +12,8 @@ import android.widget.Toast;
 import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.ServiceLocator;
 import il.co.noamsl.lostnfound.Util;
-import il.co.noamsl.lostnfound.repository.external.RepositoryExternal;
 import il.co.noamsl.lostnfound.repository.User.User;
+import il.co.noamsl.lostnfound.repository.external.RepositoryExternal;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 
@@ -33,6 +33,7 @@ public class PublishedItemActivity extends AppCompatActivity implements ItemRece
     private ImageView ivMainImage;
     private User owner;
     private Button btnContact;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,8 +54,6 @@ public class PublishedItemActivity extends AppCompatActivity implements ItemRece
     }
 
     private void updateFields() {
-//        LfItem displayedItem = MainActivity.getExternalRepository().getItemById(itemId);
-//        tvTitle.setText(displayedItem.getName());
         RepositoryExternal re = ServiceLocator.getExternalRepository();
         LfItem item = re.getItemById(itemId);
         restoreUserContact(re, item);
@@ -68,9 +67,8 @@ public class PublishedItemActivity extends AppCompatActivity implements ItemRece
 
     private void restoreUserContact(RepositoryExternal re, LfItem item) {
         if (item.getOwner() != null) {
-            re.getUserById(this,item.getOwner());
-        }
-        else{
+            re.getUserById(this, item.getOwner());
+        } else {
             Util.MyToast.show(getApplicationContext(), "Unable to load owner", Toast.LENGTH_SHORT);
         }
     }
@@ -91,12 +89,12 @@ public class PublishedItemActivity extends AppCompatActivity implements ItemRece
 
     @Override
     public void onRequestFailure() {
-        Util.MyToast.show(getApplicationContext(),"Unable to get published item details",Toast.LENGTH_SHORT);
+        Util.MyToast.show(getApplicationContext(), "Unable to get published item details", Toast.LENGTH_SHORT);
     }
 
     private void restorePicture(LfItem item) {
         String base64Image = item.getPicture();
-        if(base64Image!=null) {
+        if (base64Image != null) {
             ivMainImage.setImageDrawable(Util.base64ToDrawable(getResources(), base64Image));
         }
     }
