@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -73,6 +74,8 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
 
         switch (MODE) {
             case EDIT:
+                tgbLostOrFound.setClickable(false);
+                tgbLostOrFound.setBackgroundColor(0x80000000);
                 cbRelevant.setVisibility(View.VISIBLE);
                 restoreFields();
                 break;
