@@ -26,25 +26,34 @@ public class WSTest {
 
     public void test() {
         Log.d(TAG, "test: testing");
+        synchronized (monitor) {
+            createUser();
+            waitForPrevTask();
+        }
+        synchronized (monitor) {
+            addFound();
+            waitForPrevTask();
+        }
 
-        createUser();
-        waitForPrevTask();
-        addFound();
-        waitForPrevTask();
-        changeRelevant();
-        waitForPrevTask();
-        getFounds();
+        synchronized (monitor) {
+            changeRelevant();
+            waitForPrevTask();
+        }
+
+        synchronized (monitor) {
+            getFounds();
+        }
+
 
     }
 
     private void waitForPrevTask() {
         try {
-            synchronized (monitor) {
-                monitor.wait(MAX_WAIT_MILLIES);
-            }
+            monitor.wait(MAX_WAIT_MILLIES);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        sleep();
     }
 
     private void getFounds() {
@@ -54,7 +63,7 @@ public class WSTest {
                 if (!response.isSuccessful()) {
                     throw new RuntimeException("Server problem(onResponse): " + response.raw());
                 } else {
-                    Log.d(TAG, "allGood");
+                    Log.d(TAG, "got list = " + response.body().getFoundTables());
                 }
             }
 
@@ -66,13 +75,19 @@ public class WSTest {
     }
 
     private void changeRelevant() {
+/*
         FoundTable changed = new FoundTable(FAKE_FOUND.getName(), FAKE_FOUND.getDescription(),
                 FAKE_FOUND.getLocation(), FAKE_FOUND.getOwner(), FAKE_FOUND.getPicture(),
                 FAKE_FOUND.getRecordid(), false);
-        TEST_API.found_edit(changed).enqueue(new Callback<Integer>() {
+*/
+        FAKE_FOUND.setRelevant(false);
+        TEST_API.found_edit(FAKE_FOUND).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 boomIfFailed(response);
+                Log.d(TAG, "onResponse: changed = " + FAKE_FOUND);
+                nextTask();
+
             }
 
             @Override
@@ -99,7 +114,7 @@ public class WSTest {
     }
 
     private void boomIfFailed(Response<Integer> response) {
-        if (!response.isSuccessful()) {
+        if (!response.isSuccessful() || response.body() == null) {
             boom();
         }
     }
@@ -132,7 +147,6 @@ public class WSTest {
         synchronized (monitor) {
             monitor.notify();
         }
-        ;
     }
 
     private void boom() {
