@@ -1,5 +1,9 @@
 package il.co.noamsl.lostnfound.repository.item;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+
+import il.co.noamsl.lostnfound.Util;
 import il.co.noamsl.lostnfound.repository.cache.Cacheable;
 import il.co.noamsl.lostnfound.webService.eitan.FoundTable;
 import il.co.noamsl.lostnfound.webService.eitan.LostTable;
@@ -11,7 +15,7 @@ import il.co.noamsl.lostnfound.repository.item.fake.FakeImage;
 
 public class LfItem implements Cacheable {
     private WSLfItem wsLfItem;
-    private NoamImage fakeImage;
+    private Drawable drawablePicture = null;
 
     public LfItem(WSLfItem wsLfItem) {
         this.wsLfItem=wsLfItem;
@@ -43,10 +47,6 @@ public class LfItem implements Cacheable {
 
     public String getPicture() {
         return wsLfItem.getPicture();
-    }
-
-    public void setPicture(String picture) {
-        wsLfItem.setPicture(picture);
     }
 
 
@@ -125,5 +125,14 @@ public class LfItem implements Cacheable {
     @Override
     public String getCacheId() {
         return String.valueOf(getId());
+    }
+
+    public Drawable getDrawablePicture(Context context) {
+        if(drawablePicture!=null)
+            return drawablePicture;
+
+        final int compressionRation = 10;
+        return Util.base64ToDrawable(context.getResources(), getPicture(), compressionRation);
+
     }
 }

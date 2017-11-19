@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.arch.lifecycle.LiveData;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -116,8 +117,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 recyclerView.post(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d(TAG, "run: notigyied!!!!!");
-
                         if (changesToNotifyMade) {
                             myRealNotifyChange();
                             changesToNotifyMade = false;
@@ -228,10 +227,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             });
         }
 
-        public void updateFields(String base64Image, String title) {
-            int compressionRation = 10;
-            itemImage.setImageDrawable(Util.base64ToDrawable(context.getResources(), base64Image, compressionRation));
+        public void updateFields(Drawable picture, String title) {
             itemTitle.setText(title);
+            itemImage.setImageDrawable(picture);
 
         }
 
@@ -375,7 +373,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (holder instanceof ItemViewHolder) {
             LfItem itemInPosition = itemsBulk.get(position);
             ItemViewHolder myHolder = (ItemViewHolder) holder;
-            myHolder.updateFields(itemInPosition.getPicture(), itemInPosition.getName());
+            myHolder.updateFields(itemInPosition.getDrawablePicture(context), itemInPosition.getName());
             myHolder.setItemId(itemInPosition.getId());
 
         } else if (holder instanceof LoadingViewHolder) {

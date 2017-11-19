@@ -83,7 +83,7 @@ public class Util {
 
     public static Bitmap compressBitmap(Bitmap bitmap,int compressionRation) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, compressionRation, outputStream);
         bitmap = BitmapFactory.decodeStream(new ByteArrayInputStream(outputStream.toByteArray()));
         return bitmap;
     }
