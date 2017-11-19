@@ -2,6 +2,7 @@ package il.co.noamsl.lostnfound.screens.itemsFeed;
 
 import android.app.Activity;
 import android.arch.lifecycle.LiveData;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,7 +23,6 @@ import il.co.noamsl.lostnfound.R;
 import il.co.noamsl.lostnfound.Util;
 import il.co.noamsl.lostnfound.repository.external.itemsBulk.MyItemsItemsBulk;
 import il.co.noamsl.lostnfound.repository.item.LfItem;
-import il.co.noamsl.lostnfound.repository.item.NoamImage;
 import il.co.noamsl.lostnfound.screens.EditItemActivity;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 import il.co.noamsl.lostnfound.repository.external.itemsBulk.ItemsBulk;
@@ -42,9 +42,13 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private OnLoadMoreListener onLoadMoreListener;
     private int lastVisibleItem, totalItemCount;
     private volatile Boolean isLoading = false; //careful! should be set only using setter otherwise causing lack of persistence
-    private final int VISIBLE_THRESHOLD = 20;
+    private final int VISIBLE_THRESHOLD = 10;
     private final LiveData<Activity> parentActivity;
     private RecyclerView recyclerView;
+    private final Context context;
+    private final int NOTIFY_FREQ = 500;
+    private volatile boolean changesToNotifyMade = false;
+    private volatile boolean loadedAll = false;
 
     private void initOnLoadMoreListener() {
         this.onLoadMoreListener = new OnLoadMoreListener() {
@@ -82,8 +86,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public synchronized void onItemArrived(LfItem item) {
         if (item == null) {
             MyRecyclerAdapter.this.setIsLoading(false);
+            loadedAll = true;
         }
-        myNotifyChange();
+        myNotifyChange(false);
     }
 
     @Override
@@ -95,21 +100,73 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private synchronized void setIsLoading(boolean isLoading) {
         Log.d(TAG, "setIsLoading: isLoading = " + isLoading);
         this.isLoading = isLoading;
-        myNotifyChange(); // FIXME: 16/11/2017 enable this
+        myNotifyChange(true); // FIXME: 16/11/2017 enable this
     }
 
-    private synchronized void myNotifyChange() {
+    private void postToNextNotify() {
+        changesToNotifyMade = true;
+    }
+
+    private void initNotifier() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+
+                recyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "run: notigyied!!!!!");
+
+                        if (changesToNotifyMade) {
+                            myRealNotifyChange();
+                            changesToNotifyMade = false;
+                        }
+                    }
+
+                    private void myRealNotifyChange() {
+                        Runnable notifier = new Runnable() {
+                            @Override
+                            public void run() {
+                                synchronized (itemsBulk) {
+                                    synchronized (isLoading) {
+                                        notifyDataSetChanged();
+
+                                    }
+                                }
+                            }
+                        };
+                        recyclerView.post(notifier);
+                    }
+                });
+            }
+        }, 100, NOTIFY_FREQ);
+
+    }
+
+    private synchronized void myNotifyChange(final boolean all) {
+        if (!loadedAll) {
+            postToNextNotify();
+        }
+        //fixme not doing anything here
+/*
         Runnable notifier = new Runnable() {
             @Override
             public void run() {
                 synchronized (itemsBulk) {
                     synchronized (isLoading) {
-                        notifyDataSetChanged(); //// FIXME: 05/11/2017 not efficient
+                        if (all) {
+                            notifyDataSetChanged();
+                        } else {
+                            notifyDataSetChanged();
+                        }
+//                        notifyDataSetChanged(); //// FIXME: 05/11/2017 not efficient
                     }
                 }
             }
         };
-        recyclerView.post(notifier);
+*/
+//        recyclerView.post(notifier);
 //        if (parentActivity != null) {
 //            parentActivity.getValue().runOnUiThread(notifier);
 //
@@ -121,8 +178,11 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public void filter(ItemsQuery filter) {
+        Log.d(TAG, "filter: filter = " + filter);
+        loadedAll = false;
         itemsBulk.filter(filter);
-        myNotifyChange();
+
+        myNotifyChange(true);
         fillFirstItems();
     }
 
@@ -135,10 +195,12 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public TextView itemTitle;
         private Integer itemId = null;
         private boolean isMyItem;
+        private final Context context;
 
-        public ItemViewHolder(final View itemView, final Activity parent, final boolean isMyItem) {
+        public ItemViewHolder(final View itemView, final Activity parent, final boolean isMyItem, Context context) {
             super(itemView);
             this.isMyItem = isMyItem;
+            this.context = context;
 
             itemImage = (ImageView) itemView.findViewById(R.id.item_image);
             itemTitle = (TextView) itemView.findViewById(R.id.item_title);
@@ -166,8 +228,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             });
         }
 
-        public void updateFields(NoamImage image, String title) {
-            itemImage.setImageDrawable(image.getDrawable());
+        public void updateFields(String base64Image, String title) {
+            int compressionRation = 10;
+            itemImage.setImageDrawable(Util.base64ToDrawable(context.getResources(), base64Image, compressionRation));
             itemTitle.setText(title);
 
         }
@@ -180,6 +243,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private class LoadingViewHolder extends RecyclerView.ViewHolder {
         private ProgressBar progressBar;
         private final int REFRESH_FREQ = 500;
+
         public LoadingViewHolder(View view) {
             super(view);
             progressBar = (ProgressBar) view.findViewById(R.id.pb_loading_items);
@@ -187,11 +251,11 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    synchronized (isLoading){
+                    synchronized (isLoading) {
                         recyclerView.post(new Runnable() {
                             @Override
                             public void run() {
-                                progressBar.setVisibility(isLoading? View.VISIBLE: View.GONE);
+                                progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
                             }
                         });
                     }
@@ -202,14 +266,17 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyRecyclerAdapter(ItemsBulk itemsBulk, RecyclerView recyclerView, Activity parent) {
+    public MyRecyclerAdapter(ItemsBulk itemsBulk, RecyclerView recyclerView, Activity parent, Context context) {
         this.itemsBulk = itemsBulk;
+        this.context = context;
         this.itemsBulk.setItemReceiver(this);
         this.recyclerView = recyclerView;
         this.parentActivity = Util.createLiveData(parent);
 
         initLoadingMechanism(recyclerView);
         initOnLoadMoreListener();
+        initNotifier();
+
         filter(new ItemsQuery("", "", null, true)); //fixme this is default query
 
 
@@ -291,7 +358,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_card_layout, parent, false); //careful
             //fixme not ideal to use instanceof here, not modular
-            return new ItemViewHolder(v, parentActivity.getValue(), itemsBulk instanceof MyItemsItemsBulk);
+            return new ItemViewHolder(v, parentActivity.getValue(), itemsBulk instanceof MyItemsItemsBulk, context);
         } else if (viewType == VIEW_TYPE_LOADING) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loading, parent, false);
             return new LoadingViewHolder(view);
@@ -308,7 +375,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (holder instanceof ItemViewHolder) {
             LfItem itemInPosition = itemsBulk.get(position);
             ItemViewHolder myHolder = (ItemViewHolder) holder;
-            myHolder.updateFields(itemInPosition.getMainImage(), itemInPosition.getName());
+            myHolder.updateFields(itemInPosition.getPicture(), itemInPosition.getName());
             myHolder.setItemId(itemInPosition.getId());
 
         } else if (holder instanceof LoadingViewHolder) {
@@ -328,7 +395,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         synchronized (itemsBulk) {
             synchronized (isLoading) {
 //                return getIsLoading() ? itemsBulk.getItemCount() + 1 : itemsBulk.getItemCount();
-                return itemsBulk.getItemCount()+1;
+                return itemsBulk.getItemCount() + 1;
             }
         }
 

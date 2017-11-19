@@ -33,7 +33,6 @@ public class PublishedItemActivity extends AppCompatActivity implements ItemRece
     private ImageView ivMainImage;
     private User owner;
     private Button btnContact;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,14 +57,22 @@ public class PublishedItemActivity extends AppCompatActivity implements ItemRece
 //        tvTitle.setText(displayedItem.getName());
         RepositoryExternal re = ServiceLocator.getExternalRepository();
         LfItem item = re.getItemById(itemId);
-        re.getUserById(this,item.getOwner());
-
+        restoreUserContact(re, item);
+        restorePicture(item);
         tvTitle.setText(item.getName());
         tvDescription.setText(item.getDescription());
         tvLocation.setText(item.getLocation());
-        ivMainImage.setImageDrawable(item.getMainImage().getDrawable());
         tvLostOrFound.setText(item.isAFound() ? FOUND_TEXT : LOST_TEXT);
 
+    }
+
+    private void restoreUserContact(RepositoryExternal re, LfItem item) {
+        if (item.getOwner() != null) {
+            re.getUserById(this,item.getOwner());
+        }
+        else{
+            Util.MyToast.show(getApplicationContext(), "Unable to load owner", Toast.LENGTH_SHORT);
+        }
     }
 
     public void showContect(View view) {
@@ -86,4 +93,12 @@ public class PublishedItemActivity extends AppCompatActivity implements ItemRece
     public void onRequestFailure() {
         Util.MyToast.show(getApplicationContext(),"Unable to get published item details",Toast.LENGTH_SHORT);
     }
+
+    private void restorePicture(LfItem item) {
+        String base64Image = item.getPicture();
+        if(base64Image!=null) {
+            ivMainImage.setImageDrawable(Util.base64ToDrawable(getResources(), base64Image));
+        }
+    }
+
 }

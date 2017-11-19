@@ -85,7 +85,7 @@ public class ItemsFeedFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new MyRecyclerAdapter(itemsBulk,mRecyclerView,getActivity());
+        mAdapter = new MyRecyclerAdapter(itemsBulk,mRecyclerView,getActivity(), getContext());
         mRecyclerView.setAdapter(mAdapter);
 
     }

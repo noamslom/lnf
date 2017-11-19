@@ -1,6 +1,7 @@
 package il.co.noamsl.lostnfound.repository;
 
 import android.content.Context;
+import android.util.Log;
 
 import il.co.noamsl.lostnfound.MainActivity;
 import il.co.noamsl.lostnfound.ServiceLocator;
@@ -16,6 +17,7 @@ import il.co.noamsl.lostnfound.webService.WebService;
  */
 
 public class Repository {
+    private static final String TAG = "Repository";
     private ItemsRepository itemsRepository;
     private UsersRepository userRepository;
 
@@ -53,7 +55,9 @@ public class Repository {
     public LfItem getItemById(int itemId) {
         LfItem item = itemsRepository.getItemById(itemId);
         if (item == null) {
-            throw new IllegalStateException("Should not ask for an item not present");
+//            throw new IllegalStateException("Should not ask for an item not present");
+            Log.e(TAG, "Should not ask for an item not present");
+            return null;
         }
         return item;
     }

@@ -6,7 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -17,7 +19,7 @@ import android.widget.ToggleButton;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 import il.co.noamsl.lostnfound.R;
@@ -30,8 +32,11 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 
 public class EditItemActivity extends AppCompatActivity implements ItemReceiver<Boolean> {
+    private static final String TAG = "EditItemActivity";
     public static final String ARG_ITEM_ID = "itemId";
     private static final int PICK_PHOTO_FOR_AVATAR = 1;
+    private final int COMPRESSION_RATIO = 50;
+
 
     public enum Mode {EDIT, ADD}
 
@@ -47,6 +52,7 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
     private Integer itemId;
     private ImageButton imageButton;
     private volatile String base64Image = null;
+    private LfItem prevItem = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +65,11 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
         cbRelevant = (CheckBox) findViewById(R.id.edit_item_cb_relevant);
         tgbLostOrFound = (ToggleButton) findViewById(R.id.editItem_toggleButton_lostOrFound);
         imageButton = (ImageButton) findViewById(R.id.edit_item_ib_picture);
+        //restore
+        itemId = getIntent().getExtras().getInt(ARG_ITEM_ID, -1);
+
+        prevItem = ServiceLocator.getRepository().getItemById(itemId);
+
         switch (MODE) {
             case EDIT:
                 restoreFields();
@@ -71,25 +82,35 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
     }
 
     private void restoreFields() {
-        itemId = getIntent().getExtras().getInt(ARG_ITEM_ID, -1);
-        LfItem item = ServiceLocator.getRepository().getItemById(itemId);
-        etTitle.setText(item.getName());
-        etDescription.setText(item.getDescription());
-        etLocation.setText(item.getLocation());
-        cbRelevant.setChecked(item.getRelevant());
+        restorePicture(prevItem);
+        etTitle.setText(prevItem.getName());
+        etDescription.setText(prevItem.getDescription());
+        etLocation.setText(prevItem.getLocation());
+        cbRelevant.setChecked(prevItem.getRelevant());
 
-        tgbLostOrFound.setChecked(item.isAFound() ? FOUND_TOGGLE_VALUE : !FOUND_TOGGLE_VALUE);
+        tgbLostOrFound.setChecked(prevItem.isAFound() ? FOUND_TOGGLE_VALUE : !FOUND_TOGGLE_VALUE);
+    }
+
+    private void restorePicture(LfItem item) {
+        base64Image = item.getPicture();
+        Log.d(TAG, "restorePicture: base64Image = " + base64Image);
+
+        if(base64Image!=null) {
+            imageButton.setImageDrawable(Util.base64ToDrawable(getResources(), base64Image));
+        }
     }
 
 
     public void itemSubmitted(View v) {
+        Util.MyToast.show(getApplicationContext(), "Submitting", LENGTH_SHORT);
+
         String name = etTitle.getText() + "";
-        String picture = "testpic";
         boolean isAFound = isToggleButtonAFound();
         boolean relevant = cbRelevant.isChecked();
-        Integer owner = getOwner()/*null*/;
+        Integer owner = getOwner(prevItem)/*null*/;
         String location = etLocation.getText() + "";
         String description = etDescription.getText() + "";
+        String picture = base64Image;
         LfItem newItem = new LfItem(itemId, name, description, location, owner, picture, relevant, isAFound);
         switch (MODE) {
             case EDIT:
@@ -99,13 +120,12 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
                 ServiceLocator.getExternalRepository().addItem(this, newItem);
                 break;
         }
-        Util.MyToast.show(getApplicationContext(), "Submitting", LENGTH_SHORT);
     }
 
-    private Integer getOwner() {
+    private Integer getOwner(LfItem lfItem) {
         switch (MODE) {
             case EDIT:
-                return null;
+                return lfItem.getOwner();
             case ADD:
                 return ServiceLocator.getRepository().getLoggedInUserId();
         }
@@ -119,7 +139,11 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
     @Override
     public void onItemArrived(Boolean item) {
         Util.MyToast.show(getApplicationContext(), "Item Submit Successful!", LENGTH_SHORT);
-        this.onBackPressed();
+        try {
+            this.onBackPressed();
+        } catch (Exception e) {
+            Log.w(TAG, "back presseed after saved instance", e);
+        }
     }
 
     @Override
@@ -127,9 +151,10 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
         Util.MyToast.show(getApplicationContext(), "Unable to submit!", LENGTH_SHORT);
     }
 
-    public void pickImage(View v){
+    public void pickImage(View v) {
         pickImage();
     }
+
     public void pickImage() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
@@ -141,19 +166,21 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_PHOTO_FOR_AVATAR && resultCode == Activity.RESULT_OK) {
             if (data == null) {
-                Util.MyToast.show(getApplicationContext(),"Unable to pick image",LENGTH_SHORT);
+                Util.MyToast.show(getApplicationContext(), "Unable to pick image", LENGTH_SHORT);
                 return;
             }
             try {
+
                 InputStream inputStream = getApplicationContext().getContentResolver().openInputStream(data.getData());
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                bitmap = Util.compressBitmap(bitmap, COMPRESSION_RATIO);
                 BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), bitmap);
                 imageButton.setImageDrawable(bitmapDrawable);
 
-                byte[] encodedBytes = Base64.encodeBase64("Test".getBytes());
-                System.out.println("encodedBytes " + new String(encodedBytes));
-                base64Image = new String(Base64.encodeBase64(IOUtils.toByteArray(inputStream)));
-                byte[] decodedBytes = Base64.decodeBase64(encodedBytes);
+                inputStream = Util.inputStreamFromBitmap(bitmap);
+
+                base64Image = inputStreamToBase64(inputStream);
+//                imageButton.setImageDrawable(Util.base64ToDrawable(getResources(),base64Image));
 
 
             } catch (java.io.IOException e) {
@@ -161,6 +188,12 @@ public class EditItemActivity extends AppCompatActivity implements ItemReceiver<
             }
             //Now you can do whatever you want with your inpustream, save it as file, upload to a server, decode a bitmap...
         }
+    }
+
+
+    @NonNull
+    private static String inputStreamToBase64(InputStream inputStream) throws IOException {
+        return new String(Base64.encodeBase64(IOUtils.toByteArray(inputStream)));
     }
 
 }

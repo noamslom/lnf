@@ -38,7 +38,8 @@ public class WebService {
     private static final FoundTable FAKE_FOUND = new FoundTable("Wallet","d","l",2,"pic",null,true);
 
     // '/' at the end is required
-    private static final String BASE_URL = "http://10.0.2.2:8080/lf_server/webresources/";
+    private static final String BASE_URL = "http://192.168.1.102:8080/lf_server/webresources/";
+//    private static final String BASE_URL = "http://10.0.2.2:8080/lf_server/webresources/";
     // order at which converters are added matters!
     // Scalar converter should be added first.
     //// FIXME: 15/11/2017 change to private

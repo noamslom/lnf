@@ -50,12 +50,14 @@ public class LfItem implements Cacheable {
     }
 
 
+/*
     public NoamImage getMainImage() {
         if (fakeImage == null) {
             fakeImage = new FakeImage();
         }
         return fakeImage; //// FIXME: 14/11/2017  server need to fix
     }
+*/
 
 
     public Integer getId() {
