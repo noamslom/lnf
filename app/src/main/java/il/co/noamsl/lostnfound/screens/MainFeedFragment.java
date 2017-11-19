@@ -107,7 +107,7 @@ public class MainFeedFragment extends Fragment {
         super.onResume();
         Util.MLog.d(TAG,"onresume");
         closeKeyboard();
-        itemFeed.reload();
+        itemFeed.resetAndreload();
     }
 
     @Override

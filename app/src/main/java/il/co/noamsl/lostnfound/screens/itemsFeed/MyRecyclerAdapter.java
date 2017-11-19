@@ -33,7 +33,7 @@ import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
  */
 
 public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-        implements Loadable, ItemReceiver<LfItem> {
+        implements ItemReceiver<LfItem> {
     private static final String TAG = "MyRecyclerAdapter";
     private ItemsBulk itemsBulk;
     private final int VIEW_TYPE_ITEM = 0;
@@ -67,8 +67,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private void requestMoreItems() {
-
-
         if (getIsLoading())
             return;
 
@@ -319,7 +317,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private void initLoadingMechanism(RecyclerView recyclerView) {
         final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-        itemsBulk.setRequester(this);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             public synchronized boolean isScrolling() {
                 return scrolling;
@@ -416,11 +413,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
 //        return itemsBulk.getItemCount()+1;
-    }
-
-    public void setLoaded() {
-        throw new UnsupportedOperationException("loadable isn't supported");
-//        setIsLoading(false);
     }
 
 }

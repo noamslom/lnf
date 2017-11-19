@@ -9,7 +9,7 @@ import il.co.noamsl.lostnfound.webService.dataTransfer.Request;
 
 public class MyItemsItemsBulk extends ItemsBulk {
     public MyItemsItemsBulk(Repository repository) {
-        super(repository, null);
+        super(repository);
     }
 
     @Override

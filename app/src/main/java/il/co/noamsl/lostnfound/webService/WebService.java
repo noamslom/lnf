@@ -298,15 +298,21 @@ public class WebService {
         }
 
         private static void requestByFilter(final Request<LfItem> request, final MultipleSourcesItemReceiver<LfItem> msItemReceiver) {
+            ItemsQuery query = (ItemsQuery) request.getQuery();
+            Log.d(TAG, "requestByFilter: "+query);
 
+            //// FIXME: 19/11/2017
+            Util.MLog.d(TAG,"DeleteThis");
+            query = new ItemsQuery(query.getName(), query.getDescription(), null, query.isAFound(), query.isRelevant());
+            final ItemsQuery finalQuery = query;
 
-            final ItemsQuery query = (ItemsQuery) request.getQuery();
             msItemReceiver.onWorkerStarted();
             Callback<FoundTableList> callback = new Callback<FoundTableList>() {
                 @Override
                 public void onResponse(Call<FoundTableList> call, Response<FoundTableList> response) {
+                    Log.d(TAG, "onResponse: response = " + response.body().getFoundTables());
                     if (!response.isSuccessful()) {
-                        Log.d(TAG, "onResponse not successful: query = " + Arrays.toString(new String[]{query.getName(), query.getDescription(), query.getLocation()}));
+                        Log.d(TAG, "onResponse not successful: query = " + Arrays.toString(new String[]{finalQuery.getName(), finalQuery.getDescription(), finalQuery.getLocation()}));
                         Log.d(TAG, "onResponse: response.raw() = " + response.raw());
 
                         msItemReceiver.onRequestFailure();
@@ -315,6 +321,8 @@ public class WebService {
                     List<FoundTable> lst = response.body().getFoundTables();
                     if (lst != null) {
                         for (FoundTable l : lst) {
+                            Log.d(TAG, "onResponse: l = " + l);
+
                             msItemReceiver.onItemArrived(new LfItem(l));
                         }
                     }

@@ -183,7 +183,8 @@ public class ItemsFeedFragment extends Fragment implements ItemReceiver<Boolean>
         }
     }
 
-    public void reload() {
+    public void resetAndreload() {
+        mAdapter.clear();
         mAdapter.reloadByCurrentFilter(null);
     }
 

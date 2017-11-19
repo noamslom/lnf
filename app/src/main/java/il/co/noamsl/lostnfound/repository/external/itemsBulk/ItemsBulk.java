@@ -2,7 +2,11 @@ package il.co.noamsl.lostnfound.repository.external.itemsBulk;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import il.co.noamsl.lostnfound.screens.itemsFeed.ItemsStateListener;
 import il.co.noamsl.lostnfound.webService.dataTransfer.DataPosition;
@@ -12,7 +16,6 @@ import il.co.noamsl.lostnfound.repository.Repository;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 import il.co.noamsl.lostnfound.webService.dataTransfer.Request;
 import il.co.noamsl.lostnfound.webService.dataTransfer.RequestAgent;
-import il.co.noamsl.lostnfound.screens.itemsFeed.Loadable;
 
 
 public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
@@ -22,7 +25,6 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
     private static final int ITEMS_PER_REQUEST = 30;
     protected Repository repository;
     private RequestAgent requestAgent;
-    private Loadable requester;
     private ItemReceiver<LfItem> itemReceiver;
     //    private int itemsCount;
     protected ItemsQuery currentFilter;
@@ -34,11 +36,12 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
     }
 
 
-    public ItemsBulk(Repository repository, Loadable requester) {
+    public ItemsBulk(Repository repository) {
         this.repository = repository;
         this.storage = new ItemsBulkStorage();
         requestAgent = new RequestAgent();
-        this.requester = requester;
+
+        startReporter(); //// FIXME: 19/11/2017
 //        this.itemsCount=0;
     }
 
@@ -83,17 +86,17 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
         return repository.getItemById(itemId);
     }
 
-    public void setRequester(Loadable requester) {
-        this.requester = requester;
-    }
-
     public void requestMoreItems() {
         DataPosition<LfItem> lastItemDataPosition;
+
         if (storage.size(currentFilter) != 0) {
             lastItemDataPosition = new DataPosition<LfItem>(repository.getItemById(storage.getLast(currentFilter)));
         } else {
             lastItemDataPosition = new DataPosition<>(null);
         }
+        Log.d(TAG, "requestMoreItems: lastItemDataPosition = " + lastItemDataPosition);
+        Log.d(TAG, "requestMoreItems: currentFilter = " + currentFilter);
+
         repository.requestItems(new Request<LfItem>(this, lastItemDataPosition, currentFilter), null);//// FIXME: 13/11/2017 use request agent preferred
 //        if(requester!=null){
 //            requester.setLoaded();
@@ -110,12 +113,7 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
             return;
         }
         //// FIXME: 19/11/2017 only because server returning non relevant
-/*
-        Boolean filterRelevant = currentFilter.isRelevant();
-        if(!item.getRelevant() && filterRelevant!=null && filterRelevant == true){
-            return;
-        }
-*/
+        if (relevancyOk(item)) return;
         storage.addItemId(currentFilter, item.getId());
         if (itemsStateListener != null) {
             itemsStateListener.onNofItemsChange(getItemCount());
@@ -125,6 +123,14 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
             itemReceiver.onItemArrived(item);
         }
         requestAgent.next();
+    }
+
+    private boolean relevancyOk(LfItem item) {
+        Boolean filterRelevant = currentFilter.isRelevant();
+        if(!item.getRelevant() && filterRelevant!=null && filterRelevant){
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -161,5 +167,16 @@ public class ItemsBulk implements Parcelable, ItemReceiver<LfItem> {
 
     public void clear() {
         storage.clear();
+    }
+
+
+    public void startReporter(){
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Log.d(TAG, "run_timer_report: "+ storage.get(currentFilter));
+            }
+        },0,500);
     }
 }

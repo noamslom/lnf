@@ -57,4 +57,11 @@ public class ItemsBulkStorage {
     public void clear() {
         itemsIdTable = new Hashtable<>();
     }
+
+    public Set<Integer> get(ItemsQuery currentFilter) {
+        if (currentFilter == null) {
+            return null;
+        }
+        return itemsIdTable.get(currentFilter);
+    }
 }

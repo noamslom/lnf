@@ -11,7 +11,7 @@ import il.co.noamsl.lostnfound.webService.dataTransfer.ItemReceiver;
 public class RepositoryExternal {
 
     public ItemsBulk getAllItemsItemsBulk() {
-        return new ItemsBulk(ServiceLocator.getRepository(),null);
+        return new ItemsBulk(ServiceLocator.getRepository());
     }
 
     public ItemsBulk getMyItemsItemsBulk() {

@@ -3,7 +3,6 @@ package il.co.noamsl.lostnfound.screens.itemsFeed;
 import android.support.v4.app.Fragment;
 
 import il.co.noamsl.lostnfound.repository.external.itemsBulk.ItemsBulk;
-import il.co.noamsl.lostnfound.screens.MyItemsFragment;
 import il.co.noamsl.lostnfound.webService.dataTransfer.ItemsQuery;
 
 
@@ -30,8 +29,8 @@ public class ItemFeed {
         itemsFeedFragment.filter(itemsQuery);
     }
 
-    public void reload() {
-        itemsFeedFragment.reload();
+    public void resetAndreload() {
+        itemsFeedFragment.resetAndreload();
     }
 }
 
